@@ -31,6 +31,21 @@ Another one of Augma’s big features will be the Augma ads. Companies will be a
 </table>
 </p>
 
+### Project Supervisor
+<p align="center">
+<table>
+  <tr><td><img src="https://media.licdn.com/mpr/mpr/shrinknp_400_400/AAEAAQAAAAAAAA2VAAAAJGM2MTkyZjcwLTgwYmQtNGIzYS1hMGE3LTI0YTg1MjcwM2QwZg.jpg">Ercüment Çiçek</td></tr>
+</table>
+</p>
+
+### Project Jury Members
+<p align="center">
+<table>
+  <tr><td><img src="http://w3.cs.bilkent.edu.tr/tr/wp-content/uploads/sites/2/2016/04/Bulent_Ozguc.jpg">Bülent Özgüç</td></tr>
+  <tr><td>N/A</td></tr>
+</table>
+</p>
+
 ### Reports
 
 * Project Specification Report *(due Monday 09/10/2017 )*
