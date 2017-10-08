@@ -1,6 +1,8 @@
 ## What is Augma?
 
-![Augma Logo](https://github.com/DjCedrics/Augma/blob/master/augma_logo_with_background.png?raw=true)
+<p align="center">
+<img src="https://github.com/DjCedrics/Augma/blob/master/augma_logo_with_background.png?raw=true">
+</p>
 
 We are living in an era where conveying information is everything. The way you convey that information is just as important as the information itself and we thought that current options just doesn’t cut it. We felt like writing 120 characters or even posting a picture with a lengthy paragraph under it isn’t enough. We wanted to add another dimension to our conversations. This is where Augma was born. Augma adds a new layer to our reality and lets our posts come to life.
 
