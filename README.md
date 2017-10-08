@@ -19,11 +19,16 @@ Another one of Augma’s big features will be the Augma ads. Companies will be a
 
 ### Group Members
 
-* Ahmet Burak Şahin
-* Can Bayraktar
-* Çağdaş Yılmaz
-* Fırat Sivrikaya
-* Utku Oymak
+<table>
+  <tr>
+    <td>* Ahmet Burak Şahin</td>
+    <td>* Can Bayraktar</td>
+    <td>* Çağdaş Yılmaz</td>
+    <td>* Fırat Sivrikaya</td>
+    <td>* Utku Oymak</td>
+  </tr>
+</table>
+
 
 ### Reports
 
