@@ -25,32 +25,14 @@ Another one of Augma’s big features will be the Augma ads. Companies will be a
 * Fırat Sivrikaya
 * Utku Oymak
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Reports
 
-```markdown
-Syntax highlighted code block
+* Project Specification Report ( due Monday 09/10/2017 )
+* Analysis Report ( due Monday 06/11/2017 )
+* High-Level Design Report ( due Friday 22/12/2017 )
+* Low-Level Design Report ( due Monday 12/02/2018 )
+* Final Report ( due Thursday 03/05/2018 )
 
-# Header 1
-## Header 2
-### Header 3
+### Important Links
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/DjCedrics/Augma/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+* [CS491/2 Course Website](http://www.cs.bilkent.edu.tr/CS491-2/current/) 
