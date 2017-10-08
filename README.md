@@ -45,7 +45,7 @@ Another one of Augma’s big features will be the Augma ads. Companies will be a
 <p align="center">
 <table>
   <tr>
-  <td><img width="150" height="150" src="http://w3.cs.bilkent.edu.tr/tr/wp-content/uploads/sites/2/2016/04/Bulent_Ozguc.jpg"><br>Bülent Özgüç</td>
+  <td><img width="150" height="150" src="https://pasteboard.co/GNZwGSD.jpg"><br>Bülent Özgüç</td>
   <td>N/A</td>
 </table>
 </p>
