@@ -1,5 +1,7 @@
 ## What is Augma?
 
+![Dummy image for Augma](https://content-static.upwork.com/blog/uploads/sites/3/2017/07/02172715/5-Tips-On-How-to-Use-Augmented-Reality-App-For-Your-Business-feature-940x400.jpg)
+
 We are living in an era where conveying information is everything. The way you convey that information is just as important as the information itself and we thought that current options just doesn’t cut it. We felt like writing 120 characters or even posting a picture with a lengthy paragraph under it isn’t enough. We wanted to add another dimension to our conversations. This is where Augma was born. Augma adds a new layer to our reality and lets our posts come to life.
 
 Augma is a mobile-app which lets you leave location based notes that come to life with the power of Augmented Reality technology. You can leave pretty much anything you want ranging from a plain text to pictures you draw. After you have left your note somewhere, other people who look through their phones cameras will be able to see your creation. These notes will be time limited and people who see these notes will be able to influence their time limits by upvoting. You can think of Augma notes like a graffiti that doesn’t get you to jail since it’s in another dimension.
