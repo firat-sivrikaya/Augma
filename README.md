@@ -22,11 +22,11 @@ Another one of Augma’s big features will be the Augma ads. Companies will be a
 <p align="center">
 <table>
   <tr>
-    <td>Ahmet Burak Şahin</td>
+    <td><img src="https://cdn.discordapp.com/attachments/352515372064178187/366923280294084610/foto.png">Ahmet Burak Şahin</td>
     <td><img src="https://scontent-vie1-1.cdninstagram.com/t51.2885-19/s150x150/12446289_702000043235864_427997736_a.jpg">Can Bayraktar</td>
     <td><img src="https://scontent-vie1-1.cdninstagram.com/t51.2885-19/s150x150/22158761_522895594714680_493460668222013440_n.jpg">Çağdaş Yılmaz</td>
     <td><img width="150" height="150" src="https://media.licdn.com/mpr/mpr/shrinknp_400_400/AAEAAQAAAAAAAA2TAAAAJGJkMmM3MTIzLTA0OWQtNGM5Mi04Y2ZhLWVjMjA2M2U3MDZmMg.jpg">Fırat Sivrikaya</td>
-    <td><img src="https://scontent-vie1-1.cdninstagram.com/t51.2885-19/11426660_1694703890759578_694158856_a.jpg">Utku Oymak</td>
+    <td><img src="https://cdn.pbrd.co/images/GO80QFe.png">Utku Oymak</td>
   </tr>
 </table>
 </p>
