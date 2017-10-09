@@ -46,7 +46,7 @@ Another one of Augma’s big features will be the Augma ads. Companies will be a
 <table>
   <tr>
   <td><img width="150" height="150" src="https://cdn.pbrd.co/images/GNZwGSD.jpg"><br>Bülent Özgüç</td>
-  <td><img width="150" height"150" src="https://cdn.pbrd.co/images/GO8bA98.png"><br>İbrahim Körpeoğlu</td>
+  <td><img width="150" height="150" src="https://cdn.pbrd.co/images/GO8bA98.png"><br>İbrahim Körpeoğlu</td>
   </tr>
 </table>
 </p>
