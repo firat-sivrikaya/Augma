@@ -53,7 +53,7 @@ Another one of Augma’s big features will be the Augma ads. Companies will be a
 
 ### Reports
 
-* Project Specification Report *(due Monday 09/10/2017 )*
+* [Project Specification Report](https://github.com/DjCedrics/Augma/raw/master/Project%20Specification%20Report.pdf) *(due Monday 09/10/2017 )*
 * Analysis Report *( due Monday 06/11/2017 )*
 * High-Level Design Report *( due Friday 22/12/2017 )*
 * Low-Level Design Report *( due Monday 12/02/2018 )*
