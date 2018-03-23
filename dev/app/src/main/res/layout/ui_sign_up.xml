@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary"
+    tools:context="world.augma.ui.signUp.UISignUp">
+
+    <TextView
+        android:id="@+id/loginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="90dp"
+        android:fontFamily="@font/quesat"
+        android:text="@string/app_name"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="35sp"
+        android:transitionName="@string/trans_logo" />
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:drawablePadding="10dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/ui_login_username"
+            android:transitionName="@string/trans_username_edit_text"
+            android:textColorHint="@color/colorPrimaryDark"
+            android:drawableStart="@drawable/ic_person_black_24dp"/>
+
+        <EditText
+            android:drawablePadding="10dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/ui_login_password"
+            android:inputType="textPassword"
+            android:transitionName="@string/trans_password_edit_text"
+            android:textColorHint="@color/colorPrimaryDark"
+            android:drawableStart="@drawable/ic_lock_black_24dp" />
+
+        <EditText
+
+            android:id="@+id/repeatPasswordField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_check_box_black_24dp"
+            android:hint="@string/ui_sign_up_repeat_password"
+            android:inputType="textPassword"
+            android:textColorHint="@color/colorPrimaryDark" />
+
+        <EditText
+            android:id="@+id/emailField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:drawableStart="@drawable/ic_mail_outline_black_24dp"
+            android:hint="@string/ui_sign_up_email"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/colorPrimaryDark" />
+
+        <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/ui_sign_up_sign_up"
+            android:id="@+id/initiateButton"
+            android:layout_gravity="center"
+            android:transitionName="@string/trans_initiate_button"
+            android:onClick="initiateRegister"
+            android:gravity="center"
+            android:background="@color/colorPrimaryDark"
+            android:textSize="16sp"
+            app:spinning_bar_color="@color/colorPrimary"
+            app:spinning_bar_padding="6dp"
+            app:spinning_bar_width="4dp" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

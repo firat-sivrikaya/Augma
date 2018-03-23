@@ -1,0 +1,57 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="world.augma.ui.main.UIMain">
+
+    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.ramotion.circlemenu.CircleMenuView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:icon_menu="@drawable/ic_ui_main_pop_out_menu"
+        app:icon_close="@drawable/ic_ui_main_pop_out_menu_close"
+        app:duration_ring="500"
+        app:duration_open="100"
+        app:duration_close="100"
+        android:translationY="170dp"
+        android:rotation="90"
+        app:distance="75dp"
+        app:button_icons="@array/icons"
+        app:button_colors="@array/button_colors" />
+<!-- DRAWER BAK!!
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start">
+
+        <android.support.design.widget.NavigationView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@color/colorPrimary"
+            app:headerLayout="@layout/ui_drawer_header"
+            app:itemIconTint="@color/colorPrimaryDark"
+            app:itemTextColor="@color/colorPrimaryDark"
+            app:menu="@menu/ui_drawer_menu">
+
+        </android.support.design.widget.NavigationView>
+
+    </android.support.v4.widget.DrawerLayout>
+-->
+    <ImageView
+        android:id="@+id/drawerOpenButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_ui_main_close_drawer"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop= "10dp"
+        android:onClick="changeDrawerPosition"/>
+
+</FrameLayout>

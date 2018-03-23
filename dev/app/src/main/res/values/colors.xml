@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+
+    <!-- Main theme -->
+    <color name="colorPrimary">#D6D6D6</color>
+    <color name="colorPrimaryDark">#313131</color>
+    <color name="colorAccent">@color/colorPrimary</color>
+
+    <!-- Custom Loading Button -->
+    <color name="colorCLBSuccess">#23BB5A</color>
+    <color name="colorCLBFailure">#DE4C36</color>
+
+    <!-- Background Animation -->
+    <color name="colorBG_gr1_start">@color/colorPrimary</color>
+    <color name="colorBG_gr1_end">#B7B7B7</color>
+    <color name="colorBG_gr2_start">#7D7777</color>
+    <color name="colorBG_gr2_end">#A16695</color>
+    <color name="colorBG_gr3_start">#577fb0</color>
+    <color name="colorBG_gr3_end">#7E7E7E</color>
+
+    <!-- ui intro -->
+    <color name="colorIntroGradientDarkEnd">#D0D0D0</color>
+    <color name="colorIntroGradientLightEnd">#E3E3E3</color>
+
+    <!-- ui login -->
+    <color name="colorUILoginSignUp">#1D5CEA</color>
+
+    <!-- ui main -->
+    <color name="colorPopUpPostNote">#3E79CD</color>
+    <color name="colorPopUpPreview">#A642CF</color>
+
 </resources>
