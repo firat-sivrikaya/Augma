@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="world.augma.ui.intro.UIIntro"
+    android:background="@color/colorPrimaryDark">
+
+    <TextView
+        android:id="@+id/introTitle"
+        android:text="@string/app_name"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/default_title_size"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:transitionName="@string/trans_logo"
+        android:gravity="center"
+        android:fontFamily="@font/quesat"/>
+
+    <me.itangqi.waveloadingview.WaveLoadingView
+        android:id="@+id/introWaveLoading"
+        android:layout_width="@dimen/ui_intro_wave_width_height"
+        android:layout_height="@dimen/ui_intro_wave_width_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/ui_intro_wave_top_margin"
+        app:wlv_waveColor="@color/colorPrimary"
+        app:wlv_progressValue="1" />
+
+</FrameLayout>
