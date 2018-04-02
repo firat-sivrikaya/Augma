@@ -1,15 +1,18 @@
 package world.augma.ui.main;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +22,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import world.augma.R;
+import world.augma.ui.circle.UICircle;
 import world.augma.ui.map.UIMap;
+import world.augma.ui.profile.UIProfile;
+import world.augma.ui.settings.UISettings;
 import world.augma.utils.ProfileImageTransformer;
 
 /** Created by Burak Şahin */
@@ -49,6 +55,8 @@ public class UIMain extends AppCompatActivity {
     private TextView userName;
     private ImageView bgImage;
     private ImageView profileImage;
+
+    public UIMain () {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +93,6 @@ public class UIMain extends AppCompatActivity {
                         .concat(" ")
                         .concat(getString(R.string.demo_user_surname)).trim());
 
-
         //Load background image
         Glide.with(this)
                 .load("android.resource://world.augma/drawable/" + R.drawable.background_image)
@@ -112,19 +119,21 @@ public class UIMain extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()) {
                     case R.id.side_menu_home:
-                        navIndex = 0;
+                        navIndex = HOME;
                         INDEX_TAG = HOME_TAG;
                         break;
                     case R.id.side_menu_circles:
-                        navIndex = 1;
+                        navIndex = CIRCLES;
                         INDEX_TAG = CIRCLES_TAG;
                         break;
                     case R.id.side_menu_settings:
-                        navIndex = 2;
+                        navIndex = SETTINGS;
                         INDEX_TAG = SETTINGS_TAG;
                         break;
                     case R.id.side_menu_logout:
-                        navIndex = 3;
+                        /*
+                         TODO PERFORM LOG OUT OPERATION
+                        */
                         break;
                     default:
                         navIndex = 0;
@@ -140,6 +149,21 @@ public class UIMain extends AppCompatActivity {
 
                 loadSelectedNavigationView();
                 return true;
+            }
+        });
+
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent profileTransition = new Intent(UIMain.this, UIProfile.class);
+
+                Pair[] p = new Pair[2];
+
+                p[0] = new Pair<View, String>(profileImage, getString(R.string.trans_profile_pic));
+                p[1] = new Pair<View, String>(bgImage, getString(R.string.trans_background_image));
+
+                ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(UIMain.this, p);
+                startActivity(profileTransition, activityOptions.toBundle());
             }
         });
     }
@@ -172,21 +196,21 @@ public class UIMain extends AppCompatActivity {
     }
 
     private Fragment getIndexFragment() {
-        //TODO fragmentları olustur
-        /*switch (navIndex) {
+
+        //TODO sonra bunları managerdan iste
+        switch (navIndex) {
             case HOME:
-                return new HomeFragment();
+                return new UIMap();
 
             case CIRCLES:
-                return new CirclesFragment();
+               return new UICircle();
 
             case SETTINGS:
-                return new SettingsFragment();
+                return new UISettings();
 
             default:
-                return new HomeFragment();
-        }*/
-        return new UIMap();
+                return new UIMap();
+        }
     }
 
     /**

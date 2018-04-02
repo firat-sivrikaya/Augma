@@ -1,11 +1,38 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <!-- Following style declarations constitute the default theme of Augma -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!-- Theme Colors -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+
+        <!-- Default Font types -->
+        <item name="android:textViewStyle">@style/DefaultTextViewStyle</item>
+        <item name="android:editTextStyle">@style/DefaultEditTextStyle</item>
+        <item name="android:buttonStyle">@style/DefaultButtonStyle</item>
+
+        <!-- Enable content transition -->
+        <item name="android:windowActivityTransitions">true</item>
+
+        <!-- Translucent status bar -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+
+    </style>
+    
+    <style name="DefaultEditTextStyle">
+        <item name="android:fontFamily">@font/nunito</item>
+    </style>
+
+    <style name="DefaultTextViewStyle">
+        <item name="android:fontFamily">@font/nunito</item>
+    </style>
+
+    <style name="DefaultButtonStyle">
+        <item name="android:fontFamily">@font/nunito</item>
     </style>
 
 </resources>

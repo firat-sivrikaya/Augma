@@ -115,6 +115,7 @@ public class UIIntro extends AppCompatActivity implements Animation.AnimationLis
             Intent transition = new Intent(UIIntro.this, UILogin.class);
             ActivityOptionsCompat transAnim = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out);
             startActivity(transition, transAnim.toBundle());
+            finish();
         }
     }
 

@@ -2,7 +2,6 @@ package world.augma.ui.main;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 
 import co.gofynd.gravityview.GravityView;
@@ -22,6 +21,7 @@ public class UIDrawerHeader extends AppCompatActivity {
         backgroundImage = (ImageView) findViewById(R.id.drawer_background_image);
         gravityView = GravityView.getInstance(this);
 
+        //TODO support etmeyen devicelar için normal background image koyulsun
         if(gravityView.deviceSupported()) {
             gravityView.setImage(backgroundImage, R.drawable.background_image).center();
         }

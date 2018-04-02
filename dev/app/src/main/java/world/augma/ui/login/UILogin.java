@@ -3,9 +3,8 @@ package world.augma.ui.login;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
 import android.view.View;
 import android.view.animation.Animation;
@@ -18,7 +17,6 @@ import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import world.augma.R;
 import world.augma.ui.main.UIMain;
 import world.augma.ui.signUp.UISignUp;
-import world.augma.utils.Utils;
 
 /**
  * Created by Burak on 5-Mar-18
@@ -73,6 +71,7 @@ public class UILogin extends AppCompatActivity {
 
         ActivityOptions transAnimation = ActivityOptions.makeSceneTransitionAnimation(UILogin.this, p);
         startActivity(transition, transAnimation.toBundle());
+        finish();
     }
 
     public void redirectToMainPage(View v) {
@@ -101,7 +100,7 @@ public class UILogin extends AppCompatActivity {
 
         //Remove comments to proceed to main page!!!
         Intent transition = new Intent(UILogin.this, UIMain.class);
-        finish();
         startActivity(transition);
+        finish();
     }
 }

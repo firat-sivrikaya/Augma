@@ -1,0 +1,34 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="world.augma.ui.profile.UIProfile">
+
+    <RelativeLayout
+        android:id="@+id/aboveLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="320dp">
+
+        <ImageView
+            android:id="@+id/drawer_background_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:transitionName="@string/trans_background_image"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
+            android:id="@+id/drawer_profilePic"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:transitionName="@string/trans_profile_pic"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+
+
+</FrameLayout>

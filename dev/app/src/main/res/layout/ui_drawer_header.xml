@@ -2,7 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_marginTop="30dp"
+    android:layout_marginTop="15dp"
     android:layout_height="200dp"
     android:gravity="bottom">
 
@@ -16,7 +16,8 @@
         android:id="@+id/drawer_profilePic"
         android:layout_gravity="center"
         android:layout_width="100dp"
-        android:layout_height="100dp" />
+        android:layout_height="100dp"
+        android:transitionName="@string/trans_profile_pic"/>
 
     <TextView
         android:id="@+id/drawer_usernameDisplay"

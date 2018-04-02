@@ -2,6 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="world.augma">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.hardware.camera2.full" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,26 +19,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< HEAD
-        <activity android:name=".MainActivity">
-            <intent-filter>
-=======
-
         <activity
             android:name=".ui.intro.UIIntro"
             android:noHistory="true">
 
 
-            <intent-filter>
-               <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
 
         </activity>
-        <activity android:name=".ui.login.UILogin" />
-        <activity android:name=".ui.signUp.UISignUp" />
+        <activity
+            android:name=".ui.login.UILogin"
+            android:noHistory="true" />
+        <activity
+            android:name=".ui.signUp.UISignUp"
+            android:noHistory="true" />
+        <activity android:name=".ui.profile.UIProfile" />
 
         <!--
                  The API key for Google Maps-based APIs is defined as a string resource.
@@ -42,23 +46,25 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".ui.main.UIMain"
-            android:label="@string/title_activity_uimain">
+        <activity android:name=".ui.main.UIMain">
+
             <!--
-               <intent-filter>
->>>>>>> Navigational drawer bug fix and additional progress.
+            <intent-filter>
+               <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+
+        </activity>
+        <activity android:name=".ui.main.UIDrawerHeader" />
+        <activity android:name=".ui.camera.UICamera">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<<<<<<< HEAD
-=======
-        <activity android:name=".ui.main.UIDrawerHeader" />
-        <activity android:name=".ui.map.UIMap"
-            android:label="@string/title_activity_uimap"></activity>
->>>>>>> Navigational drawer bug fix and additional progress.
     </application>
 
 </manifest>

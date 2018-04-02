@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="icons">
+        <item>@drawable/ic_ui_main_pop_out_note_post</item>
+        <item>@drawable/ic_ui_main_note_preview</item>
+    </array>
+
+    <array name="button_colors">
+        <item>@color/colorPopUpPostNote</item>
+        <item>@color/colorPopUpPreview</item>
+    </array>
+
+</resources>

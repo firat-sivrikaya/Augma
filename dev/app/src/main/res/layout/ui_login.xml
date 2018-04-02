@@ -7,6 +7,7 @@
     android:id="@+id/loginPage"
     android:background="@drawable/background_gradient_anim"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context="world.augma.ui.login.UILogin">
 
     <TextView

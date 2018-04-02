@@ -10,7 +10,7 @@
     <dimen name="ui_intro_wave_width_height">40dp</dimen>
     <dimen name="ui_intro_wave_top_margin">450dp</dimen>
 
-    <!-- registering ui commons (login & sign up) -->
+    <!-- registerui_profileg ui commons (login & sign up) -->
     <dimen name="ui_reg_common_edit_text_drawable_padding">10dp</dimen>
     <dimen name="ui_reg_common_margin_left_right">50dp</dimen>
     <dimen name="ui_reg_common_edit_text_margin_bottom">30dp</dimen>
