@@ -10,6 +10,10 @@
     <color name="colorCLBSuccess">#23BB5A</color>
     <color name="colorCLBFailure">#DE4C36</color>
 
+    <!-- Circle Menu Gradient Colors -->
+    <color name="colorCircleMenuGradientStart">#FF5D5D</color>
+    <color name="colorCircleMenuGradientEnd">#C60000</color>
+
     <!-- Background Animation -->
     <color name="colorBG_gr1_start">@color/colorPrimary</color>
     <color name="colorBG_gr1_end">#B7B7B7</color>
@@ -24,9 +28,15 @@
 
     <!-- ui login -->
     <color name="colorUILoginSignUp">#1D5CEA</color>
+    <color name="colorUILoginTransparentDark">#AF313131</color>
 
     <!-- ui main -->
     <color name="colorPopUpPostNote">#3E79CD</color>
     <color name="colorPopUpPreview">#A642CF</color>
+
+    <!-- ui profile -->
+    <color name="colorStatRectTransparentBackgroundStart">#800051F2</color>
+    <color name="colorStatRectTransparentBackgroundEnd">#808E32AB</color>
+    <color name="colorStatRectDividerTransparent">#80FFFFFF</color>
 
 </resources>

@@ -1,7 +1,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ui_profile_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -10,7 +9,7 @@
     <com.flaviofaria.kenburnsview.KenBurnsView
         android:id="@+id/background_image"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="90dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -22,29 +21,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/colorPrimary"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomWave"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.57"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profilePic" />
+        app:layout_constraintTop_toTopOf="@+id/background_image"
+        app:layout_constraintVertical_bias="0.3" />
 
     <TextView
         android:id="@+id/profile_user_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:drawableLeft="@drawable/ic_user_location"
         android:textColor="@color/colorPrimary"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomWave"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomWave"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_user_full_name" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_user_full_name"
+        app:layout_constraintVertical_bias="0.0" />
 
     <world.augma.ui.widget.Wave
         android:id="@+id/bottomWave"
@@ -58,12 +62,13 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
         android:transitionName="@string/trans_profile_pic"
-        app:layout_constraintBottom_toTopOf="@+id/bottomWave"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/background_image"
+        app:layout_constraintHorizontal_bias="0.141"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/background_image" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.060000002" />
 
     <include
         android:id="@+id/stat_display"
@@ -74,10 +79,10 @@
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bottomWave"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.062" />
 
     <include
         android:id="@+id/bioSeparator"
@@ -91,7 +96,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stat_display" />
 
-
     <android.support.v7.widget.CardView
         android:id="@+id/bio"
         android:layout_width="match_parent"
@@ -100,14 +104,12 @@
         android:layout_marginBottom="212dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.65">
+        app:layout_constraintVertical_bias="0.51">
 
         <LinearLayout
             android:id="@+id/profileContent"

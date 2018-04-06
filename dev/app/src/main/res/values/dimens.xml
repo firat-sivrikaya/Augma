@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- This file contains dimensional values used in Augma -->
+    <!-- This file contains dimensional values used in Augma GUI -->
 
     <!-- app defaults -->
     <dimen name="default_title_size">35sp</dimen>
@@ -32,13 +32,13 @@
 
     <!-- main -->
 
-
-    <!-- drawer header -->
-
-    <!-- @draw -> profile pic -->
+    <!-- profile pic -->
     <dimen name="ppic_width_height">100dp</dimen>
 
 
+    <!-- CUSTOM WIDGETS -->
+    <dimen name="widget_circle_menu_shrink_radius">20dp</dimen>
+    <dimen name="widget_circle_menu_expand_radius">50dp</dimen>
 
 
 </resources>

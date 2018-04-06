@@ -7,10 +7,13 @@
     android:clickable="true"
     android:focusable="true">
 
-   <com.igalata.bubblepicker.rendering.BubblePicker
-       android:id="@+id/circles"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       app:backgroundColor="@color/colorPrimary"/>
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+       <com.igalata.bubblepicker.rendering.BubblePicker
+           android:id="@+id/circles"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           app:backgroundColor="@color/colorPrimary" />
+    </RelativeLayout>
 </FrameLayout>

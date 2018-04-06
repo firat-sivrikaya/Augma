@@ -13,7 +13,6 @@
     <string name="trans_password_edit_text">passwordTrans</string>
     <string name="trans_initiate_button">initiateTrans</string>
     <string name="trans_profile_pic">ppicTrans</string>
-    <string name="trans_background_image">backgroundPicTrans</string>
 
     <!-- ui_login -->
     <string name="ui_login_username">username</string>

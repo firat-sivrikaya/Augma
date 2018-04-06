@@ -31,10 +31,9 @@ public class UICircle extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.ui_circle, container, false);
 
-
         final String[] strs = {"Domates", "Biber", "Patlıcan"};
 
-       bubblePicker = (BubblePicker) root.findViewById(R.id.circles);
+      bubblePicker = (BubblePicker) root.findViewById(R.id.circles);
 
         bubblePicker.setAdapter(new BubblePickerAdapter() {
             @Override

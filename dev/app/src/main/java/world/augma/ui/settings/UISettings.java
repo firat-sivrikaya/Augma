@@ -14,17 +14,11 @@ import world.augma.R;
  */
 public class UISettings extends Fragment {
 
-
-    public UISettings() {
-        // Required empty public constructor
-    }
-
+    public UISettings() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.ui_settings, container, false);
     }
-
 }

@@ -26,7 +26,6 @@ public class Wave extends View {
     private Paint bottomWavePaint;
     private int topWaveColor;
     private int bottomWaveColor;
-    private int waveLevel;
     private float waveLength;
     private int waveHeight;
     private float maxRight;
@@ -49,7 +48,7 @@ public class Wave extends View {
         bottomWavePath = new Path();
         topWavePaint = new Paint();
         bottomWavePaint = new Paint();
-        topWaveColor = Color.WHITE;
+        topWaveColor = Color.parseColor("#FAFAFA");
         bottomWaveColor = ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, null);
 
         //Initialize
@@ -194,5 +193,4 @@ public class Wave extends View {
             }
         }
     }
-
 }

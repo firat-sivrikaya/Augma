@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.flaviofaria.kenburnsview.KenBurnsView;
 
 import world.augma.R;
 import world.augma.ui.circle.UICircle;
@@ -53,7 +54,7 @@ public class UIMain extends AppCompatActivity {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private TextView userName;
-    private ImageView bgImage;
+    private KenBurnsView bgImage;
     private ImageView profileImage;
 
     public UIMain () {}
@@ -70,7 +71,7 @@ public class UIMain extends AppCompatActivity {
 
         View navHeader = navigationView.getHeaderView(0);
         userName = (TextView) navHeader.findViewById(R.id.drawer_usernameDisplay);
-        bgImage = (ImageView) navHeader.findViewById(R.id.drawer_background_image);
+        bgImage = (KenBurnsView) navHeader.findViewById(R.id.drawer_background_image);
         profileImage = (ImageView) navHeader.findViewById(R.id.drawer_profilePic);
 
         loadHeader();
@@ -157,10 +158,9 @@ public class UIMain extends AppCompatActivity {
             public void onClick(View v) {
                 Intent profileTransition = new Intent(UIMain.this, UIProfile.class);
 
-                Pair[] p = new Pair[2];
+                Pair[] p = new Pair[1];
 
                 p[0] = new Pair<View, String>(profileImage, getString(R.string.trans_profile_pic));
-                p[1] = new Pair<View, String>(bgImage, getString(R.string.trans_background_image));
 
                 ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(UIMain.this, p);
                 startActivity(profileTransition, activityOptions.toBundle());

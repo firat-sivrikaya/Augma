@@ -2,15 +2,15 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_marginTop="15dp"
-    android:layout_height="200dp"
+    android:layout_height="220dp"
     android:gravity="bottom">
 
-    <ImageView
+    <com.flaviofaria.kenburnsview.KenBurnsView
         android:id="@+id/drawer_background_image"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
 
     <ImageView
         android:id="@+id/drawer_profilePic"

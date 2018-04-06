@@ -36,7 +36,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/ui_login_username"
             android:transitionName="@string/trans_username_edit_text"
-            android:textColorHint="@color/colorPrimaryDark"
+            android:backgroundTint="@color/colorUILoginTransparentDark"
+            android:textColorHint="@color/colorUILoginTransparentDark"
             android:drawableStart="@drawable/ic_person_black_24dp"/>
 
         <EditText
@@ -48,7 +49,8 @@
             android:hint="@string/ui_login_password"
             android:inputType="textPassword"
             android:transitionName="@string/trans_password_edit_text"
-            android:textColorHint="@color/colorPrimaryDark"
+            android:backgroundTint="@color/colorUILoginTransparentDark"
+            android:textColorHint="@color/colorUILoginTransparentDark"
             android:drawableStart="@drawable/ic_lock_black_24dp" />
 
         <EditText
@@ -61,7 +63,8 @@
             android:drawableStart="@drawable/ic_check_box_black_24dp"
             android:hint="@string/ui_sign_up_repeat_password"
             android:inputType="textPassword"
-            android:textColorHint="@color/colorPrimaryDark" />
+            android:backgroundTint="@color/colorUILoginTransparentDark"
+            android:textColorHint="@color/colorUILoginTransparentDark" />
 
         <EditText
             android:id="@+id/emailField"
@@ -74,7 +77,8 @@
             android:drawableStart="@drawable/ic_mail_outline_black_24dp"
             android:hint="@string/ui_sign_up_email"
             android:inputType="textEmailAddress"
-            android:textColorHint="@color/colorPrimaryDark" />
+            android:backgroundTint="@color/colorUILoginTransparentDark"
+            android:textColorHint="@color/colorUILoginTransparentDark" />
 
         <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
             android:layout_width="match_parent"
@@ -92,7 +96,8 @@
             android:textSize="@dimen/ui_reg_common_button_text_size"
             app:spinning_bar_color="@color/colorPrimary"
             app:spinning_bar_padding="@dimen/ui_reg_common_button_padding"
-            app:spinning_bar_width="@dimen/ui_reg_common_button_width" />
+            app:spinning_bar_width="@dimen/ui_reg_common_button_width"
+            android:alpha="0.9"/>
 
     </LinearLayout>
 
