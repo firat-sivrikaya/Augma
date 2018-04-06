@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Augma</string>
+
+    <!-- Strings for demonstration purposes -->
+    <string name="demo_user_name">Burcu</string>
+    <string name="demo_user_surname">Şahin</string>
+
+    <!-- User Interface Strings -->
+
+    <!-- Transition names -->
+    <string name="trans_logo">logoTrans</string>
+    <string name="trans_username_edit_text">usernameTrans</string>
+    <string name="trans_password_edit_text">passwordTrans</string>
+    <string name="trans_initiate_button">initiateTrans</string>
+    <string name="trans_profile_pic">ppicTrans</string>
+
+    <!-- ui_login -->
+    <string name="ui_login_username">username</string>
+    <string name="ui_login_password">password</string>
+    <string name="ui_login_login">login</string>
+    <string name="ui_login_dont_have_account">Don\'t have an account?</string>
+    <string name="ui_login_sign_up">Sign up!</string>
+
+    <!-- ui_sign_up -->
+    <string name="ui_sign_up_sign_up">sign up</string>
+    <string name="ui_sign_up_repeat_password">repeat password</string>
+    <string name="ui_sign_up_email">email</string>
+
+    <!-- ui_map -->
+
+
+    <!-- ui_drawer -->
+    <string name="ui_drawer_circles">Circles</string>
+    <string name="ui_drawer_settings">Settings</string>
+    <string name="ui_drawer_log_out">Logout</string>
+    <string name="ui_drawer_home">Map</string>
+
+    <!-- ui main -->
+
+
+</resources>

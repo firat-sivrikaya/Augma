@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:orientation="horizontal"
+    android:background="@drawable/stat_display_rect_background_transparent"
+    android:gravity="center">
+
+
+    <LinearLayout
+        android:id="@+id/numOfPosts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="15dp">
+
+        <TextView
+            android:id="@+id/numOfPostsNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="25sp"
+            android:text="25"/>
+
+        <TextView
+            android:id="@+id/numOfPostsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:text="Posts"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/bioSeparatorLine"
+        android:layout_width="2dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_margin="15dp"
+        android:background="@color/colorStatRectDividerTransparent" />
+
+    <LinearLayout
+        android:id="@+id/numOfLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="15dp">
+
+        <TextView
+            android:id="@+id/numOfLikesNumText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="25sp"
+            android:text="2K"/>
+
+        <TextView
+            android:id="@+id/numOfLikesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:text="Likes"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/bioSeparatorLine2"
+        android:layout_width="2dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_margin="15dp"
+        android:background="@color/colorStatRectDividerTransparent" />
+
+    <LinearLayout
+        android:id="@+id/numOfCircles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="15dp">
+
+        <TextView
+            android:id="@+id/numOfCirclesNumText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="25sp"
+            android:text="57"/>
+
+        <TextView
+            android:id="@+id/numOfCirclesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            android:text="Circles"/>
+
+    </LinearLayout>
+
+</LinearLayout>

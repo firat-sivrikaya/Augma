@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/side_menu_home"
+            android:title="@string/ui_drawer_home"
+            android:icon="@drawable/ic_map" />
+
+        <item android:id="@+id/side_menu_circles"
+            android:title="@string/ui_drawer_circles"
+            android:icon="@drawable/ic_ui_drawer_circles"/>
+
+        <item android:id="@+id/side_menu_settings"
+            android:title="@string/ui_drawer_settings"
+            android:icon="@drawable/ic_ui_drawer_settings"/>
+
+        <item android:id="@+id/side_menu_logout"
+            android:title="@string/ui_drawer_log_out"
+            android:icon="@drawable/ic_ui_drawer_log_out"/>
+    </group>
+</menu>

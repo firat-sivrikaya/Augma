@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mapFrame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.ramotion.circlemenu.CircleMenuView
+        android:id="@+id/circleMenu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationY="170dp"
+        android:rotation="90"
+        app:icon_menu="@drawable/ic_ui_main_pop_out_menu"
+        app:icon_close="@drawable/ic_ui_main_pop_out_menu_close"
+        app:duration_ring="500"
+        app:duration_open="100"
+        app:duration_close="100"
+        app:distance="75dp"
+        app:button_icons="@array/icons"
+        app:button_colors="@array/button_colors" />
+</FrameLayout>
