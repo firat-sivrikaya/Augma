@@ -1,7 +1,7 @@
 ## What is Augma?
 
 <p align="center">
-<img src="https://github.com/DjCedrics/Augma/blob/master/augma_logo_with_background.png?raw=true">
+<img src="https://github.com/DjCedrics/Augma/raw/master/Logos/augma_logo_background.png">
 </p>
 
 We are living in an era where conveying information is everything. The way you convey that information is just as important as the information itself and we thought that current options just doesn’t cut it. We felt like writing 120 characters or even posting a picture with a lengthy paragraph under it isn’t enough. We wanted to add another dimension to our conversations. This is where Augma was born. Augma adds a new layer to our reality and lets our posts come to life.
@@ -17,48 +17,6 @@ Augma will also feature a heat map in which you can see where the places with lo
 Another one of Augma’s big features will be the Augma ads. Companies will be able to leave very creative ads in the Augma’s world for a much cheaper price than in real life. Think about seeing a giant yellow M on the moon when you look through your camera at night if you are near a Mc`Donalds. This will allow for much more interesting ads and the best part is, now the big companies won’t have to pollute the scenery with their giant ads.
 
 
-### Group Members
+### For more information
 
-<p align="center">
-<table>
-  <tr>
-    <td><img src="https://cdn.discordapp.com/attachments/352515372064178187/366923280294084610/foto.png">Ahmet Burak Şahin</td>
-    <td><img src="https://scontent-vie1-1.cdninstagram.com/t51.2885-19/s150x150/12446289_702000043235864_427997736_a.jpg">Can Bayraktar</td>
-    <td><img src="https://scontent-vie1-1.cdninstagram.com/t51.2885-19/s150x150/22158761_522895594714680_493460668222013440_n.jpg">Çağdaş Yılmaz</td>
-    <td><img width="150" height="150" src="https://media.licdn.com/mpr/mpr/shrinknp_400_400/AAEAAQAAAAAAAA2TAAAAJGJkMmM3MTIzLTA0OWQtNGM5Mi04Y2ZhLWVjMjA2M2U3MDZmMg.jpg">Fırat Sivrikaya</td>
-    <td><img src="https://cdn.pbrd.co/images/GO80QFe.png">Utku Oymak</td>
-  </tr>
-</table>
-</p>
-
-### Project Supervisor
-<p align="center">
-<table>
-  <tr>
-  <td><img width="150" height="150" src="https://pbs.twimg.com/profile_images/696675639064203264/poRcaoFM_400x400.jpg"><br>
-  Ercüment Çiçek</td>
-  </tr>
-</table>
-</p>
-
-### Project Jury Members
-<p align="center">
-<table>
-  <tr>
-  <td><img width="150" height="150" src="https://cdn.pbrd.co/images/GNZwGSD.jpg"><br>Bülent Özgüç</td>
-  <td><img width="150" height="150" src="https://cdn.pbrd.co/images/GO8bA98.png"><br>İbrahim Körpeoğlu</td>
-  </tr>
-</table>
-</p>
-
-### Reports
-
-* [Project Specification Report](https://github.com/DjCedrics/Augma/raw/master/Project%20Specification%20Report.pdf) *(due Monday 09/10/2017 )*
-* [Analysis Report](https://github.com/DjCedrics/Augma/raw/master/Analysis%20Report.pdf) *( due Monday 06/11/2017 )*
-* High-Level Design Report *( due Friday 22/12/2017 )*
-* Low-Level Design Report *( due Monday 12/02/2018 )*
-* Final Report *( due Thursday 03/05/2018 )*
-
-### Important Links
-
-* [CS491/2 Course Website](http://www.cs.bilkent.edu.tr/CS491-2/current/) 
+Please visit [augma.world](http://augma.world) 
