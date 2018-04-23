@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         list = new ArrayList<>();
-        l = (ListView) findViewById(R.id.msgList);
+        //l = (ListView) findViewById(R.id.msgList);
 
         new AugmaJSONParser().execute();
     }
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 obj.put("username", username);
                 obj.put("password", password);
 
-                 String callURL = url.concat("login");
+                 String callURL = url+"login";
 
                  return sh.makeServiceCall(callURL, obj, "POST");
             } catch (JSONException e) {
@@ -79,13 +80,13 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(jsonResponse);
 
                     //Aşağıda array ile başlıyorsa array ismini girin yoksa direk json objesi alıcak şekilde düzenlersiniz.
-                    JSONArray jsonArray = jsonObject.getJSONArray(/* TODO JSON Array adı */"Login");
+                    JSONArray jsonArray = jsonObject.getJSONObject("body").getJSONArray("Items");
 
                     for(int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
 
                         String str3 = obj.getString("userID");
-                        String str1 = obj.getString("userName");
+                        String str1 = obj.getString("username");
                         String str2 = obj.getString("password");
                         //...
 
@@ -133,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
+
             return null;
         }
 
@@ -142,18 +144,6 @@ public class MainActivity extends AppCompatActivity {
 
             //TODO ------>>
 
-            l.setAdapter(new SimpleAdapter(MainActivity.this, list, R.layout.list_item, new String[]{
-                    "str1",
-                    "str2",
-                    "str3",
-                    //HashMap'deki keylerin tam adı gelmeli, buradaki keylerin itemleri, list item olarak sıralanacak
-
-            }, new int[]{
-                    R.id.msg1,
-                    R.id.msg2,
-                    R.id.msg3,
-                    //Kaç entry okunacaksa hepsinin idleri.. (Bunlar list_item.xml'in içindeki idler)
-            }));
         }
     }
 }
