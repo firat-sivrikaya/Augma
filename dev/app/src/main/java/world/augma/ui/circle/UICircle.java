@@ -111,7 +111,10 @@ public class UICircle extends Fragment {
         private int generateRandomColor() {
             Random random = new Random();
 
-            return Color.argb(1.0f, random.nextFloat(), random.nextFloat(), random.nextFloat());
+            return 0xff000000 |
+                    ((int) (random.nextFloat()   * 255.0f + 0.5f) << 16) |
+                    ((int) (random.nextFloat()  * 255.0f + 0.5f) <<  8) |
+                    (int) (random.nextFloat()   * 255.0f + 0.5f);
         }
     }
 
