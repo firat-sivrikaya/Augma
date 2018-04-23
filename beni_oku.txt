@@ -1,0 +1,15 @@
+iki tane dosya ile çalisilacak birisi
+-> res/layout dosyasi digeri de 
+-> app/src/world/augma dosyasi
+
+JSONParser'i çalistirmak için:
+
+--> res/layout dosyasinin içerisinde list_item.xml dosyasini bul
+
+- içerisinde kaç tane data point çekilecekse orada görülen TextViewlari data point sayisi kadar kopyala hepsine unique id ver. bak ben orada msg1, msg2 diye id vermisim.
+
+--> app/str/world/augma dosyasinin içinde MainActivity.java'yi bul
+
+- MainActivity.java'nin içinde url diye bir static String objesi var. Bunun içine json mesajlarinin gelecegi url adresini gir.
+
+- JSON mesajinin içerigine göre altta TODO olarak isaretlenen yerden anlatilanlari takip et.
