@@ -4,6 +4,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.google.dagger:dagger:2.15'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
@@ -14,7 +16,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "world.augma"
-        minSdkVersion 24
+        minSdkVersion 26
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -31,16 +33,14 @@ android {
 dependencies {
     implementation 'com.google.android.gms:play-services-maps:12.0.0'
     implementation 'com.google.android.gms:play-services-maps:+'
-    implementation 'com.android.support:appcompat-v7:26.+'
-    implementation 'com.android.support.constraint:constraint-layout:+'
-
-    compile 'me.itangqi.waveloadingview:library:0.3.5'
-    compile 'br.com.simplepass:loading-button-android:1.12.1'
-    compile 'com.ramotion.circlemenu:circle-menu:0.3.1'
-    compile 'co.gofynd.library:gravity-view:1.0'
-    compile 'com.github.john990:WaveView:v0.9'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.github.igalata:Bubble-Picker:v0.2.4'
-    compile 'com.android.support:cardview-v7:26.+'
-    compile 'com.flaviofaria:kenburnsview:1.0.7'
+    implementation 'me.itangqi.waveloadingview:library:0.3.5'
+    implementation 'br.com.simplepass:loading-button-android:1.12.1'
+    implementation 'com.ramotion.circlemenu:circle-menu:0.3.1'
+    implementation 'co.gofynd.library:gravity-view:1.0'
+    implementation 'com.github.john990:WaveView:v0.9'
+    implementation 'com.github.igalata:Bubble-Picker:v0.2.4'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.android.support:cardview-v7:26.+'
+    implementation 'com.flaviofaria:kenburnsview:1.0.7'
+    implementation 'com.irozon.sneaker:sneaker:1.0.2'
 }

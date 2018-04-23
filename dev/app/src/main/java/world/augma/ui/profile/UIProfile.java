@@ -30,6 +30,7 @@ public class UIProfile extends AppCompatActivity {
     private TextView bioText;
     private TextView userLocation;
     private TextView bioHorizontalSeparator;
+    private TextView postsHorizontalSeparator;
     private ConstraintSet extendedLayout, shrinkLayout;
     private ConstraintLayout mainLayout;
     private float y;
@@ -47,6 +48,7 @@ public class UIProfile extends AppCompatActivity {
         userLocation = (TextView) findViewById(R.id.profile_user_location);
         userFullName = (TextView) findViewById(R.id.profile_user_full_name);
         bioHorizontalSeparator = (TextView) ((LinearLayout) findViewById(R.id.bioSeparator)).findViewById(R.id.horizontalSeparatorText);
+        postsHorizontalSeparator = (TextView) ((LinearLayout) findViewById(R.id.postsSeparator)).findViewById(R.id.horizontalSeparatorText);
         mainLayout = (ConstraintLayout) findViewById(R.id.ui_profile_layout);
 
         extendedLayout = new ConstraintSet();
@@ -80,6 +82,7 @@ public class UIProfile extends AppCompatActivity {
 
         userLocation.setText("Bilkent");
         bioHorizontalSeparator.setText("Bio");
+        postsHorizontalSeparator.setText("Posts");
     }
 
     @Override

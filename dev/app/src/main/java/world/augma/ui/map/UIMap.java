@@ -1,10 +1,12 @@
 package world.augma.ui.map;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ramotion.circlemenu.CircleMenuView;
 
@@ -54,7 +57,7 @@ public class UIMap extends Fragment {
             }
         });
 
-        mMapView =   root.findViewById(R.id.map);
+        mMapView = root.findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
 
@@ -65,6 +68,14 @@ public class UIMap extends Fragment {
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
 
+                try {
+                    if(!googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.mapstyle))) {
+                        Log.e("UIMap", "Style parsing FAILED.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e("UIMap", "Failed while trying to find the style.");
+                }
+
                 LatLng anitkabir = new LatLng(39.928344, 32.837697);
                 mMap.addMarker(new MarkerOptions().position(anitkabir).title("<3"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(anitkabir));
@@ -74,5 +85,29 @@ public class UIMap extends Fragment {
             }
         });
         return root;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                circleMenu.setVisibility(View.INVISIBLE);
+                circleMenu.invalidate();
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                circleMenu.setVisibility(View.VISIBLE);
+                circleMenu.invalidate();
+            }
+        });
     }
 }

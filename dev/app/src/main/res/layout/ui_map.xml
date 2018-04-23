@@ -19,6 +19,7 @@
         android:layout_height="match_parent"
         android:translationY="170dp"
         android:rotation="90"
+        android:visibility="invisible"
         app:icon_menu="@drawable/ic_ui_main_pop_out_menu"
         app:icon_close="@drawable/ic_ui_main_pop_out_menu_close"
         app:duration_ring="500"
