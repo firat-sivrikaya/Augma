@@ -22,19 +22,16 @@ public class HttpCallHandler {
 
     public HttpCallHandler() {}
 
-    public String makeServiceCall(String reqUrl) throws JSONException{
+    public String makeServiceCall(String reqUrl,JSONObject body,String reqType) throws JSONException{
         String response = null;
         try {
             URL url = new URL(reqUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(reqType);
             connection.setRequestProperty("Content-Type", "application/json");
-            JSONObject obj = new JSONObject();
-            obj.put("username", "utku");
-            obj.put("password", "malcagdas123");
 
             OutputStream os = connection.getOutputStream();
-            os.write(obj.toString().getBytes("UTF-8"));
+            os.write(body.toString().getBytes("UTF-8"));
             os.close();
 
             InputStream in = new BufferedInputStream(connection.getInputStream());

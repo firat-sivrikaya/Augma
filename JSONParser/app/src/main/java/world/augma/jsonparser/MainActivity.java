@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
      * -- Aşağıdaki url stringinin içine çekeceği adresi girin --
      */
 
-    private static String url = "https://kt0k4ju6dl.execute-api.eu-central-1.amazonaws.com/Deployment/login";
+    private static String url = "https://kt0k4ju6dl.execute-api.eu-central-1.amazonaws.com/Deployment/";
 
     /**
      * --------------------------
@@ -49,25 +49,27 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Initiated.", Toast.LENGTH_SHORT).show();
         }
 
+        public  String loginUser(String username,String password){
+            HttpCallHandler sh = new HttpCallHandler();
+            JSONObject obj = new JSONObject();
+
+            try {
+                obj.put("username", username);
+                obj.put("password", password);
+
+                 String callURL = url.concat("login");
+
+                 return sh.makeServiceCall(callURL, obj, "POST");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
         @Override
         protected Void doInBackground(Void... voids) {
-            HttpCallHandler sh = new HttpCallHandler();
             String jsonResponse = "";
-            try
-            {
-                jsonResponse = sh.makeServiceCall(url);
-            }
-            catch (final JSONException e) {
-                Log.e(TAG, "JSON PARSING ERROR: " + e.getMessage());
 
-                //Main thread donarsa diye..
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "JSON Parsing Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
+            jsonResponse = loginUser("utku","malcagdas123");
             Log.e(TAG, "Gelen response: " + jsonResponse);
 
             //TODO Buradan sonra gönderilen JSON objesinin içeriğine göre data pointlere ayırırsınız
