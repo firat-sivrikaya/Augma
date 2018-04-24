@@ -4,7 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
+import android.graphics.PixelFormat;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -14,8 +16,17 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
+
 import android.media.Image;
 import android.media.ImageReader;
+import android.opengl.GLES10;
+import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -24,12 +35,15 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Size;
+import android.util.SizeF;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -37,12 +51,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
 import world.augma.R;
+
+import static java.lang.Math.atan;
 
 public class UICamera extends AppCompatActivity {
 
@@ -61,6 +82,7 @@ public class UICamera extends AppCompatActivity {
     private TextureView cameraView;
 
     private String camId;
+    private GLSurfaceView ARView;
     private CameraDevice cam;
     private CameraCaptureSession cameraCaptureSession;
     private CaptureRequest.Builder captureBuilder;
@@ -71,6 +93,8 @@ public class UICamera extends AppCompatActivity {
     private boolean mFlashSupported;
     private Handler handler;
     private HandlerThread handlerThread;
+
+
 
 
     //TODO kodu sonra toparla
@@ -98,10 +122,21 @@ public class UICamera extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_camera);
 
-        takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
+        //takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
         cameraView = (TextureView) findViewById(R.id.cameraView);
+        ARView = new GLSurfaceView(this);
+
+        addContentView( ARView, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 
         textureListener = new CameraTextureListener();
+
+        /** Set the camera to be translucent **/
+
+        ARView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        ARView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        ARView.setRenderer(new GLClearRenderer());
+        ARView.setZOrderOnTop(true);
+
 
         //TODO JUnit testi ile degistir!!!
         assert cameraView != null;
@@ -127,12 +162,12 @@ public class UICamera extends AppCompatActivity {
 
             }
         });
-        takePhotoButton.setOnClickListener(new View.OnClickListener() {
+        /*takePhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 takePicture();
             }
-        });
+        });*/
     }
 
     private void takePicture() {
@@ -369,4 +404,128 @@ public class UICamera extends AppCompatActivity {
 
         }
     }
+
+    public class GLClearRenderer implements GLSurfaceView.Renderer, SensorEventListener {
+
+        volatile public float pitch;
+        volatile public float roll;
+        volatile public float yaw;
+
+        volatile boolean sensorRead= false;
+
+        // Sensor variables
+        float[] rotationMatrix = new float[16];
+        float[] orientations = new float[3];
+
+        private float getHFOV(CameraCharacteristics info) {
+            SizeF sensorSize = info.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
+            float[] focalLengths = info.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
+
+            if (focalLengths != null && focalLengths.length > 0) {
+                return (float) (2.0f * atan(sensorSize.getWidth() / (2.0f * focalLengths[0])));
+            }
+
+            return 1.1f;
+        }
+
+        public void setVerticesAndDraw(Float value, GL10 gl, byte color) {
+            FloatBuffer vertexbuffer;
+            ByteBuffer indicesBuffer;
+            ByteBuffer mColorBuffer;
+
+            byte indices[] = {0, 1, 2, 0, 2, 3};
+
+            float vetices[] = {//
+                    -value, value, 0.0f,
+                    value, value, 0.0f,
+                    value, -value, 0.0f,
+                    -value, -value, 0.0f
+            };
+
+            byte colors[] = //3
+                    {color, color, 0, color,
+                            0, color, color, color,
+                            0, 0, 0, color,
+                            color, 0, color, color
+                    };
+
+
+            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(vetices.length * 4);
+            byteBuffer.order(ByteOrder.nativeOrder());
+            vertexbuffer = byteBuffer.asFloatBuffer();
+            vertexbuffer.put(vetices);
+            vertexbuffer.position(0);
+
+            indicesBuffer = ByteBuffer.allocateDirect(indices.length);
+            indicesBuffer.put(indices);
+            indicesBuffer.position(0);
+
+            mColorBuffer = ByteBuffer.allocateDirect(colors.length);
+            mColorBuffer.put(colors);
+            mColorBuffer.position(0);
+
+
+            gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+            gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+
+            gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexbuffer);
+            gl.glColorPointer(4, GL10.GL_UNSIGNED_BYTE, 0, mColorBuffer);
+
+            gl.glDrawElements(GL10.GL_TRIANGLES, indices.length, GL10.GL_UNSIGNED_BYTE, indicesBuffer);
+            gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+
+        }
+
+        public void onSurfaceChanged( GL10 gl, int width, int height ) {
+            // This is called whenever the dimensions of the surface have changed.
+            // We need to adapt this change for the GL viewport.
+            gl.glViewport( 0, 0, width, height );
+        }
+
+        @Override
+        public void onDrawFrame(GL10 gl) {
+            //float c = 1.0f / 256 * ( System.currentTimeMillis() % 256 );
+            //gl.glClearColor( c, c, c, 0.5f );
+            //gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
+            Log.e("Camera","Pitch value: " + pitch);
+            Log.e("Camera","Roll value: " + pitch);
+            Log.e("Camera","Yaw value: " + pitch);
+
+            setVerticesAndDraw(0.4f, gl, (byte) 255);
+        }
+
+        public void onSurfaceCreated( GL10 gl, EGLConfig config ) {
+            // No need to do anything here.
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent sensorEvent) {
+            // TODO
+            if ( this != null )
+            {
+                if ( sensorEvent.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR )
+                {
+                    sensorRead = true;
+                    SensorManager.getRotationMatrixFromVector(rotationMatrix , sensorEvent.values);
+                    SensorManager.getOrientation(rotationMatrix, orientations);
+
+
+                    float theta = (float) (Math.acos(sensorEvent.values[3])*2);
+                    float sinv = (float) Math.sin(theta/2);
+
+                    roll = sensorEvent.values[2]/sinv;     //x
+                    pitch = sensorEvent.values[1]/sinv;   //y
+                    yaw = sensorEvent.values[0]/sinv;     //z
+                    ARView.requestRender();
+                }
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int i) {
+            // TODO
+        }
+    }
+
+
 }
