@@ -2,6 +2,7 @@ package world.augma.ui.camera;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.PixelFormat;
@@ -27,6 +28,7 @@ import android.media.ImageReader;
 import android.opengl.GLES10;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLU;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -125,7 +127,7 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_camera);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Initialize GL Clear Renderer
         GLClearRenderer = new GLClearRenderer();
@@ -134,7 +136,7 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
         SM = (SensorManager)getSystemService(SENSOR_SERVICE);
 
         // Initialize accelerometer sensor
-        deviceSensor = SM.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        deviceSensor = SM.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
 
         // Register sensor listener
         SM.registerListener(this, deviceSensor, SensorManager.SENSOR_DELAY_FASTEST);
@@ -402,16 +404,16 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
             GLClearRenderer.onSensorEvent(sensorEvent);
         }
 
-        // TODO
-        Log.e("Azimuth Value:", String.valueOf(sensorEvent.values[0]));
-        Log.e("Pitch Value:", String.valueOf(sensorEvent.values[1]));
-        Log.e("Roll Value:", String.valueOf(sensorEvent.values[2]));
+        // Read the sensor values from Logcat
+        //Log.e("Azimuth Value:", String.valueOf(sensorEvent.values[0]));
+        //Log.e("Pitch Value:", String.valueOf(sensorEvent.values[1]));
+        //Log.e("Roll Value:", String.valueOf(sensorEvent.values[2]));
 
-        ARView.requestRender();
+        // ARView.requestRender();
     }
 
     @Override
@@ -444,10 +446,19 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
 
     public class GLClearRenderer implements GLSurfaceView.Renderer, SensorEventListener {
 
-        public float azimuth;
-        public float pitch;
-        public float roll;
-        public float theta;
+        private Cube mCube = new Cube();
+        private float mCubeRotation;
+
+        private Float baseAzimuth;
+        private Float basePitch;
+        private Float baseRoll;
+
+        private float xrot;
+        private float yrot;
+
+
+        // Depth into screen
+        private float z = -8.0f;
 
         volatile boolean sensorRead= false;
 
@@ -455,25 +466,12 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
         float[] rotationMatrix = new float[16];
         float[] orientations = new float[3];
 
-        private float getHFOV(CameraCharacteristics info) {
-            SizeF sensorSize = info.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
-            float[] focalLengths = info.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
-
-            if (focalLengths != null && focalLengths.length > 0) {
-                return (float) (2.0f * atan(sensorSize.getWidth() / (2.0f * focalLengths[0])));
-            }
-
-            return 1.1f;
-        }
-
-        public void setVerticesAndDraw(Float value, GL10 gl, byte color, float azimuth, float pitch, float roll) {
+        /*public void setVerticesAndDraw(Float value, GL10 gl, byte color, float azimuth, float pitch, float roll) {
             FloatBuffer vertexbuffer;
             ByteBuffer indicesBuffer;
             ByteBuffer mColorBuffer;
 
-            float objectAzimuth = 0.0f;
-            float objectPitch = 0.0f;
-            float objectRoll = 0.0f;
+
 
             byte indices[] = {0, 1, 2, 0, 2, 3};
 
@@ -520,31 +518,77 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
             gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 
             gl.glPushMatrix();
-            gl.glRotatef(objectAzimuth, azimuth, 0.0f, 0.0f);
+            gl.glRotatef(baseAzimuth, azimuth, 0.0f, 0.0f);
             gl.glPopMatrix();
 
-        }
+        }*/
 
         public void onSurfaceChanged( GL10 gl, int width, int height ) {
             // This is called whenever the dimensions of the surface have changed.
             // We need to adapt this change for the GL viewport.
-            gl.glViewport( 0, 0, width, height );
+            gl.glViewport(0, 0, width, height);
+            gl.glMatrixMode(GL10.GL_PROJECTION);
+            gl.glLoadIdentity();
+            GLU.gluPerspective(gl, 45.0f, (float)width / (float)height, 0.1f, 100.0f);
+            gl.glViewport(0, 0, width, height);
+
+            gl.glMatrixMode(GL10.GL_MODELVIEW);
+            gl.glLoadIdentity();
         }
+
 
         @Override
         public void onDrawFrame(GL10 gl) {
             //float c = 1.0f / 256 * ( System.currentTimeMillis() % 256 );
             //gl.glClearColor( c, c, c, 0.5f );
             //gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
-            //Log.e("Camera","Pitch value: " + pitch);
-            //Log.e("Camera","Roll value: " + pitch);
-            //Log.e("Camera","Yaw value: " + pitch);
 
-            setVerticesAndDraw(azimuth/5.0f, gl, (byte) 255, azimuth, pitch, roll);
+
+
+            //clear depth & color buffers
+            //gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+            //render the cube
+            //gl.glLoadIdentity();
+
+            //translate onto screen
+            //gl.glTranslatef(0.0f, 0.0f, z);
+            //gl.glScalef(0.8f, 0.8f, 0.8f);
+
+            //indictates rotation around axis
+
+            gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+            gl.glLoadIdentity();
+
+            gl.glTranslatef(0.0f, 0.0f, z);
+            gl.glScalef(0.8f, 0.8f, 0.8f);
+
+
+            gl.glRotatef(mCubeRotation, baseRoll, basePitch, baseAzimuth);
+
+            //gl.glRotatef(xrot, 1.0f, 0.0f, 0.0f);
+            //gl.glRotatef(yrot, 0.0f, 1.0f, 0.0f);
+
+
+            mCube.draw(gl);
+
+            gl.glLoadIdentity();
+
+            // Change rotation speed
+            mCubeRotation -= 2.50f;
+
+            //setVerticesAndDraw(azimuth/5.0f, gl, (byte) 255, azimuth, pitch, roll);
         }
 
         public void onSurfaceCreated( GL10 gl, EGLConfig config ) {
             // No need to do anything here.
+            gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+
+            gl.glClearDepthf(1.0f);
+            gl.glEnable(GL10.GL_DEPTH_TEST);
+            gl.glDepthFunc(GL10.GL_LEQUAL);
+
+            gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT,
+                    GL10.GL_NICEST);
         }
 
         @Override
@@ -562,9 +606,6 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
                     float theta = (float) (Math.acos(sensorEvent.values[3])*2);
                     float sinv = (float) Math.sin(theta/2);
 
-                    roll = sensorEvent.values[2]/sinv;     //x
-                    pitch = sensorEvent.values[1]/sinv;   //y
-                    yaw = sensorEvent.values[0]/sinv;     //z
                     ARView.requestRender();
                 }
             }*/
@@ -572,9 +613,52 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
 
         public void onSensorEvent (SensorEvent event) {
 
-            azimuth = (int) event.values[0];
-            pitch = (int) event.values[1];
-            roll = (int) event.values[2];
+
+            SensorManager.getRotationMatrixFromVector(rotationMatrix , event.values);
+            SensorManager.getOrientation(rotationMatrix, orientations);
+
+            float theta = (float) (Math.acos(event.values[3])*2);
+            float sinhalftheta = (float) Math.sin(theta/2);
+
+            float azimuth =  event.values[0]/sinhalftheta; // z
+            float pitch =  event.values[1]/sinhalftheta; // y
+            float roll = event.values[2]/sinhalftheta; // x
+
+
+
+            if ( baseAzimuth == null )
+            {
+                baseAzimuth = azimuth;
+            }
+
+            if ( basePitch == null )
+            {
+                basePitch = pitch;
+            }
+
+            if ( baseRoll == null )
+            {
+                baseRoll = roll;
+            }
+
+            float azimuthDifference = azimuth - baseAzimuth;
+            float pitchDifference = pitch - basePitch;
+            float rollDifference = roll - baseRoll;
+
+            yrot += rollDifference * 5.0f;
+            xrot += pitchDifference * 5.0f;
+
+
+            baseRoll = roll;
+            basePitch = pitch;
+            baseAzimuth = azimuth;
+
+            //z = z + azimuthDifference;
+            Log.e("Z value", String.valueOf(z));
+            Log.e("Azimuth: ", String.valueOf(azimuth));
+            Log.e("Pitch", String.valueOf(pitch));
+            Log.e("Roll", String.valueOf(roll));
+            ARView.requestRender();
         }
 
         @Override
