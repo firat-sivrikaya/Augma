@@ -65,7 +65,7 @@ import world.augma.R;
 
 import static java.lang.Math.atan;
 
-public class UICamera extends AppCompatActivity {
+public class UICamera extends AppCompatActivity implements SensorEventListener{
 
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -83,6 +83,7 @@ public class UICamera extends AppCompatActivity {
 
     private String camId;
     private GLSurfaceView ARView;
+    private GLClearRenderer GLClearRenderer;
     private CameraDevice cam;
     private CameraCaptureSession cameraCaptureSession;
     private CaptureRequest.Builder captureBuilder;
@@ -93,6 +94,9 @@ public class UICamera extends AppCompatActivity {
     private boolean mFlashSupported;
     private Handler handler;
     private HandlerThread handlerThread;
+
+    private Sensor deviceSensor;
+    private SensorManager SM;
 
 
 
@@ -122,6 +126,19 @@ public class UICamera extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_camera);
 
+
+        // Initialize GL Clear Renderer
+        GLClearRenderer = new GLClearRenderer();
+
+        // Create sensor manager
+        SM = (SensorManager)getSystemService(SENSOR_SERVICE);
+
+        // Initialize accelerometer sensor
+        deviceSensor = SM.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+
+        // Register sensor listener
+        SM.registerListener(this, deviceSensor, SensorManager.SENSOR_DELAY_FASTEST);
+
         //takePhotoButton = (Button) findViewById(R.id.takePhotoButton);
         cameraView = (TextureView) findViewById(R.id.cameraView);
         ARView = new GLSurfaceView(this);
@@ -134,7 +151,7 @@ public class UICamera extends AppCompatActivity {
 
         ARView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         ARView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        ARView.setRenderer(new GLClearRenderer());
+        ARView.setRenderer(GLClearRenderer);
         ARView.setZOrderOnTop(true);
 
 
@@ -382,6 +399,26 @@ public class UICamera extends AppCompatActivity {
         handler = new Handler(handlerThread.getLooper());
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+            GLClearRenderer.onSensorEvent(sensorEvent);
+        }
+
+        // TODO
+        Log.e("Azimuth Value:", String.valueOf(sensorEvent.values[0]));
+        Log.e("Pitch Value:", String.valueOf(sensorEvent.values[1]));
+        Log.e("Roll Value:", String.valueOf(sensorEvent.values[2]));
+
+        ARView.requestRender();
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+        // Will not be used in our case
+    }
+
     private class CameraTextureListener implements TextureView.SurfaceTextureListener {
 
         @Override
@@ -407,9 +444,10 @@ public class UICamera extends AppCompatActivity {
 
     public class GLClearRenderer implements GLSurfaceView.Renderer, SensorEventListener {
 
-        volatile public float pitch;
-        volatile public float roll;
-        volatile public float yaw;
+        public float azimuth;
+        public float pitch;
+        public float roll;
+        public float theta;
 
         volatile boolean sensorRead= false;
 
@@ -428,10 +466,14 @@ public class UICamera extends AppCompatActivity {
             return 1.1f;
         }
 
-        public void setVerticesAndDraw(Float value, GL10 gl, byte color) {
+        public void setVerticesAndDraw(Float value, GL10 gl, byte color, float azimuth, float pitch, float roll) {
             FloatBuffer vertexbuffer;
             ByteBuffer indicesBuffer;
             ByteBuffer mColorBuffer;
+
+            float objectAzimuth = 0.0f;
+            float objectPitch = 0.0f;
+            float objectRoll = 0.0f;
 
             byte indices[] = {0, 1, 2, 0, 2, 3};
 
@@ -465,6 +507,9 @@ public class UICamera extends AppCompatActivity {
             mColorBuffer.position(0);
 
 
+            gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
+            gl.glLoadIdentity();
+
             gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
             gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
@@ -473,6 +518,10 @@ public class UICamera extends AppCompatActivity {
 
             gl.glDrawElements(GL10.GL_TRIANGLES, indices.length, GL10.GL_UNSIGNED_BYTE, indicesBuffer);
             gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+
+            gl.glPushMatrix();
+            gl.glRotatef(objectAzimuth, azimuth, 0.0f, 0.0f);
+            gl.glPopMatrix();
 
         }
 
@@ -487,11 +536,11 @@ public class UICamera extends AppCompatActivity {
             //float c = 1.0f / 256 * ( System.currentTimeMillis() % 256 );
             //gl.glClearColor( c, c, c, 0.5f );
             //gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
-            Log.e("Camera","Pitch value: " + pitch);
-            Log.e("Camera","Roll value: " + pitch);
-            Log.e("Camera","Yaw value: " + pitch);
+            //Log.e("Camera","Pitch value: " + pitch);
+            //Log.e("Camera","Roll value: " + pitch);
+            //Log.e("Camera","Yaw value: " + pitch);
 
-            setVerticesAndDraw(0.4f, gl, (byte) 255);
+            setVerticesAndDraw(azimuth/5.0f, gl, (byte) 255, azimuth, pitch, roll);
         }
 
         public void onSurfaceCreated( GL10 gl, EGLConfig config ) {
@@ -501,7 +550,7 @@ public class UICamera extends AppCompatActivity {
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
             // TODO
-            if ( this != null )
+       /*     if ( this != null )
             {
                 if ( sensorEvent.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR )
                 {
@@ -518,7 +567,14 @@ public class UICamera extends AppCompatActivity {
                     yaw = sensorEvent.values[0]/sinv;     //z
                     ARView.requestRender();
                 }
-            }
+            }*/
+        }
+
+        public void onSensorEvent (SensorEvent event) {
+
+            azimuth = (int) event.values[0];
+            pitch = (int) event.values[1];
+            roll = (int) event.values[2];
         }
 
         @Override
