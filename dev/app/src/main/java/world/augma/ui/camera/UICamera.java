@@ -17,6 +17,7 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -458,13 +459,20 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
 
 
         // Depth into screen
-        private float z = -8.0f;
+        private float z = -15.0f;
 
         volatile boolean sensorRead= false;
 
         // Sensor variables
         float[] rotationMatrix = new float[16];
         float[] orientations = new float[3];
+
+        public GLClearRenderer()
+        {
+            baseAzimuth = 0.0f;
+            basePitch = 0.0f;
+            baseRoll = 0.0f;
+        }
 
         /*public void setVerticesAndDraw(Float value, GL10 gl, byte color, float azimuth, float pitch, float roll) {
             FloatBuffer vertexbuffer;
