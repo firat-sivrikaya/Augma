@@ -17,7 +17,6 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
-
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -101,7 +100,7 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
     private Sensor deviceSensor;
     private SensorManager SM;
 
-
+    private final int SENSOR_TYPE = Sensor.TYPE_ORIENTATION;
 
 
     //TODO kodu sonra toparla
@@ -137,7 +136,7 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
         SM = (SensorManager)getSystemService(SENSOR_SERVICE);
 
         // Initialize accelerometer sensor
-        deviceSensor = SM.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
+        deviceSensor = SM.getDefaultSensor(SENSOR_TYPE);
 
         // Register sensor listener
         SM.registerListener(this, deviceSensor, SensorManager.SENSOR_DELAY_FASTEST);
@@ -405,7 +404,7 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
+        if (sensorEvent.sensor.getType() == SENSOR_TYPE) {
             GLClearRenderer.onSensorEvent(sensorEvent);
         }
 
@@ -459,20 +458,13 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
 
 
         // Depth into screen
-        private float z = -15.0f;
+        private float z = -8.0f;
 
         volatile boolean sensorRead= false;
 
         // Sensor variables
         float[] rotationMatrix = new float[16];
         float[] orientations = new float[3];
-
-        public GLClearRenderer()
-        {
-            baseAzimuth = 0.0f;
-            basePitch = 0.0f;
-            baseRoll = 0.0f;
-        }
 
         /*public void setVerticesAndDraw(Float value, GL10 gl, byte color, float azimuth, float pitch, float roll) {
             FloatBuffer vertexbuffer;
@@ -551,7 +543,7 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
             //gl.glClearColor( c, c, c, 0.5f );
             //gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
 
-
+            mCubeRotation = 1.0f;
 
             //clear depth & color buffers
             //gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -566,23 +558,28 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
 
             gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
             gl.glLoadIdentity();
-
-            gl.glTranslatef(0.0f, 0.0f, z);
             gl.glScalef(0.8f, 0.8f, 0.8f);
+            gl.glTranslatef(basePitch, 0.0f, z);
+
+            gl.glRotatef(baseRoll*57.295f, 0.0f, 0.0f, 1.0f);
+            gl.glRotatef(-1.0f*baseAzimuth*57.295f, 1.0f, 0.0f, 0.0f);
+            mCube.draw(gl);
 
 
-            gl.glRotatef(mCubeRotation, baseRoll, basePitch, baseAzimuth);
+
+
+
 
             //gl.glRotatef(xrot, 1.0f, 0.0f, 0.0f);
             //gl.glRotatef(yrot, 0.0f, 1.0f, 0.0f);
 
 
-            mCube.draw(gl);
+
 
             gl.glLoadIdentity();
 
             // Change rotation speed
-            mCubeRotation -= 2.50f;
+            //mCubeRotation -= 2.50f;
 
             //setVerticesAndDraw(azimuth/5.0f, gl, (byte) 255, azimuth, pitch, roll);
         }
@@ -625,12 +622,15 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
             SensorManager.getRotationMatrixFromVector(rotationMatrix , event.values);
             SensorManager.getOrientation(rotationMatrix, orientations);
 
-            float theta = (float) (Math.acos(event.values[3])*2);
-            float sinhalftheta = (float) Math.sin(theta/2);
+            //float theta = (float) (Math.acos(event.values[3])*2);
+            //float sinhalftheta = (float) Math.sin(theta/2);
 
-            float azimuth =  event.values[0]/sinhalftheta; // z
-            float pitch =  event.values[1]/sinhalftheta; // y
-            float roll = event.values[2]/sinhalftheta; // x
+            float azimuth =  event.values[0];
+                    ///sinhalftheta; // z
+            float pitch =  event.values[1];
+                    ///sinhalftheta; // y
+            float roll = event.values[2];
+                    ///sinhalftheta; // x
 
 
 
