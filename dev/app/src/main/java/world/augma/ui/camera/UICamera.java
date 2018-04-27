@@ -462,6 +462,13 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
 
         volatile boolean sensorRead= false;
 
+        public GLClearRenderer()
+        {
+            baseAzimuth = 0.0f;
+            basePitch = 0.0f;
+            baseRoll = 0.0f;
+        }
+
         // Sensor variables
         float[] rotationMatrix = new float[16];
         float[] orientations = new float[3];
