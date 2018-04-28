@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.concurrent.ExecutionException;
 
@@ -38,7 +40,7 @@ public class UISignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_sign_up);
 
-        FocusChangeListener listener = new FocusChangeListener();
+        EditorActionListener listener = new EditorActionListener();
 
         /* Put fade in animation on widgets to smooth transition */
         Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
@@ -55,11 +57,10 @@ public class UISignUp extends AppCompatActivity {
         repeatPasswordField.startAnimation(fadeIn);
         emailField.startAnimation(fadeIn);
 
-        usernameField.setOnFocusChangeListener(listener);
-        passwordField.setOnFocusChangeListener(listener);
-        repeatPasswordField.setOnFocusChangeListener(listener);
-        emailField.setOnFocusChangeListener(listener);
-        initiateButton.setOnFocusChangeListener(listener);
+        usernameField.setOnEditorActionListener(listener);
+        passwordField.setOnEditorActionListener(listener);
+        repeatPasswordField.setOnEditorActionListener(listener);
+        emailField.setOnEditorActionListener(listener);
     }
 
     public void initiateRegister(View view) {
@@ -118,33 +119,55 @@ public class UISignUp extends AppCompatActivity {
         }
     }
 
-    private class FocusChangeListener implements View.OnFocusChangeListener {
+    private class EditorActionListener implements TextView.OnEditorActionListener {
 
         @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if(v == null) {
-                Utils.hideKeyboard(UISignUp.this);
-                return;
-            }
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-            if(!hasFocus) {
-                Utils.hideKeyboard(UISignUp.this);
-                if(v == emailField && !emailField.getText().toString().isEmpty()
-                        && !Utils.validateEmail(emailField.getText().toString().trim())) {
-                    Utils.sendErrorNotification(UISignUp.this, "Invalid email!");
-                }
-            } else {
-                if(v == passwordField && !usernameField.getText().toString().isEmpty()
-                        && !Utils.validateUsername(usernameField.getText().toString().trim())) {
-                    Utils.sendErrorNotification(UISignUp.this, "Invalid username!");
-                } else if(v == emailField && !passwordField.getText().toString().isEmpty()
-                        && !repeatPasswordField.getText().toString().isEmpty()
-                        && !passwordField.getText().toString().trim().equals(repeatPasswordField.getText().toString().trim())) {
-                    Utils.sendErrorNotification(UISignUp.this, "Both password fields must match!");
-                } else if(v == initiateButton) {
+            if(v == usernameField) {
+                usernameField.clearFocus();
+                passwordField.requestFocus();
+
+                if(usernameField.getText().toString().isEmpty()) {
+                    Utils.sendWarningNotification(UISignUp.this, "You must enter a username.");
+                } else if(!Utils.validateUsername(usernameField.getText().toString().trim())) {
                     Utils.hideKeyboard(UISignUp.this);
+                    Utils.sendErrorNotification(UISignUp.this, "Invalid username!");
+                }
+            } else if(v == passwordField) {
+                passwordField.clearFocus();
+                repeatPasswordField.requestFocus();
+
+                if(passwordField.getText().toString().isEmpty()) {
+                    Utils.hideKeyboard(UISignUp.this);
+                    Utils.sendWarningNotification(UISignUp.this, "You must enter a password.");
+                }
+            } else if(v == repeatPasswordField) {
+                repeatPasswordField.clearFocus();
+                emailField.requestFocus();
+
+                if(passwordField.getText().toString().isEmpty()) {
+                    Utils.hideKeyboard(UISignUp.this);
+                    Utils.sendWarningNotification(UISignUp.this, "You must enter a password.");
+                } else if(!passwordField.getText().toString().equals(repeatPasswordField.getText().toString())) {
+                    Utils.hideKeyboard(UISignUp.this);
+                    Utils.sendErrorNotification(UISignUp.this, "Both entered passwords must match!");
+                }
+            } else if(v == emailField) {
+                Utils.hideKeyboard(UISignUp.this);
+                usernameField.clearFocus();
+                passwordField.clearFocus();
+                repeatPasswordField.clearFocus();
+                emailField.clearFocus();
+                findViewById(android.R.id.content).requestFocus();
+
+                if(emailField.getText().toString().trim().isEmpty()) {
+                    Utils.sendWarningNotification(UISignUp.this, "You must enter a valid email adress.");
+                } else if(!Utils.validateEmail(emailField.getText().toString().trim())) {
+                    Utils.sendErrorNotification(UISignUp.this, "Invalid email adress!");
                 }
             }
+            return true;
         }
     }
 }

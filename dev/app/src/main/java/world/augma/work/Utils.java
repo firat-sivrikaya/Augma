@@ -44,6 +44,21 @@ public final class Utils {
     }
 
     public static void hideKeyboard(Activity activity) {
+        View view = activity.findViewById(android.R.id.content);
+
+        if(view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public static void showKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
+
+    /*
+    public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         View view = activity.getCurrentFocus();
 
@@ -57,6 +72,8 @@ public final class Utils {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromInputMethod(view.getWindowToken(), 0);
     }
+
+    */
 
     public static boolean validateUsername(String username) {
         return USERNAME_REGEX.matcher(username).matches();

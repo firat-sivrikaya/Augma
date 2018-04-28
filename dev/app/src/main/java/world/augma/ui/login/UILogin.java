@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -43,7 +44,7 @@ public class UILogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_login);
 
-        FocusChangeListener listener = new FocusChangeListener();
+        EditorActionListener keyListener = new EditorActionListener();
 
         /* Put fade in animation on widgets to smooth transition */
         Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
@@ -67,9 +68,9 @@ public class UILogin extends AppCompatActivity {
         title.startAnimation(fadeIn);
         usernameField.startAnimation(fadeIn);
         passwordField.startAnimation(fadeIn);
-        usernameField.setOnFocusChangeListener(listener);
-        passwordField.setOnFocusChangeListener(listener);
-        initiateButton.setOnFocusChangeListener(listener);
+
+        usernameField.setOnEditorActionListener(keyListener);
+        passwordField.setOnEditorActionListener(keyListener);
     }
 
     public void redirectToSignUp(View v) {
@@ -139,24 +140,35 @@ public class UILogin extends AppCompatActivity {
         }
     }
 
-    private class FocusChangeListener implements View.OnFocusChangeListener {
+    private class EditorActionListener implements TextView.OnEditorActionListener {
 
         @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if(v == null) {
-                Utils.hideKeyboard(UILogin.this);
-                return;
-            }
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-            if(!hasFocus) {
-                Utils.hideKeyboard(UILogin.this);
-                if(v == usernameField && !usernameField.getText().toString().isEmpty()
-                        && !Utils.validateUsername(usernameField.getText().toString().trim())) {
+            if(v == usernameField) {
+                usernameField.clearFocus();
+                passwordField.requestFocus();
+                if(!usernameField.getText().toString().isEmpty()
+                        && !Utils.validateUsername(usernameField.getText().toString().trim())){
+                    Utils.hideKeyboard(UILogin.this);
                     Utils.sendErrorNotification(UILogin.this, "Invalid username!");
                 }
-            } else if(v == initiateButton) {
+            } else if(v == passwordField) {
                 Utils.hideKeyboard(UILogin.this);
+                usernameField.clearFocus();
+                passwordField.clearFocus();
+                if(passwordField.getText().toString().isEmpty()) {
+                    Utils.sendWarningNotification(UILogin.this, "You must enter your password.");
+                }
+                findViewById(android.R.id.content).requestFocus();
             }
+            return true;
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
     }
 }

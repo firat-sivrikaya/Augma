@@ -8,6 +8,7 @@
     android:background="@drawable/background_gradient_anim"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
+    android:focusable="true"
     tools:context="world.augma.ui.login.UILogin">
 
     <TextView
@@ -38,6 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/ui_login_username"
+            android:imeOptions="actionNext"
             android:transitionName="@string/trans_username_edit_text"
             android:textColorHint="@color/colorUILoginTransparentDark"
             android:backgroundTint="@color/colorUILoginTransparentDark"
@@ -47,6 +49,7 @@
         <EditText
             android:id="@+id/passwordField"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.0123456789"
+            android:imeOptions="actionNext"
             android:drawablePadding="@dimen/ui_reg_common_edit_text_drawable_padding"
             android:layout_marginLeft="@dimen/ui_reg_common_margin_left_right"
             android:layout_marginRight="@dimen/ui_reg_common_margin_left_right"
