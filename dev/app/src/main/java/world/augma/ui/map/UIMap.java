@@ -63,6 +63,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
     private CameraPosition mCameraPosition;
     private Location mLastKnownLocation;
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -220,7 +221,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                 locationResult.addOnCompleteListener(this.getActivity(), new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
-                        if(task.isSuccessful())
+                        if(task.isSuccessful() && task.getResult() != null)
                         {
                             //Setting map to the current location.
                             mLastKnownLocation = task.getResult();
