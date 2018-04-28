@@ -566,10 +566,10 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
             gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
             gl.glLoadIdentity();
             gl.glScalef(0.8f, 0.8f, 0.8f);
-            gl.glTranslatef(0.0f, 0.0f, z);
+            gl.glTranslatef(basePitch, 0.0f, z);
 
-            gl.glRotatef(baseRoll, 0.0f, 0.0f, 1.0f);
-            gl.glRotatef(-1.0f*baseAzimuth, 1.0f, 0.0f, 0.0f);
+            gl.glRotatef(baseRoll*57.295f, 0.0f, 0.0f, 1.0f);
+            gl.glRotatef(-1.0f*baseAzimuth*57.295f, 1.0f, 0.0f, 0.0f);
             mCube.draw(gl);
 
 
