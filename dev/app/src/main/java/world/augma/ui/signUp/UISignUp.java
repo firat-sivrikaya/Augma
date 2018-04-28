@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -65,7 +66,7 @@ public class UISignUp extends AppCompatActivity {
 		findViewById(android.R.id.content).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Utils.hideKeyboard(UILogin.this);
+                Utils.hideKeyboard(UISignUp.this);
                 return false;
             }
         });

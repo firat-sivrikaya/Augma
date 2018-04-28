@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -22,7 +23,6 @@ import java.util.concurrent.ExecutionException;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import world.augma.R;
-import world.augma.asset.User;
 import world.augma.ui.main.UIMain;
 import world.augma.ui.signUp.UISignUp;
 import world.augma.work.AWS;
