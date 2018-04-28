@@ -10,9 +10,9 @@
     <TextureView
         android:id="@+id/cameraView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/takePhotoButton" />
 
-    <!--
     <Button
         android:id="@+id/takePhotoButton"
         android:layout_width="match_parent"
@@ -21,6 +21,4 @@
         android:textAlignment="center"
         android:text="Take Photo"
         android:fitsSystemWindows="true"/>
-
-        -->
 </RelativeLayout>

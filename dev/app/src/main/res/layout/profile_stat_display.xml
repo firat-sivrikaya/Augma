@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:orientation="horizontal"
-    android:background="@drawable/stat_display_rect_background_transparent"
+    android:background="@drawable/profile_stat_background"
     android:gravity="center">
 
 

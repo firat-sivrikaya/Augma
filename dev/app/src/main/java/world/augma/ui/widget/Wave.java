@@ -76,6 +76,11 @@ public class Wave extends View {
         return bottomWavePaint;
     }
 
+    public void setTopWaveColor(int color) {
+        topWaveColor = color;
+        topWavePaint.setColor(color);
+    }
+
     /**
      * This function fluctuates/moves the wave via offsets by
      * frequency amount.

@@ -1,18 +1,40 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="world.augma.ui.circle.UICircle"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
-   <com.igalata.bubblepicker.rendering.BubblePicker
-       android:id="@+id/circles"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:background="@android:color/transparent"
-       app:maxSelectedCount="1"
-       app:backgroundColor="@color/colorPrimary" />
+    <world.augma.ui.widget.CircleCanvas
+        android:id="@+id/circleFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/circleSearchField"
+        android:digits="ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZabcçdefghıijklmnoöprqsştuüvwxyz "
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:ems="5"
+        android:textSize="12sp"
+        android:background="@drawable/circle_search_outline"
+        android:hint="@string/ui_circle_search"
+        android:textColorHint="@color/colorCircleSearchTransparent"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.100000024" />
+
+</android.support.constraint.ConstraintLayout>

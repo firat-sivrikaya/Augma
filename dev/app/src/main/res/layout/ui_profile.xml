@@ -51,7 +51,8 @@
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_gravity="center|bottom"
-        app:layout_constraintBottom_toBottomOf="@+id/background_image" />
+        app:layout_constraintBottom_toBottomOf="@+id/background_image"
+        />
 
     <ImageView
         android:id="@+id/profilePic"
@@ -71,13 +72,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bottomWave"
         app:layout_constraintVertical_bias="0.0" />
+
+    <world.augma.ui.widget.Wave
+        android:id="@+id/statBottomWave"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/stat_display"
+        app:layout_constraintVertical_bias="0.18" />
 
     <include
         android:id="@+id/bioSeparator"

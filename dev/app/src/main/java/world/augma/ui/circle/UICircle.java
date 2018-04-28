@@ -1,133 +1,111 @@
 package world.augma.ui.circle;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.igalata.bubblepicker.BubblePickerListener;
-import com.igalata.bubblepicker.adapter.BubblePickerAdapter;
-import com.igalata.bubblepicker.model.BubbleGradient;
-import com.igalata.bubblepicker.model.PickerItem;
-import com.igalata.bubblepicker.rendering.BubblePicker;
-
-import org.jetbrains.annotations.NotNull;
+import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 import world.augma.R;
 import world.augma.asset.Circle;
+import world.augma.ui.widget.CircleCanvas;
+import world.augma.work.AWS;
 
 public class UICircle extends Fragment {
 
-    private  BubblePicker bubblePicker;
-    private  List<Circle> circleList;
-
-    public UICircle() {}
+    private EditText circleSearchField;
+    private List<Circle> circleList;
+    private CircleCanvas canvas;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.ui_circle, container, false);
-
-        fetchUserCircleList();
-
-        bubblePicker = (BubblePicker) root.findViewById(R.id.circles);
-        bubblePicker.setCenterImmediately(true);
-        bubblePicker.setAdapter(new CircleAdapter());
-        bubblePicker.setListener(new CircleSelectionListener());
-        bubblePicker.setMaxSelectedCount(1);
-        bubblePicker.setBubbleSize(1);
-        bubblePicker.setZOrderOnTop(false);
-
+        canvas = (CircleCanvas) root.findViewById(R.id.circleFrame);
+        circleSearchField = (EditText) root.findViewById(R.id.circleSearchField);
+        circleList = new ArrayList<>();
+        circleSearchField.addTextChangedListener(new CircleSearchTextChangeListener());
 
         return root;
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        bubblePicker.onPause();
-    }
+    private void updateCircleList(Editable text) {
+        AWS aws = new AWS();
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        bubblePicker.onResume();
-    }
+        try {
+            if(aws.execute(AWS.Service.CIRCLE_SEARCH, text.toString().trim()).get()) {
 
-    private void fetchUserCircleList() {
-
-        /* TODO Buradan veri cekilecek */
-
-        circleList = new ArrayList<>();
-
-        for(int i = 0; i < 5; i++) {
-            circleList.add(new Circle( generateRandomString(20), generateRandomString(100), null, null));
+                for(String match : Arrays.asList(aws.getMatchingCircleNames())) {
+                    circleList.add(new Circle(match, null, null, null,
+                            -1, -1, 200));
+                }
+                arrangeCircles();
+                canvas.init(circleList);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
     }
 
-    //TODO sonra bunu sil
-    private String generateRandomString(int bound) {
-        String str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        Random rnd = new Random();
+    /**
+     * Implementation of 2D Circle Packing Algorithm for non-overlapping placement of circles on the canvas
+     */
+    private void arrangeCircles() {
+        circleList.get(0).setX(getResources().getDisplayMetrics().widthPixels / 2);
+        circleList.get(0).setY(getResources().getDisplayMetrics().heightPixels / 2);
+        circleList.get(0).setPlaced(true);
 
-        StringBuilder sb = new StringBuilder(rnd.nextInt(bound));
-        for(int i = 0; i < sb.length(); i++) {
-            sb.append(str.charAt(rnd.nextInt(str.length())));
+        if(circleList.size() > 1) {
+            for(int i = 0; i < circleList.size(); i++) {
+                circleList.get(i).computePositionOnScreen(circleList);
+            }
         }
-        return sb.toString();
     }
 
-    private class CircleAdapter implements BubblePickerAdapter {
+    private class CircleSearchTextChangeListener implements TextWatcher {
+
+        private boolean isTriggered = false;
 
         @Override
-        public int getTotalCount() {
-            return circleList.size();
-        }
-
-        @NotNull
-        @Override
-        public PickerItem getItem(int i) {
-            PickerItem item = new PickerItem();
-            Circle currentCircle = circleList.get(i);
-            int color = generateRandomColor();
-            float[] hsv = new float[3];
-            Color.colorToHSV(color, hsv);
-            hsv[2] *= 0.5f;
-            int darker = Color.HSVToColor(hsv);
-
-            item.setGradient(new BubbleGradient(color,
-                    darker, BubbleGradient.VERTICAL));
-            item.setTextColor(Color.WHITE);
-            return item;
-        }
-
-        private int generateRandomColor() {
-            Random random = new Random();
-
-            return 0xff000000 |
-                    ((int) (random.nextFloat()   * 255.0f + 0.5f) << 16) |
-                    ((int) (random.nextFloat()  * 255.0f + 0.5f) <<  8) |
-                    (int) (random.nextFloat()   * 255.0f + 0.5f);
-        }
-    }
-
-    private class CircleSelectionListener implements BubblePickerListener {
-
-        @Override
-        public void onBubbleDeselected(PickerItem pickerItem) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
         }
 
         @Override
-        public void onBubbleSelected(PickerItem pickerItem) {
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+        }
+
+        @Override
+        public void afterTextChanged(final Editable s) {
+            if(isTriggered || s.toString().isEmpty()){
+                return;
+            } else {
+                isTriggered = true;
+            }
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(circleSearchField.hasFocus()) {
+                        isTriggered = false;
+                        circleList.clear();
+                        circleSearchField.clearFocus();
+                        canvas.removeAllViews();
+                        updateCircleList(s);
+                    }
+                }
+            }, 800);
         }
     }
 }

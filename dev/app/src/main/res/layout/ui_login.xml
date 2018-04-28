@@ -31,6 +31,7 @@
 
         <EditText
             android:id="@+id/usernameField"
+            android:digits="abcdefghijklmnopqrstuvwxyz_.0123456789"
             android:drawablePadding="@dimen/ui_reg_common_edit_text_drawable_padding"
             android:layout_marginLeft="@dimen/ui_reg_common_margin_left_right"
             android:layout_marginRight="@dimen/ui_reg_common_margin_left_right"
@@ -45,6 +46,7 @@
 
         <EditText
             android:id="@+id/passwordField"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.0123456789"
             android:drawablePadding="@dimen/ui_reg_common_edit_text_drawable_padding"
             android:layout_marginLeft="@dimen/ui_reg_common_margin_left_right"
             android:layout_marginRight="@dimen/ui_reg_common_margin_left_right"

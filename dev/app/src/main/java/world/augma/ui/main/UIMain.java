@@ -1,12 +1,17 @@
 package world.augma.ui.main;
 
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -24,10 +29,12 @@ import com.flaviofaria.kenburnsview.KenBurnsView;
 
 import world.augma.R;
 import world.augma.ui.circle.UICircle;
+import world.augma.ui.login.UILogin;
 import world.augma.ui.map.UIMap;
 import world.augma.ui.profile.UIProfile;
 import world.augma.ui.settings.UISettings;
-import world.augma.utils.ProfileImageTransformer;
+import world.augma.work.AugmaSharedPreferences;
+import world.augma.work.ProfileImageTransformer;
 
 /** Created by Burak Şahin */
 
@@ -132,9 +139,23 @@ public class UIMain extends AppCompatActivity {
                         INDEX_TAG = SETTINGS_TAG;
                         break;
                     case R.id.side_menu_logout:
-                        /*
-                         TODO PERFORM LOG OUT OPERATION
-                        */
+
+                        new AlertDialog.Builder(UIMain.this)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle("Log out")
+                                .setMessage("Are you sure you want to log out?")
+                                .setNegativeButton(R.string.no, null)
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        SharedPreferences.Editor sp = getSharedPreferences(AugmaSharedPreferences.SHARED_PREFS, Context.MODE_PRIVATE).edit();
+                                        sp.remove(AugmaSharedPreferences.USERNAME);
+                                        sp.apply();
+                                        startActivity(new Intent(UIMain.this, UILogin.class),
+                                                ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
+                                        finish();
+                                    }
+                                }).show();
                         break;
                     default:
                         navIndex = 0;
@@ -157,7 +178,6 @@ public class UIMain extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent profileTransition = new Intent(UIMain.this, UIProfile.class);
-
                 Pair[] p = new Pair[1];
 
                 p[0] = new Pair<View, String>(profileImage, getString(R.string.trans_profile_pic));
@@ -197,7 +217,6 @@ public class UIMain extends AppCompatActivity {
 
     private Fragment getIndexFragment() {
 
-        //TODO sonra bunları managerdan iste
         switch (navIndex) {
             case HOME:
                 return new UIMap();
@@ -235,4 +254,5 @@ public class UIMain extends AppCompatActivity {
         }
         super.onBackPressed();
     }
+
 }

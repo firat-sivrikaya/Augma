@@ -28,10 +28,12 @@
         android:orientation="vertical">
 
         <EditText
+            android:id="@+id/usernameField"
             android:drawablePadding="@dimen/ui_reg_common_edit_text_drawable_padding"
             android:layout_marginTop="@dimen/ui_reg_common_center_layout_margin_top"
             android:layout_marginLeft="@dimen/ui_reg_common_margin_left_right"
             android:layout_marginRight="@dimen/ui_reg_common_margin_left_right"
+            android:digits="abcdefghijklmnopqrstuvwxyz_.0123456789"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/ui_login_username"
@@ -41,7 +43,9 @@
             android:drawableStart="@drawable/ic_person_black_24dp"/>
 
         <EditText
+            android:id="@+id/passwordField"
             android:drawablePadding="@dimen/ui_reg_common_edit_text_drawable_padding"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.0123456789"
             android:layout_marginLeft="@dimen/ui_reg_common_margin_left_right"
             android:layout_marginRight="@dimen/ui_reg_common_margin_left_right"
             android:layout_width="match_parent"
@@ -55,6 +59,7 @@
 
         <EditText
             android:id="@+id/repeatPasswordField"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.0123456789"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ui_reg_common_margin_left_right"
@@ -68,6 +73,7 @@
 
         <EditText
             android:id="@+id/emailField"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.@0123456789"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/ui_reg_common_edit_text_drawable_padding"

@@ -37,7 +37,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-
         </activity>
 
         <activity
@@ -48,25 +47,10 @@
             android:name=".ui.signUp.UISignUp"
             android:noHistory="true" />
 
-        <activity
-            android:name=".ui.profile.UIProfile">
-
-
-
-        </activity>
-
-
-        <activity android:name=".ui.main.UIMain">
-
-
-
-        </activity>
-
-        <activity
-            android:name=".ui.main.UIDrawerHeader" />
-
-        <activity
-            android:name=".ui.camera.UICamera" />
+        <activity android:name=".ui.profile.UIProfile" />
+        <activity android:name=".ui.main.UIMain"/>
+        <activity android:name=".ui.main.UIDrawerHeader" />
+        <activity android:name=".ui.camera.UICamera" />
 
     </application>
 

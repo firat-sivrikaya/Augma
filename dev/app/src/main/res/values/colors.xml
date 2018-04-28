@@ -6,13 +6,17 @@
     <color name="colorPrimaryDark">#313131</color>
     <color name="colorAccent">@color/colorPrimary</color>
 
-    <!-- Custom Loading Button -->
+    <!-- Loading Button -->
     <color name="colorCLBSuccess">#23BB5A</color>
     <color name="colorCLBFailure">#DE4C36</color>
 
     <!-- Circle Menu Gradient Colors -->
     <color name="colorCircleMenuGradientStart">#FF5D5D</color>
     <color name="colorCircleMenuGradientEnd">#C60000</color>
+
+    <!-- Circle Predefined Gradient Colors -->
+    <color name="colorCircleGradientStart">#0189FF</color>
+    <color name="colorCircleGradientEnd">#01F1FA</color>
 
     <!-- Background Animation -->
     <color name="colorBG_gr1_start">@color/colorPrimary</color>
@@ -38,5 +42,8 @@
     <color name="colorStatRectTransparentBackgroundStart">#800051F2</color>
     <color name="colorStatRectTransparentBackgroundEnd">#808E32AB</color>
     <color name="colorStatRectDividerTransparent">#80FFFFFF</color>
+
+    <!-- ui circle -->
+    <color name="colorCircleSearchTransparent">#80313131</color>
 
 </resources>

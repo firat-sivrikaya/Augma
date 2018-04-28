@@ -5,6 +5,10 @@
     <string name="demo_user_name">Burcu</string>
     <string name="demo_user_surname">Şahin</string>
 
+    <!-- General Usage -->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <!-- User Interface Strings -->
 
     <!-- Transition names -->
@@ -36,6 +40,9 @@
     <string name="ui_drawer_home">Map</string>
 
     <!-- ui main -->
+
+    <!-- ui circle -->
+    <string name="ui_circle_search">Search Circle</string>
 
 
 </resources>
