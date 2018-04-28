@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.transition.TransitionManager;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,8 +19,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
+
 import world.augma.R;
+import world.augma.asset.Circle;
 import world.augma.ui.widget.Wave;
+import world.augma.work.AWS;
 import world.augma.work.ProfileImageTransformer;
 
 /**
@@ -126,5 +132,10 @@ public class UIProfile extends AppCompatActivity {
                 return true;
         }
         return false;
+    }
+
+    private void updateUserProfile(String userID)
+    {
+        AWS aws = new AWS();
     }
 }
