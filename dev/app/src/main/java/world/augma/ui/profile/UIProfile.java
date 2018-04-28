@@ -1,15 +1,20 @@
 package world.augma.ui.profile;
 
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.transition.TransitionManager;
+import android.util.Base64;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +24,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
@@ -44,7 +50,7 @@ public class UIProfile extends AppCompatActivity {
     private ConstraintSet extendedLayout, shrinkLayout;
     private ConstraintLayout mainLayout;
     private Wave bottomWave;
-
+    private static final int RESULT_LOAD_IMAGE = 1;
     private float y;
 
     public UIProfile() {}
@@ -99,6 +105,7 @@ public class UIProfile extends AppCompatActivity {
         userLocation.setText("Bilkent");
         bioHorizontalSeparator.setText("Bio");
         postsHorizontalSeparator.setText("Posts");
+        profileImage.setOnClickListener(new ProfileClickListener());
     }
 
     @Override
@@ -137,5 +144,32 @@ public class UIProfile extends AppCompatActivity {
     private void updateUserProfile(String userID)
     {
         AWS aws = new AWS();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            //TODO image boyutu kontrol et ve image'i daire seklinde göster
+            profileImage.setImageURI(selectedImage);
+            BitmapDrawable drawable = (BitmapDrawable) profileImage.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,bos);
+            byte[] bb = bos.toByteArray();
+            String base64_image = Base64.encodeToString(bb, 0);
+        }
+    }
+
+    private class ProfileClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            if(view == profileImage) {
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent,RESULT_LOAD_IMAGE);
+            }
+        }
     }
 }
