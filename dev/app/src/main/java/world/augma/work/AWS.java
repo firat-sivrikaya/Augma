@@ -87,6 +87,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                             matchingCircleNames[i] = circleArr.getJSONObject(i).getString("circleName");
                         }
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
+                    case Service.GET_USER:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
                     default:
                         matchingCircleNames = null;
                         return false;
@@ -154,6 +156,26 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 }
                 break;
 
+            case Service.GET_USER:
+                if(data.length == 1 )
+                {
+                    jsonObject.put("userID", data[0]);
+                } else {
+                    Log.e(TAG, "ERROR: You must only send userID to retrieve user details");
+                    return null;
+                }
+                break;
+
+            case Service.GET_USERDATA:
+                if(data.length == 1 )
+                {
+                    jsonObject.put("userID", data[0]);
+                } else {
+                    Log.e(TAG, "ERROR: You must only send userID to retrieve user details");
+                    return null;
+                }
+                break;
+
             default:
                 Log.e(TAG, "ERROR: No such service is provided.");
                 return null;
@@ -174,5 +196,9 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         public static final String CIRCLE = "circle";
 
         public static final String CIRCLE_SEARCH = "circle/search";
+
+        public static final String GET_USER = "user/getuser";
+
+        public static final String GET_USERDATA = "user/userdata";
     }
 }
