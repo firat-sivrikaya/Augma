@@ -27,12 +27,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 
+import java.util.concurrent.ExecutionException;
+
 import world.augma.R;
+import world.augma.asset.User;
 import world.augma.ui.circle.UICircle;
 import world.augma.ui.login.UILogin;
 import world.augma.ui.map.UIMap;
 import world.augma.ui.profile.UIProfile;
 import world.augma.ui.settings.UISettings;
+import world.augma.work.AWS;
 import world.augma.work.AugmaSharedPreferences;
 import world.augma.work.ProfileImageTransformer;
 
@@ -57,6 +61,8 @@ public class UIMain extends AppCompatActivity {
     /* Handler to post pending operations to another thread to avoid screen locking */
     private Handler handler;
 
+    private User user;
+
     /* Components */
     private DrawerLayout drawer;
     private NavigationView navigationView;
@@ -80,6 +86,17 @@ public class UIMain extends AppCompatActivity {
         userName = (TextView) navHeader.findViewById(R.id.drawer_usernameDisplay);
         bgImage = (KenBurnsView) navHeader.findViewById(R.id.drawer_background_image);
         profileImage = (ImageView) navHeader.findViewById(R.id.drawer_profilePic);
+
+        SharedPreferences sp = getSharedPreferences(AugmaSharedPreferences.SHARED_PREFS, Context.MODE_PRIVATE);
+        AWS aws = new AWS();
+
+        try {
+            if(aws.execute(AWS.Service.GET_USER, sp.getString(AugmaSharedPreferences.USER_ID, "DEFAULT")).get()) {
+                user = aws.fetchUser();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
         loadHeader();
         setUpNavigationView();

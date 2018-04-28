@@ -13,7 +13,7 @@ public class User {
     private String password;
     private String profilePic;
 
-    private Date birthdate;
+    private String birthdate;
     private int type;
 
     private List<Circle> memberships;
@@ -22,7 +22,7 @@ public class User {
     private List<Circle> ownedCircles;
 
     public User(String userID, String username, String bio, String email, String name, String password,
-                String profilePic, Date birthdate, int type, List<Circle> memberships, List<Circle> invitations,
+                String profilePic, String birthdate, int type, List<Circle> memberships, List<Circle> invitations,
                 List<Note> ownedNotes, List<Circle> ownedCircles) {
         this.userID = userID;
         this.username = username;

@@ -7,6 +7,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import world.augma.asset.Circle;
+import world.augma.asset.Note;
+import world.augma.asset.User;
+
 public class AWS extends AsyncTask<String, Void, Boolean> {
 
     /*
@@ -49,6 +56,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private String serviceType;
     private String requestType;
     private int numOfMatches;
+    private String userID;
+    private JSONObject userJSON;
 
     /*
      * -------- Fields above are service dependent! ----------
@@ -79,7 +88,6 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     case Service.REGISTER:
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
                     case Service.CIRCLE_SEARCH:
-                        //TODO Modify when lombok available!!
                         matchingCircleNames = new String[jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT)];
                         JSONArray circleArr = jsonObject.getJSONObject(JSON_BODY).getJSONArray(ITEM_ARRAY);
 
@@ -88,6 +96,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         }
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
                     case Service.GET_USER:
+                        userJSON = jsonObject.getJSONObject(JSON_BODY);
+                        userID = userJSON.getJSONArray(ITEM_ARRAY).getJSONObject(0).getString("userID");
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
                     default:
                         matchingCircleNames = null;
@@ -157,8 +167,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 break;
 
             case Service.GET_USER:
-                if(data.length == 1 )
-                {
+                if(data.length == 1 ) {
                     jsonObject.put("userID", data[0]);
                 } else {
                     Log.e(TAG, "ERROR: You must only send userID to retrieve user details");
@@ -167,8 +176,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 break;
 
             case Service.GET_USERDATA:
-                if(data.length == 1 )
-                {
+                if(data.length == 1 ) {
                     jsonObject.put("userID", data[0]);
                 } else {
                     Log.e(TAG, "ERROR: You must only send userID to retrieve user details");
@@ -185,7 +193,54 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         return HttpCallHandler.makeCall(URL.concat(AWSService), jsonObject, reqType);
     }
 
-   public static final class Service {
+    public String getUserID() {
+        return userID;
+    }
+
+    public User fetchUser() {
+        try {
+            JSONArray memberships = userJSON.getJSONArray("circleMembershipList");
+            List<Circle> circleMembershipList = new ArrayList<Circle>();
+            for ( int i = 0 ; i < memberships.length() ; i++ )
+            {
+                String circleID = memberships.getString(0);
+                String name = memberships.getString(1);
+
+                Circle c = new Circle(circleID, name);
+
+                circleMembershipList.add(c);
+                // burasi boka sarabilir circleMembershipList icin ornek data olmadigi icin o arrayden tam ne donuyor bilmiyoruz
+            }
+
+            // TODO : UserData'ya request atilip OwnedNotes, Invitations ve OwnedCircle cekilecek
+            List<Note> ownedNotes = new ArrayList<Note>();
+            List<Circle> invitations = new ArrayList<Circle>();
+            List<Circle> ownedCircles = new ArrayList<Circle>();
+
+            return new User(
+                    userJSON.getString("userID"),
+                    userJSON.getString("username"),
+                    userJSON.getString("bio"),
+                    userJSON.getString("email"),
+                    userJSON.getString("name"),
+                    userJSON.getString("password"),
+                    userJSON.getString("profilePic"),
+                    userJSON.getString("birthdate"),
+                    userJSON.getInt("type"),
+                    circleMembershipList,
+                    invitations,
+                    ownedNotes,
+                    ownedCircles
+                    );
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR", "Failed retrieving User object from AWS");
+            return null;
+        }
+    }
+
+    public static final class Service {
 
         /* ------ Available Services ------ */
 

@@ -9,6 +9,7 @@ public class Circle {
 
     private static final int MIN_SIZE = 200;
 
+    private String circleID;
     private String name;
     private String description;
     private List<User> subscribers;
@@ -27,6 +28,12 @@ public class Circle {
         this.y = y - radius / 2;
         this.radius = radius < MIN_SIZE ? MIN_SIZE : radius;
         isPlaced = false;
+    }
+
+    public Circle(String circleID, String name)
+    {
+        this.circleID = circleID;
+        this.name = name;
     }
 
     public int getRadius() {

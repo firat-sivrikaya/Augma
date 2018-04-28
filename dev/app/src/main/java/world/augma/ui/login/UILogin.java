@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import world.augma.R;
+import world.augma.asset.User;
 import world.augma.ui.main.UIMain;
 import world.augma.ui.signUp.UISignUp;
 import world.augma.work.AWS;
@@ -94,12 +95,12 @@ public class UILogin extends AppCompatActivity {
             }
         });
         Handler handler = new Handler();
-
+        AWS aws = new AWS();
         try {
-            if(new AWS().execute(AWS.Service.LOGIN, usernameField.getText().toString().trim(),
+            if(aws.execute(AWS.Service.LOGIN, usernameField.getText().toString().trim(),
                     passwordField.getText().toString().trim()).get()) {
                 SharedPreferences.Editor sp = getSharedPreferences(AugmaSharedPreferences.SHARED_PREFS, Context.MODE_PRIVATE).edit();
-                sp.putString(AugmaSharedPreferences.USERNAME, usernameField.getText().toString().trim());
+                sp.putString(AugmaSharedPreferences.USER_ID, aws.getUserID());
                 sp.apply();
 
                 handler.postDelayed(new Runnable() {
