@@ -61,6 +61,14 @@ public class UISignUp extends AppCompatActivity {
         passwordField.setOnEditorActionListener(listener);
         repeatPasswordField.setOnEditorActionListener(listener);
         emailField.setOnEditorActionListener(listener);
+		
+		findViewById(android.R.id.content).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Utils.hideKeyboard(UILogin.this);
+                return false;
+            }
+        });
     }
 
     public void initiateRegister(View view) {

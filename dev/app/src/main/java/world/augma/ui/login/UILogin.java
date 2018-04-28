@@ -72,6 +72,14 @@ public class UILogin extends AppCompatActivity {
 
         usernameField.setOnEditorActionListener(keyListener);
         passwordField.setOnEditorActionListener(keyListener);
+		
+		findViewById(android.R.id.content).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Utils.hideKeyboard(UILogin.this);
+                return false;
+            }
+        });
     }
 
     public void redirectToSignUp(View v) {
