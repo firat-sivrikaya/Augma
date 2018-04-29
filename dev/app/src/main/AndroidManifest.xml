@@ -30,8 +30,8 @@
 
         <activity
             android:name=".ui.intro.UIIntro"
-            android:noHistory="true">
-
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -41,15 +41,23 @@
 
         <activity
             android:name=".ui.login.UILogin"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".ui.signUp.UISignUp"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.profile.UIProfile" />
-        <activity android:name=".ui.main.UIMain"/>
-        <activity android:name=".ui.main.UIDrawerHeader" />
+        <activity android:name=".ui.profile.UIProfile"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.main.UIMain"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.main.UIDrawerHeader"
+            android:screenOrientation="portrait"/>
+
         <activity android:name=".ui.camera.UICamera" />
 
     </application>
