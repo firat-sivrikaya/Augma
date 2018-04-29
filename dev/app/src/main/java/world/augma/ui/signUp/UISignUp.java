@@ -80,12 +80,13 @@ public class UISignUp extends AppCompatActivity {
             }
         });
         Handler handler = new Handler();
+        AWS aws = new AWS();
 
         try {
-            if(new AWS().execute(AWS.Service.REGISTER, usernameField.getText().toString().trim(),
+            if(aws.execute(AWS.Service.REGISTER, usernameField.getText().toString().trim(),
                     passwordField.getText().toString().trim(), emailField.getText().toString().trim()).get()) {
                 SharedPreferences.Editor sp = getSharedPreferences(AugmaSharedPreferences.SHARED_PREFS, Context.MODE_PRIVATE).edit();
-                sp.putString(AugmaSharedPreferences.USERNAME, usernameField.getText().toString().trim());
+                sp.putString(AugmaSharedPreferences.USER_ID, aws.getUserID());
                 sp.apply();
 
                 handler.postDelayed(new Runnable() {

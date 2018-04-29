@@ -41,7 +41,9 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private final String REQUEST_TYPE_POST = "POST";
     private final String REQUEST_TYPE_GET = "GET";
     private final String MATCH_COUNT = "Count";
+    private final String USER_ID = "userID";
     private final String JSON_BODY = "body";
+    private final String CIRCLE_NAME = "circleName";
     private final String ITEM_ARRAY = "Items";
     private final String STATUS_CODE = "statusCode";
 
@@ -55,7 +57,6 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private String[] matchingCircleNames;
     private String serviceType;
     private String requestType;
-    private int numOfMatches;
     private String userID;
     private JSONObject userJSON;
 
@@ -78,27 +79,34 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
             /* Set Log data to inform console */
             serviceType = AWSService;
-            numOfMatches = jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT);
 
             if(response != null) {
 
                 switch (AWSService) {
                     case Service.LOGIN:
+                        userJSON = jsonObject.getJSONObject(JSON_BODY);
+                        userID = userJSON.getJSONArray(ITEM_ARRAY).getJSONObject(0).getString(USER_ID);
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) == VALID;
+
                     case Service.REGISTER:
+                        userJSON = jsonObject.getJSONObject(JSON_BODY);
+                        userID = userJSON.getJSONArray(ITEM_ARRAY).getJSONObject(0).getString(USER_ID);
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
                     case Service.CIRCLE_SEARCH:
                         matchingCircleNames = new String[jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT)];
                         JSONArray circleArr = jsonObject.getJSONObject(JSON_BODY).getJSONArray(ITEM_ARRAY);
 
                         for(int i = 0; i < matchingCircleNames.length; i++) {
-                            matchingCircleNames[i] = circleArr.getJSONObject(i).getString("circleName");
+                            matchingCircleNames[i] = circleArr.getJSONObject(i).getString(CIRCLE_NAME);
                         }
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
+
                     case Service.GET_USER:
                         userJSON = jsonObject.getJSONObject(JSON_BODY);
-                        userID = userJSON.getJSONArray(ITEM_ARRAY).getJSONObject(0).getString("userID");
+                        userID = userJSON.getJSONArray(ITEM_ARRAY).getJSONObject(0).getString(USER_ID);
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
                     default:
                         matchingCircleNames = null;
                         return false;
@@ -107,7 +115,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 Log.e(TAG, "ERROR: Response from AWS is null!");
             }
         } catch (JSONException e) {
-            Log.e(TAG, "ERROR: JSONException has been thrown during JSON Object creation.");
+            Log.e(TAG, "ERROR: JSONException has been thrown during JSON Object creation. \t-> "
+                    + e.getClass().getSimpleName() + ": " + e.getMessage() + " -> Service: " + serviceType);
         }
         return false;
     }
@@ -121,14 +130,13 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         super.onPreExecute();
         serviceType = "[NULL]";
         requestType = "[NULL]";
-        numOfMatches = -1;
         Log.i(TAG, "Service execution started.");
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
-        Log.i(TAG, "Service execution finished. ------->\n\t\t Service Executed: " + serviceType + "\n\t\t Request Type: " + requestType + "\n\t\t # of matches: " + numOfMatches);
+        Log.i(TAG, "Service execution finished. ------->\n\t\t Service Executed: " + serviceType + "\n\t\t Request Type: " + requestType);
     }
 
     private String executeServiceCall(String AWSService, String... data) throws JSONException {
@@ -159,7 +167,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
             case Service.CIRCLE_SEARCH:
                 if(data.length == 1) {
-                    jsonObject.put("circleName", data[0]);
+                    jsonObject.put(CIRCLE_NAME, data[0]);
                 } else {
                     Log.e(TAG, "ERROR: Single circle name at a time is allowed for searching.");
                     return null;
@@ -167,19 +175,19 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 break;
 
             case Service.GET_USER:
-                if(data.length == 1 ) {
-                    jsonObject.put("userID", data[0]);
+                if(data.length == 1) {
+                    jsonObject.put(USER_ID, data[0]);
                 } else {
-                    Log.e(TAG, "ERROR: You must only send userID to retrieve user details");
+                    Log.e(TAG, "ERROR: You must only send userID to retrieve user details.");
                     return null;
                 }
                 break;
 
             case Service.GET_USERDATA:
-                if(data.length == 1 ) {
+                if(data.length == 1) {
                     jsonObject.put("userID", data[0]);
                 } else {
-                    Log.e(TAG, "ERROR: You must only send userID to retrieve user details");
+                    Log.e(TAG, "ERROR: You must only send userID to retrieve user details.");
                     return null;
                 }
                 break;

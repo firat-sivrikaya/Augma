@@ -120,7 +120,7 @@ public class UIIntro extends AppCompatActivity implements Animation.AnimationLis
             SharedPreferences sp = getSharedPreferences(AugmaSharedPreferences.SHARED_PREFS, Context.MODE_PRIVATE);
             Intent transition = new Intent(UIIntro.this, UILogin.class);
 
-            if(sp.getString(AugmaSharedPreferences.USERNAME, null) != null) {
+            if(sp.getString(AugmaSharedPreferences.USER_ID, null) != null) {
                 transition = new Intent(UIIntro.this, UIMain.class);
             }
             startActivity(transition,
