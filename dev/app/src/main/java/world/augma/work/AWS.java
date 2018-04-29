@@ -58,6 +58,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private final String CIRCLE_LIST        = "circleList";
     private final String ITEM_ARRAY         = "Items";
     private final String ITEM               = "Item";
+    private final String IMAGE            = "image";
     private final String USERNAME           = "username";
     private final String PASSWORD           = "password";
     private final String EMAIL              = "email";
@@ -124,7 +125,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
                     case Service.GET_USER:
                         userJSON = jsonObject.getJSONObject(JSON_BODY);
-                        userID = userJSON.getJSONArray(ITEM_ARRAY).getJSONObject(0).getString(USER_ID);
+                        userID = userJSON.getJSONObject(ITEM).getString(USER_ID);
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     case Service.GET_NOTE_WITH_FILTER:
@@ -248,6 +249,17 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     Log.e(TAG, "ERROR: You must enter latitude and longitute only");
                     return null;
                 }
+                break;
+            case Service.UPLOAD_IMAGE:
+                if(data.length == 3) {
+                    jsonObject.put(USER_ID, data[0]);
+                    jsonObject.put(NOTE_ID, data[1]);
+                    jsonObject.put(IMAGE, data[2]);
+                } else {
+                    Log.e(TAG, "ERROR: You must enter latitude and longitute only");
+                    return null;
+                }
+                break;
 
             default:
                 Log.e(TAG, "ERROR: No such service is provided.");
@@ -310,7 +322,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 String circleName = ((JSONObject) invitation.get(i)).getString(CIRCLE_NAME);
                 String userID = ((JSONObject) invitation.get(i)).getString(USER_ID);
                 String userName = ((JSONObject) invitation.get(i)).getString(USERNAME);
-              
+
             }*/
 
 
@@ -355,5 +367,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         public static final String GET_USERDATA = "user/userdata";
 
         public static final String GET_NOTE_WITH_FILTER = "note/getwithfilter";
+
+        public static final String UPLOAD_IMAGE = "note/uploadimage";
     }
 }
