@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -27,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 
+import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
 import world.augma.R;
@@ -35,6 +37,8 @@ import world.augma.ui.circle.UICircle;
 import world.augma.ui.login.UILogin;
 import world.augma.ui.map.UIMap;
 import world.augma.ui.profile.UIProfile;
+import world.augma.ui.services.InterActivityShareModel;
+import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.settings.UISettings;
 import world.augma.work.AWS;
 import world.augma.work.AugmaSharedPreferences;
@@ -42,7 +46,7 @@ import world.augma.work.ProfileImageTransformer;
 
 /** Created by Burak Şahin */
 
-public class UIMain extends AppCompatActivity {
+public class UIMain extends AppCompatActivity implements ServiceUIMain {
 
     /* Tags for fragments */
     private static final String HOME_TAG        = "home";
@@ -60,7 +64,6 @@ public class UIMain extends AppCompatActivity {
 
     /* Handler to post pending operations to another thread to avoid screen locking */
     private Handler handler;
-
     private User user;
 
     /* Components */
@@ -106,6 +109,8 @@ public class UIMain extends AppCompatActivity {
             INDEX_TAG = HOME_TAG;
             loadSelectedNavigationView();
         }
+
+        InterActivityShareModel.getInstance().setActivity(this);
     }
 
     /**
@@ -272,4 +277,8 @@ public class UIMain extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    @Override
+    public User fetchUser() {
+        return user;
+    }
 }

@@ -13,23 +13,24 @@ public class S3 {
     /** Don't instantiate */
     private S3() {}
 
-    public static void s3FetchImage(Activity activity, ImageView img, String userID, String noteID ){
+    public static void fetchProfileImage(Activity activity, ImageView img, String path){
 
-        if(userID.equals(noteID)){
             Glide.with(activity)
-                    .load(URL +  userID +"/" + noteID + ".jpg")
+                    .load(URL.concat(path).concat(".jpg"))
                     .crossFade().bitmapTransform(new ProfileImageTransformer(activity))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(img);
-        }
-        else{
-            Glide.with(activity)
-                    .load(URL +  userID +"/"+ noteID + ".jpg")
-                    .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(img);
-        }
-
-
     }
+
+    public static void fetchImage(Activity activity, ImageView img, String path) {
+
+        //TODO şimdilik local sonra url çek
+
+        Glide.with(activity)
+                .load(path/*URL.concat(path).concat(".jpg")*/)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(img);
+    }
+
 }

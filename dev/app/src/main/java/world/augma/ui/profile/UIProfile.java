@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.transition.TransitionManager;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,9 +31,12 @@ import java.util.concurrent.ExecutionException;
 
 import world.augma.R;
 import world.augma.asset.Circle;
+import world.augma.ui.services.InterActivityShareModel;
+import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.widget.Wave;
 import world.augma.work.AWS;
 import world.augma.work.ProfileImageTransformer;
+import world.augma.work.S3;
 
 /**
  * Created by Burak.
@@ -50,6 +54,7 @@ public class UIProfile extends AppCompatActivity {
     private ConstraintSet extendedLayout, shrinkLayout;
     private ConstraintLayout mainLayout;
     private Wave bottomWave;
+    private ServiceUIMain serviceUIMain;
     private static final int RESULT_LOAD_IMAGE = 1;
     private float y;
 
@@ -79,21 +84,34 @@ public class UIProfile extends AppCompatActivity {
         extendedLayout.clone(mainLayout);
         y = -1;
 
+        serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getActivity();
+
+        S3.fetchImage(this, backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
+        S3.fetchProfileImage(this, profileImage, serviceUIMain.fetchUser().getUserID().concat("/").concat(serviceUIMain.fetchUser().getUserID()));
+
         //Load background image
+        /*
+
         Glide.with(this)
                 .load("android.resource://world.augma/drawable/" + R.drawable.background_image)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(backgroundImage);
 
+        */
+
         //Load profile image in circular form -> with adjusted size multiplier
+        /*
         Glide.with(this)
+
                 .load(Uri.parse("android.resource://world.augma/drawable/" + R.drawable.profile_pic))
                 .crossFade()
                 .thumbnail(0.9f)
                 .bitmapTransform(new ProfileImageTransformer(this))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(profileImage);
+
+                */
 
         //TODO 115 Char sınırla, essay yazmasın...
         bioText.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum varius cursus bibendum. Proin vitae feugiat eros...");
@@ -103,6 +121,8 @@ public class UIProfile extends AppCompatActivity {
                         .concat(getString(R.string.demo_user_surname)).trim());
 
         userLocation.setText("Bilkent");
+
+        //*******
         bioHorizontalSeparator.setText("Bio");
         postsHorizontalSeparator.setText("Posts");
         profileImage.setOnClickListener(new ProfileClickListener());
