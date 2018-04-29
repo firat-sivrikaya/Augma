@@ -38,19 +38,34 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
      * ------ AWS Status Codes -------
      */
 
-    private final String REQUEST_TYPE_POST = "POST";
-    private final String MATCH_COUNT = "Count";
-    private final String USER_ID = "userID";
-    private final String JSON_BODY = "body";
-    private final String CIRCLE_ID = "circleID";
-    private final String NOTE_ID = "noteID";
-    private final String CIRCLE_NAME = "circleName";
-    private final String CIRCLE_LIST = "circleList";
-    private final String ITEM_ARRAY = "Items";
-    private final String USERNAME = "username";
-    private final String PASSWORD = "password";
-    private final String EMAIL = "email";
-    private final String STATUS_CODE = "statusCode";
+    /*
+     * ------- AWS Fields --------
+     */
+
+    private final String REQUEST_TYPE_POST  = "POST";
+    private final String MATCH_COUNT        = "Count";
+    private final String USER_ID            = "userID";
+    private final String JSON_BODY          = "body";
+    private final String CIRCLE_ID          = "circleID";
+    private final String OWNED_CIRCLE       = "ownedCircle";
+    private final String OWNED_NOTES        = "note";
+    private final String INVITATION         = "invitation";
+    private final String NOTE               = "note";
+    private final String NOTE_ID            = "noteID";
+    private final String NOTE_RATING        = "rating";
+    private final String NOTE_SUPER_RATING  = "beacons";
+    private final String CIRCLE_NAME        = "circleName";
+    private final String CIRCLE_LIST        = "circleList";
+    private final String ITEM_ARRAY         = "Items";
+    private final String ITEM               = "Item";
+    private final String USERNAME           = "username";
+    private final String PASSWORD           = "password";
+    private final String EMAIL              = "email";
+    private final String STATUS_CODE        = "statusCode";
+
+    /*
+     * ------- AWS Fields --------
+     */
 
     private final int VALID = 1;
     private final String TAG = "[".concat(AWS.class.getSimpleName()).concat("]");
@@ -246,34 +261,67 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         return userID;
     }
 
-
-
     public User fetchUser() {
         try {
             JSONArray memberships = userJSON.getJSONArray("circleMembershipList");
-            List<Circle> circleMembershipList = new ArrayList<Circle>();
-            for ( int i = 0 ; i < memberships.length() ; i++ ) {
-                String circleID = memberships.getString(0);
-                String name = memberships.getString(1);
+            List<Circle> circleMembershipList = new ArrayList<>();
 
+            for (int i = 0; i < memberships.length(); i++) {
+                String circleID = ((JSONObject) memberships.get(i)).getString(CIRCLE_ID);
+                String name = ((JSONObject) memberships.get(i)).getString(CIRCLE_NAME);
                 Circle c = new Circle(circleID, name);
-
                 circleMembershipList.add(c);
-                // burasi boka sarabilir circleMembershipList icin ornek data olmadigi icin o arrayden tam ne donuyor bilmiyoruz
             }
 
-            // TODO : UserData'ya request atilip OwnedNotes, Invitations ve OwnedCircle cekilecek
-            List<Note> ownedNotes = new ArrayList<Note>();
-            List<Circle> invitations = new ArrayList<Circle>();
-            List<Circle> ownedCircles = new ArrayList<Circle>();
+            String response = executeServiceCall(Service.GET_USERDATA, userID);
+            JSONObject userData = new JSONObject(response);
+            JSONObject obj = userData.getJSONObject(JSON_BODY).getJSONObject(ITEM);
+            List<Note> ownedNotes = new ArrayList<>();
+            List<Circle> invitations = new ArrayList<>();
+            List<Circle> ownedCircles = new ArrayList<>();
+
+
+
+            //getting ownedCircles
+            JSONArray ownedCircle = obj.getJSONArray(OWNED_CIRCLE);
+            for(int i = 0; i < ownedCircle.length(); i++) {
+                String circleID = ((JSONObject) ownedCircle.get(i)).getString(CIRCLE_ID);
+                String name = ((JSONObject) ownedCircle.get(i)).getString(CIRCLE_NAME);
+                Circle c = new Circle(circleID, name);
+                ownedCircles.add(c);
+            }
+
+            //getting ownedNotes
+            JSONArray ownedNote = obj.getJSONArray(OWNED_NOTES);
+            for(int i = 0; i < ownedNote.length(); i++) {
+                String noteID = ((JSONObject) ownedNote.get(i)).getString(NOTE_ID);
+                int rating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_RATING);
+                int superRating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_SUPER_RATING);
+                Note n = new Note(noteID,rating,superRating);
+                ownedNotes.add(n);
+            }
+
+            //getting invitations
+           /*
+           //TODO bu part invitation objesi olusturulduktan sonra biticek
+           JSONArray invitation = obj.getJSONArray(INVITATION);
+            for(int i = 0; i < invitation.length(); i++) {
+                String circleID = ((JSONObject) invitation.get(i)).getString(CIRCLE_ID);
+                String circleName = ((JSONObject) invitation.get(i)).getString(CIRCLE_NAME);
+                String userID = ((JSONObject) invitation.get(i)).getString(USER_ID);
+                String userName = ((JSONObject) invitation.get(i)).getString(USERNAME);
+              
+            }*/
+
+
 
             return new User(
-                    userJSON.getString("userID"),
-                    userJSON.getString("username"),
+                    userJSON.getString(USER_ID),
+                    userJSON.getString(USERNAME),
                     userJSON.getString("bio"),
-                    userJSON.getString("email"),
+                    userJSON.getString(EMAIL),
                     userJSON.getString("name"),
-                    userJSON.getString("password"),
+                    userJSON.getString(PASSWORD),
                     userJSON.getString("profilePic"),
                     userJSON.getString("birthdate"),
                     userJSON.getInt("type"),

@@ -30,6 +30,12 @@ public class Note {
         this.rating = rating;
         this.superRating = superRating;
     }
+    public Note(String noteID,  int rating, int superRating)
+    {
+        this.noteID = noteID;
+        this.rating = rating;
+        this.superRating = superRating;
+    }
 
     public void setLongitudeFromLatLng(LatLng noteLoc)
     {
