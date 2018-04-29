@@ -50,6 +50,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private final String CIRCLE_ID          = "circleID";
     private final String OWNED_CIRCLE       = "ownedCircle";
     private final String OWNED_NOTES        = "note";
+    private final String FILE_LOC           = "fileLoc";
     private final String INVITATION         = "invitation";
     private final String NOTE               = "note";
     private final String NOTE_ID            = "noteID";
@@ -176,8 +177,11 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 cList.add(new Circle(jObj.getString(CIRCLE_NAME), jObj.getString(CIRCLE_ID)));
             }
 
-//            matchedNotes[i] = new Note(iObj.getString(NOTE_ID), circleList)
-//                    ..
+            //No method for getFloat might get errors.
+            //We dont get rating and superrating here.
+            matchedNotes[i] = new Note(iObj.getString(NOTE_ID), cList, iObj.getString(FILE_LOC),
+                    (Float)iObj.get("lon"), (Float)iObj.get("lat"), null, iObj.getInt("type"),
+                    -1, -1);
         }
     }
 
