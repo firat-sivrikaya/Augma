@@ -39,12 +39,13 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
      */
 
     private final String REQUEST_TYPE_POST = "POST";
-    private final String REQUEST_TYPE_GET = "GET";
     private final String MATCH_COUNT = "Count";
     private final String USER_ID = "userID";
     private final String JSON_BODY = "body";
     private final String CIRCLE_ID = "circleID";
+    private final String NOTE_ID = "noteID";
     private final String CIRCLE_NAME = "circleName";
+    private final String CIRCLE_LIST = "circleList";
     private final String ITEM_ARRAY = "Items";
     private final String USERNAME = "username";
     private final String PASSWORD = "password";
@@ -60,8 +61,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
     private String[] matchingCircleNames;
     private String serviceType;
-    private String requestType;
     private String userID;
+    private Note[] matchedNotes;
     private JSONObject userJSON;
 
     /*
@@ -111,6 +112,11 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         userID = userJSON.getJSONArray(ITEM_ARRAY).getJSONObject(0).getString(USER_ID);
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
+                    case Service.GET_NOTE_WITH_FILTER:
+                        userJSON = jsonObject.getJSONObject(JSON_BODY);
+                        generateNotes(userJSON);
+                        return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
+
                     default:
                         matchingCircleNames = null;
                         return false;
@@ -125,27 +131,51 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         return false;
     }
 
+    private void generateNotes(JSONObject body) throws JSONException {
+        JSONArray itemsArray = body.getJSONArray(ITEM_ARRAY);
+        matchedNotes = new Note[body.getInt(MATCH_COUNT)];
+        JSONArray circleList;
+        List<Circle> cList = new ArrayList<>();
+        JSONObject jObj;
+        JSONObject iObj;
+
+        for(int i = 0; i < matchedNotes.length; i++) {
+            iObj = ((JSONObject) itemsArray.get(i));
+            circleList = iObj.getJSONArray(CIRCLE_LIST);
+
+            for(int j = 0; j < circleList.length(); j++) {
+                jObj = ((JSONObject) circleList.get(i));
+                cList.add(new Circle(jObj.getString(CIRCLE_NAME), jObj.getString(CIRCLE_ID)));
+            }
+
+//            matchedNotes[i] = new Note(iObj.getString(NOTE_ID), circleList)
+//                    ..
+        }
+    }
+
     public String[] getMatchingCircleNames() {
         return matchingCircleNames;
+    }
+
+    public Note[] getMatchedNotes() {
+        return matchedNotes;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         serviceType = "[NULL]";
-        requestType = "[NULL]";
         Log.i(TAG, "Service execution started.");
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
-        Log.i(TAG, "Service execution finished. ------->\n\t\t Service Executed: " + serviceType + "\n\t\t Request Type: " + requestType);
+        Log.i(TAG, "Service execution finished. ------->\n\t\t Service Executed: " + serviceType);
     }
 
     private String executeServiceCall(String AWSService, String... data) throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        String reqType = REQUEST_TYPE_POST;
 
         switch (AWSService) {
             case Service.LOGIN:
@@ -195,19 +225,28 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     return null;
                 }
                 break;
+            case Service.GET_NOTE_WITH_FILTER:
+                if(data.length == 2) {
+                    jsonObject.put("lat", Float.parseFloat(data[0]));
+                    jsonObject.put("lon", Float.parseFloat(data[1]));
+                } else {
+                    Log.e(TAG, "ERROR: You must enter latitude and longitute only");
+                    return null;
+                }
 
             default:
                 Log.e(TAG, "ERROR: No such service is provided.");
                 return null;
         }
-        requestType = reqType;
 
-        return HttpCallHandler.makeCall(URL.concat(AWSService), jsonObject, reqType);
+        return HttpCallHandler.makeCall(URL.concat(AWSService), jsonObject, REQUEST_TYPE_POST);
     }
 
     public String getUserID() {
         return userID;
     }
+
+
 
     public User fetchUser() {
         try {
@@ -266,5 +305,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         public static final String GET_USER = "user/getuser";
 
         public static final String GET_USERDATA = "user/userdata";
+
+        public static final String GET_NOTE_WITH_FILTER = "note/getwithfilter";
     }
 }
