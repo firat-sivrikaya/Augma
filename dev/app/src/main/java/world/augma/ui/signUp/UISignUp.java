@@ -62,12 +62,20 @@ public class UISignUp extends AppCompatActivity {
         passwordField.setOnEditorActionListener(listener);
         repeatPasswordField.setOnEditorActionListener(listener);
         emailField.setOnEditorActionListener(listener);
-		
+
+        initiateButton.setVisibility(View.GONE);
+
 		findViewById(android.R.id.content).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Utils.hideKeyboard(UISignUp.this);
-                return false;
+            Utils.hideKeyboard(UISignUp.this);
+            if (!(usernameField.getText().toString().isEmpty() || passwordField.getText().toString().isEmpty()
+                    || repeatPasswordField.getText().toString().isEmpty()
+                    || emailField.getText().toString().trim().isEmpty()))
+                initiateButton.setVisibility(View.VISIBLE);
+            else
+                initiateButton.setVisibility(View.GONE);
+            return false;
             }
         });
     }
@@ -134,40 +142,53 @@ public class UISignUp extends AppCompatActivity {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-            if(v == usernameField) {
-                passwordField.requestFocus();
-
-                if(usernameField.getText().toString().isEmpty()) {
+            if (v == usernameField) {
+                if (usernameField.getText().toString().isEmpty()) {
+                    Utils.hideKeyboard(UISignUp.this);
                     Utils.sendWarningNotification(UISignUp.this, "You must enter a username.");
-                } else if(!Utils.validateUsername(usernameField.getText().toString().trim())) {
-                    Utils.hideKeyboard(UISignUp.this);
+                } else if (!Utils.validateUsername(usernameField.getText().toString().trim())) {
                     Utils.sendErrorNotification(UISignUp.this, "Invalid username!");
+                    usernameField.requestFocus();
+                } else {
+                    passwordField.requestFocus();
                 }
-            } else if(v == passwordField) {
-                repeatPasswordField.requestFocus();
-
-                if(passwordField.getText().toString().isEmpty()) {
-                    Utils.sendWarningNotification(UISignUp.this, "You must enter a password.");
-                }
-            } else if(v == repeatPasswordField) {
-                emailField.requestFocus();
-
-                if(passwordField.getText().toString().isEmpty()) {
-                    Utils.sendWarningNotification(UISignUp.this, "You must enter a password.");
-                } else if(!passwordField.getText().toString().equals(repeatPasswordField.getText().toString())) {
+            } else if (v == passwordField) {
+                if (passwordField.getText().toString().isEmpty()) {
                     Utils.hideKeyboard(UISignUp.this);
-                    Utils.sendErrorNotification(UISignUp.this, "Both entered passwords must match!");
+                    Utils.sendWarningNotification(UISignUp.this, "You must enter a password.");
+                } else {
+                    repeatPasswordField.requestFocus();
                 }
-            } else if(v == emailField) {
-                Utils.hideKeyboard(UISignUp.this);
-                emailField.clearFocus();
-
-                if(emailField.getText().toString().trim().isEmpty()) {
-                    Utils.sendWarningNotification(UISignUp.this, "You must enter a valid email adress.");
-                } else if(!Utils.validateEmail(emailField.getText().toString().trim())) {
-                    Utils.sendErrorNotification(UISignUp.this, "Invalid email adress!");
+            } else if (v == repeatPasswordField) {
+                if (passwordField.getText().toString().isEmpty() && repeatPasswordField.getText().toString().isEmpty()) {
+                    Utils.hideKeyboard(UISignUp.this);
+                    Utils.sendWarningNotification(UISignUp.this, "Matching passwords should not be empty!");
+                } else if (!passwordField.getText().toString().equals(repeatPasswordField.getText().toString())) {
+                    Utils.sendErrorNotification(UISignUp.this, "Both entered passwords must match!");
+                    repeatPasswordField.requestFocus();
+                } else {
+                    emailField.requestFocus();
+                }
+            } else if (v == emailField) {
+                if (emailField.getText().toString().trim().isEmpty()) {
+                    Utils.hideKeyboard(UISignUp.this);
+                    Utils.sendWarningNotification(UISignUp.this, "You must enter a valid email address.");
+                } else if (!Utils.validateEmail(emailField.getText().toString().trim())) {
+                    Utils.sendErrorNotification(UISignUp.this, "Invalid email address!");
+                    emailField.requestFocus();
+                } else {
+                    Utils.hideKeyboard(UISignUp.this);
+                    emailField.clearFocus();
                 }
             }
+
+            if (!(usernameField.getText().toString().isEmpty() || passwordField.getText().toString().isEmpty()
+                    || repeatPasswordField.getText().toString().isEmpty()
+                    || emailField.getText().toString().trim().isEmpty()))
+                initiateButton.setVisibility(View.VISIBLE);
+            else
+                initiateButton.setVisibility(View.GONE);
+
             return true;
         }
     }

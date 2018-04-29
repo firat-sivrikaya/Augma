@@ -73,11 +73,17 @@ public class UILogin extends AppCompatActivity {
 
         usernameField.setOnEditorActionListener(keyListener);
         passwordField.setOnEditorActionListener(keyListener);
-		
-		findViewById(android.R.id.content).setOnTouchListener(new View.OnTouchListener() {
+
+        initiateButton.setVisibility(View.GONE);
+
+        findViewById(android.R.id.content).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 Utils.hideKeyboard(UILogin.this);
+                if(!(usernameField.getText().toString().isEmpty() || passwordField.getText().toString().isEmpty()))
+                    initiateButton.setVisibility(View.VISIBLE);
+                else
+                    initiateButton.setVisibility(View.GONE);
                 return false;
             }
         });
@@ -156,19 +162,31 @@ public class UILogin extends AppCompatActivity {
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
             if(v == usernameField && actionId == EditorInfo.IME_ACTION_NEXT) {
-                passwordField.requestFocus();
-                if(!usernameField.getText().toString().isEmpty()
-                        && !Utils.validateUsername(usernameField.getText().toString().trim())){
-                    Utils.hideKeyboard(UILogin.this);
+                if(usernameField.getText().toString().isEmpty()
+                        || !Utils.validateUsername(usernameField.getText().toString().trim())){
                     Utils.sendErrorNotification(UILogin.this, "Invalid username!");
+                    usernameField.requestFocus();
+                }
+                else
+                {
+                    passwordField.requestFocus();
                 }
             } else if(v == passwordField && actionId == EditorInfo.IME_ACTION_DONE) {
-                Utils.hideKeyboard(UILogin.this);
-                passwordField.clearFocus();
                 if(passwordField.getText().toString().isEmpty()) {
+                    Utils.hideKeyboard(UILogin.this);
                     Utils.sendWarningNotification(UILogin.this, "You must enter your password.");
                 }
+                else
+                {
+                    Utils.hideKeyboard(UILogin.this);
+                    passwordField.clearFocus();
+                }
             }
+
+            if(!(usernameField.getText().toString().isEmpty() || passwordField.getText().toString().isEmpty()))
+                initiateButton.setVisibility(View.VISIBLE);
+            else
+                initiateButton.setVisibility(View.GONE);
             return true;
         }
     }
