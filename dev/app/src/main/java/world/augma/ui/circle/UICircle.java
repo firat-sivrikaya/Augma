@@ -2,14 +2,16 @@ package world.augma.ui.circle;
 
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +22,7 @@ import world.augma.R;
 import world.augma.asset.Circle;
 import world.augma.ui.widget.CircleCanvas;
 import world.augma.work.AWS;
+import world.augma.work.Utils;
 
 public class UICircle extends Fragment {
 
@@ -34,7 +37,16 @@ public class UICircle extends Fragment {
         canvas = (CircleCanvas) root.findViewById(R.id.circleFrame);
         circleSearchField = (EditText) root.findViewById(R.id.circleSearchField);
         circleList = new ArrayList<>();
-        circleSearchField.addTextChangedListener(new CircleSearchTextChangeListener());
+
+        circleSearchField.setOnEditorActionListener(new CircleSearchListener());
+
+        root.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Utils.hideKeyboard(UICircle.this.getActivity());
+                return false;
+            }
+        });
 
         return root;
     }
@@ -43,7 +55,7 @@ public class UICircle extends Fragment {
         AWS aws = new AWS();
 
         try {
-            if(aws.execute(AWS.Service.CIRCLE_SEARCH, text.toString().trim()).get()) {
+            if(aws.execute(AWS.Service.CIRCLE_SEARCH, text.toString().toLowerCase().trim()).get()) {
 
                 for(String match : Arrays.asList(aws.getMatchingCircleNames())) {
                     circleList.add(new Circle(match, null, null, null,
@@ -72,40 +84,20 @@ public class UICircle extends Fragment {
         }
     }
 
-    private class CircleSearchTextChangeListener implements TextWatcher {
-
-        private boolean isTriggered = false;
+    private class CircleSearchListener implements TextView.OnEditorActionListener {
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(final Editable s) {
-            if(isTriggered || s.toString().isEmpty()){
-                return;
-            } else {
-                isTriggered = true;
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if(v == circleSearchField && actionId == EditorInfo.IME_ACTION_SEARCH) {
+                circleSearchField.clearFocus();
+                circleList.clear();
+                circleSearchField.clearFocus();
+                canvas.removeAllViews();
+                Utils.hideKeyboard(UICircle.this.getActivity());
+                updateCircleList(circleSearchField.getText());
+                return true;
             }
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(circleSearchField.hasFocus()) {
-                        isTriggered = false;
-                        circleList.clear();
-                        circleSearchField.clearFocus();
-                        canvas.removeAllViews();
-                        updateCircleList(s);
-                    }
-                }
-            }, 800);
+            return false;
         }
     }
 }

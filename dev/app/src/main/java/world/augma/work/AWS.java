@@ -43,8 +43,12 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private final String MATCH_COUNT = "Count";
     private final String USER_ID = "userID";
     private final String JSON_BODY = "body";
+    private final String CIRCLE_ID = "circleID";
     private final String CIRCLE_NAME = "circleName";
     private final String ITEM_ARRAY = "Items";
+    private final String USERNAME = "username";
+    private final String PASSWORD = "password";
+    private final String EMAIL = "email";
     private final String STATUS_CODE = "statusCode";
 
     private final int VALID = 1;
@@ -146,8 +150,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         switch (AWSService) {
             case Service.LOGIN:
                 if(data.length == 2) {
-                    jsonObject.put("username", data[0]);
-                    jsonObject.put("password", data[1]);
+                    jsonObject.put(USERNAME, data[0]);
+                    jsonObject.put(PASSWORD, data[1]);
                 } else {
                     Log.e(TAG, "ERROR: For logging in, there must be 2 data fields, namely, username and password, respectively.");
                     return null;
@@ -156,9 +160,9 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
             case Service.REGISTER:
                 if(data.length == 3) {
-                    jsonObject.put("username", data[0]);
-                    jsonObject.put("password", data[1]);
-                    jsonObject.put("email", data[2]);
+                    jsonObject.put(USERNAME, data[0]);
+                    jsonObject.put(PASSWORD, data[1]);
+                    jsonObject.put(EMAIL, data[2]);
                 } else {
                     Log.e(TAG, "ERROR: For registering, there must be 3 data fields, namely, username, password and email, respectively.");
                     return null;
