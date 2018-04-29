@@ -17,14 +17,14 @@ public class S3 {
 
         if(userID.equals(noteID)){
             Glide.with(activity)
-                    .load(URL +  userID + noteID + ".jpg")
+                    .load(URL +  userID +"/" + noteID + ".jpg")
                     .crossFade().bitmapTransform(new ProfileImageTransformer(activity))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(img);
         }
         else{
             Glide.with(activity)
-                    .load(URL +  userID + noteID + ".jpg")
+                    .load(URL +  userID +"/"+ noteID + ".jpg")
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(img);
