@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import world.augma.asset.Circle;
 import world.augma.asset.Note;
@@ -83,6 +84,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private String userID;
     private Note[] matchedNotes;
     private JSONObject userJSON;
+    private JSONObject userData;
 
     /*
      * -------- Fields above are service dependent! ----------
@@ -127,8 +129,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
 
                     case Service.GET_USER:
-                        userJSON = jsonObject.getJSONObject(JSON_BODY);
-                        userID = userJSON.getJSONObject(ITEM).getString(USER_ID);
+                        userJSON = jsonObject.getJSONObject(JSON_BODY).getJSONObject(ITEM);
+                        userID = userJSON.getString(USER_ID);
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     case Service.GET_NOTE_WITH_FILTER:
@@ -143,6 +145,9 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     case Service.CREATE_CIRCLE:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+                    case Service.GET_USERDATA:
+                        userData = jsonObject;
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     default:
@@ -247,7 +252,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
             case Service.GET_USERDATA:
                 if(data.length == 1) {
-                    jsonObject.put("userID", data[0]);
+                    jsonObject.put(USER_ID, data[0]);
                 } else {
                     Log.e(TAG, "ERROR: You must only send userID to retrieve user details.");
                     return null;
@@ -308,6 +313,10 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         return userID;
     }
 
+    public JSONObject getUserData(){
+        return userData;
+    }
+
     public User fetchUser() {
         try {
             JSONArray memberships = userJSON.getJSONArray("circleMembershipList");
@@ -320,35 +329,34 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 circleMembershipList.add(c);
             }
 
-            String response = executeServiceCall(Service.GET_USERDATA, userID);
-            JSONObject userData = new JSONObject(response);
-            JSONObject obj = userData.getJSONObject(JSON_BODY).getJSONObject(ITEM);
-            List<Note> ownedNotes = new ArrayList<>();
-            List<Circle> invitations = new ArrayList<>();
-            List<Circle> ownedCircles = new ArrayList<>();
+            AWS aws1 = new AWS();
+            if( aws1.execute(Service.GET_USERDATA, userID).get()) {
+                JSONObject obj = aws1.getUserData().getJSONObject(JSON_BODY).getJSONObject(ITEM);
+                List<Note> ownedNotes = new ArrayList<>();
+                List<Circle> invitations = new ArrayList<>();
+                List<Circle> ownedCircles = new ArrayList<>();
 
 
+                //getting ownedCircles
+                JSONArray ownedCircle = obj.getJSONArray(OWNED_CIRCLE);
+                for (int i = 0; i < ownedCircle.length(); i++) {
+                    String circleID = ((JSONObject) ownedCircle.get(i)).getString(CIRCLE_ID);
+                    String name = ((JSONObject) ownedCircle.get(i)).getString(CIRCLE_NAME);
+                    Circle c = new Circle(circleID, name);
+                    ownedCircles.add(c);
+                }
 
-            //getting ownedCircles
-            JSONArray ownedCircle = obj.getJSONArray(OWNED_CIRCLE);
-            for(int i = 0; i < ownedCircle.length(); i++) {
-                String circleID = ((JSONObject) ownedCircle.get(i)).getString(CIRCLE_ID);
-                String name = ((JSONObject) ownedCircle.get(i)).getString(CIRCLE_NAME);
-                Circle c = new Circle(circleID, name);
-                ownedCircles.add(c);
-            }
+                //getting ownedNotes
+                JSONArray ownedNote = obj.getJSONArray(OWNED_NOTES);
+                for (int i = 0; i < ownedNote.length(); i++) {
+                    String noteID = ((JSONObject) ownedNote.get(i)).getString(NOTE_ID);
+                    int rating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_RATING);
+                    int superRating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_SUPER_RATING);
+                    Note n = new Note(noteID, null, null, -1, -1, null, -1, rating, superRating);
+                    ownedNotes.add(n);
+                }
 
-            //getting ownedNotes
-            JSONArray ownedNote = obj.getJSONArray(OWNED_NOTES);
-            for(int i = 0; i < ownedNote.length(); i++) {
-                String noteID = ((JSONObject) ownedNote.get(i)).getString(NOTE_ID);
-                int rating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_RATING);
-                int superRating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_SUPER_RATING);
-                Note n = new Note(noteID,rating,superRating);
-                ownedNotes.add(n);
-            }
-
-            //getting invitations
+                //getting invitations
            /*
            //TODO bu part invitation objesi olusturulduktan sonra biticek
            JSONArray invitation = obj.getJSONArray(INVITATION);
@@ -361,28 +369,33 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
             }*/
 
 
-
-            return new User(
-                    userJSON.getString(USER_ID),
-                    userJSON.getString(USERNAME),
-                    userJSON.getString("bio"),
-                    userJSON.getString(EMAIL),
-                    userJSON.getString("name"),
-                    userJSON.getString(PASSWORD),
-                    userJSON.getString("profilePic"),
-                    userJSON.getString("birthdate"),
-                    userJSON.getInt("type"),
-                    circleMembershipList,
-                    invitations,
-                    ownedNotes,
-                    ownedCircles
-                    );
+                return new User(
+                        userJSON.getString(USER_ID),
+                        userJSON.getString(USERNAME),
+                        userJSON.getString("bio"),
+                        userJSON.getString(EMAIL),
+                        userJSON.getString("name"),
+                        userJSON.getString(PASSWORD),
+                        userJSON.getString("profilePic"),
+                        userJSON.getString("birthdate"),
+                        userJSON.getInt("type"),
+                        circleMembershipList,
+                        invitations,
+                        ownedNotes,
+                        ownedCircles
+                );
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("ERROR", "Failed retrieving User object from AWS");
             return null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     public static final class Service {
