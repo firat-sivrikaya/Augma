@@ -118,10 +118,7 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
      */
     private void loadHeader() {
         //Create User's name and surname in displayable format
-        userName.setText(
-                getString(R.string.demo_user_name)
-                        .concat(" ")
-                        .concat(getString(R.string.demo_user_surname)).trim());
+        userName.setText(user.getUsername());
 
         //Load background image
         Glide.with(this)

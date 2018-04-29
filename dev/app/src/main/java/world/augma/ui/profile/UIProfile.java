@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import world.augma.R;
 import world.augma.asset.Circle;
+import world.augma.asset.User;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.widget.Wave;
@@ -57,6 +58,7 @@ public class UIProfile extends AppCompatActivity {
     private ServiceUIMain serviceUIMain;
     private static final int RESULT_LOAD_IMAGE = 1;
     private float y;
+    private User user = serviceUIMain.fetchUser();
 
     public UIProfile() {}
 
@@ -87,7 +89,7 @@ public class UIProfile extends AppCompatActivity {
         serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getActivity();
 
         S3.fetchImage(this, backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
-        S3.fetchProfileImage(this, profileImage, serviceUIMain.fetchUser().getUserID().concat("/").concat(serviceUIMain.fetchUser().getUserID()));
+        S3.fetchProfileImage(this, profileImage, user.getUserID().concat("/").concat(user.getUserID()));
 
         //Load background image
         /*
@@ -114,11 +116,8 @@ public class UIProfile extends AppCompatActivity {
                 */
 
         //TODO 115 Char sınırla, essay yazmasın...
-        bioText.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum varius cursus bibendum. Proin vitae feugiat eros...");
-        userFullName.setText(
-                getString(R.string.demo_user_name)
-                        .concat(" ")
-                        .concat(getString(R.string.demo_user_surname)).trim());
+        bioText.setText(user.getBio());
+        userFullName.setText(user.getName());
 
         userLocation.setText("Bilkent");
 
