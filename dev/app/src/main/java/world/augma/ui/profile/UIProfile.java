@@ -58,7 +58,7 @@ public class UIProfile extends AppCompatActivity {
     private ServiceUIMain serviceUIMain;
     private static final int RESULT_LOAD_IMAGE = 1;
     private float y;
-    private User user = serviceUIMain.fetchUser();
+    private User user ;
 
     public UIProfile() {}
 
@@ -87,6 +87,7 @@ public class UIProfile extends AppCompatActivity {
         y = -1;
 
         serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getActivity();
+        user =  serviceUIMain.fetchUser();
 
         S3.fetchImage(this, backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
         S3.fetchProfileImage(this, profileImage, user.getUserID().concat("/").concat(user.getUserID()));
