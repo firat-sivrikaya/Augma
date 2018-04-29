@@ -166,7 +166,7 @@ public class UIMain extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         SharedPreferences.Editor sp = getSharedPreferences(AugmaSharedPreferences.SHARED_PREFS, Context.MODE_PRIVATE).edit();
-                                        sp.remove(AugmaSharedPreferences.USERNAME);
+                                        sp.remove(AugmaSharedPreferences.USER_ID);
                                         sp.apply();
                                         startActivity(new Intent(UIMain.this, UILogin.class),
                                                 ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
