@@ -133,6 +133,9 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         generateNotes(userJSON);
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
 
+                    case Service.UPLOAD_IMAGE:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
                     default:
                         matchingCircleNames = null;
                         return false;
@@ -256,7 +259,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     jsonObject.put(NOTE_ID, data[1]);
                     jsonObject.put(IMAGE, data[2]);
                 } else {
-                    Log.e(TAG, "ERROR: You must enter latitude and longitute only");
+                    Log.e(TAG, "ERROR: Image cannot be uploaded. 2 ids followed by 1 image data.");
                     return null;
                 }
                 break;
