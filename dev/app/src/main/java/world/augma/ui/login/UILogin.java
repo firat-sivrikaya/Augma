@@ -111,6 +111,7 @@ public class UILogin extends AppCompatActivity {
         });
         Handler handler = new Handler();
         AWS aws = new AWS();
+
         try {
             if(aws.execute(AWS.Service.LOGIN, usernameField.getText().toString().trim(),
                     passwordField.getText().toString().trim()).get()) {

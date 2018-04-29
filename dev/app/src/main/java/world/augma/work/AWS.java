@@ -213,8 +213,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         try {
             JSONArray memberships = userJSON.getJSONArray("circleMembershipList");
             List<Circle> circleMembershipList = new ArrayList<Circle>();
-            for ( int i = 0 ; i < memberships.length() ; i++ )
-            {
+            for ( int i = 0 ; i < memberships.length() ; i++ ) {
                 String circleID = memberships.getString(0);
                 String name = memberships.getString(1);
 

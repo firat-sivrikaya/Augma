@@ -1,5 +1,11 @@
 package world.augma.work;
 
+import android.app.Activity;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 public class S3 {
 
     private static final String URL = "https://s3.eu-central-1.amazonaws.com/augma/";
@@ -7,11 +13,23 @@ public class S3 {
     /** Don't instantiate */
     private S3() {}
 
-    public static final class Asset {
+    public static void s3FetchImage(Activity activity, ImageView img, String userID, String noteID ){
 
-        public static final String PROFILE_PIC = ""; //TODO URL Extensionları ekle
+        if(userID.equals(noteID)){
+            Glide.with(activity)
+                    .load(URL +  userID + noteID + ".jpg")
+                    .crossFade().bitmapTransform(new ProfileImageTransformer(activity))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(img);
+        }
+        else{
+            Glide.with(activity)
+                    .load(URL +  userID + noteID + ".jpg")
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(img);
+        }
 
-        public static final String BACKGROUND_PIC = "";
 
     }
 }
