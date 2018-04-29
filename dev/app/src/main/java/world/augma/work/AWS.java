@@ -45,6 +45,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private final String REQUEST_TYPE_POST  = "POST";
     private final String MATCH_COUNT        = "Count";
     private final String USER_ID            = "userID";
+    private final String OWNED_BY            = "ownedBy";
     private final String JSON_BODY          = "body";
     private final String CIRCLE_ID          = "circleID";
     private final String OWNED_CIRCLE       = "ownedCircle";
@@ -55,14 +56,16 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private final String NOTE_RATING        = "rating";
     private final String NOTE_SUPER_RATING  = "beacons";
     private final String CIRCLE_NAME        = "circleName";
+    private final String CIRCLE_SEARCH_NAME = "circleSearchName";
     private final String CIRCLE_LIST        = "circleList";
     private final String ITEM_ARRAY         = "Items";
     private final String ITEM               = "Item";
-    private final String IMAGE            = "image";
+    private final String IMAGE              = "image";
     private final String USERNAME           = "username";
     private final String PASSWORD           = "password";
     private final String EMAIL              = "email";
     private final String STATUS_CODE        = "statusCode";
+    private final String DESC               = "desc";
 
     /*
      * ------- AWS Fields --------
@@ -134,6 +137,12 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
 
                     case Service.UPLOAD_IMAGE:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
+                    case Service.EDIT_USER_INFO:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
+                    case Service.CREATE_CIRCLE:
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     default:
@@ -259,7 +268,30 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     jsonObject.put(NOTE_ID, data[1]);
                     jsonObject.put(IMAGE, data[2]);
                 } else {
-                    Log.e(TAG, "ERROR: Image cannot be uploaded. 2 ids followed by 1 image data.");
+                    Log.e(TAG, "ERROR: Image cannot be uploaded.");
+                    return null;
+                }
+                break;
+            case Service.EDIT_USER_INFO:
+                if(data.length == 4) {
+                    jsonObject.put(USER_ID, data[0]);
+                    jsonObject.put("bio", data[1]);
+                    jsonObject.put("birthdate", data[2]);
+                    jsonObject.put("name", data[3]);
+                } else {
+                    Log.e(TAG, "ERROR: You must fill in all three fields.");
+                    return null;
+                }
+                break;
+
+            case Service.CREATE_CIRCLE:
+                if(data.length == 4) {
+                    jsonObject.put(OWNED_BY, data[0]); //TODO user id yi sessiondan burda mi alicaz yoksa servis call un yapildigi yer de mi?
+                    jsonObject.put(CIRCLE_NAME, data[1]);
+                    jsonObject.put(CIRCLE_SEARCH_NAME, data[2]);
+                    jsonObject.put(DESC, data[3]);
+                } else {
+                    Log.e(TAG, "ERROR: You must enter owner id, circle name, search compliant name and description");
                     return null;
                 }
                 break;
@@ -361,7 +393,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
         public static final String REGISTER = "user";
 
-        public static final String CIRCLE = "circle";
+        public static final String CREATE_CIRCLE = "circle";
 
         public static final String CIRCLE_SEARCH = "circle/search";
 
@@ -372,5 +404,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         public static final String GET_NOTE_WITH_FILTER = "note/getwithfilter";
 
         public static final String UPLOAD_IMAGE = "note/uploadimage";
+
+        public static final String EDIT_USER_INFO = "user/edituserinfo";
+
     }
 }
