@@ -7,6 +7,8 @@
     android:orientation="vertical"
     android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true"
+    android:windowSoftInputMode="stateHidden"
     tools:context="world.augma.ui.signUp.UISignUp">
 
     <TextView
@@ -36,6 +38,9 @@
             android:digits="abcdefghijklmnopqrstuvwxyz_.0123456789"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:nextFocusDown="@+id/passwordField"
+            android:imeOptions="actionNext"
             android:hint="@string/ui_login_username"
             android:transitionName="@string/trans_username_edit_text"
             android:backgroundTint="@color/colorUILoginTransparentDark"
@@ -46,6 +51,9 @@
             android:id="@+id/passwordField"
             android:drawablePadding="@dimen/ui_reg_common_edit_text_drawable_padding"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.0123456789"
+            android:singleLine="true"
+            android:nextFocusDown="@+id/repeatPasswordField"
+            android:imeOptions="actionNext"
             android:layout_marginLeft="@dimen/ui_reg_common_margin_left_right"
             android:layout_marginRight="@dimen/ui_reg_common_margin_left_right"
             android:layout_width="match_parent"
@@ -60,6 +68,9 @@
         <EditText
             android:id="@+id/repeatPasswordField"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.0123456789"
+            android:singleLine="true"
+            android:nextFocusDown="@+id/emailField"
+            android:imeOptions="actionNext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ui_reg_common_margin_left_right"
@@ -76,6 +87,8 @@
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.@0123456789"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:drawablePadding="@dimen/ui_reg_common_edit_text_drawable_padding"
             android:layout_marginBottom="@dimen/ui_sign_up_email_edit_text_margin_bottom"
             android:layout_marginLeft="@dimen/ui_reg_common_margin_left_right"

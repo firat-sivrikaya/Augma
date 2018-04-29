@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -154,22 +155,19 @@ public class UILogin extends AppCompatActivity {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-            if(v == usernameField) {
-                usernameField.clearFocus();
+            if(v == usernameField && actionId == EditorInfo.IME_ACTION_NEXT) {
                 passwordField.requestFocus();
                 if(!usernameField.getText().toString().isEmpty()
                         && !Utils.validateUsername(usernameField.getText().toString().trim())){
                     Utils.hideKeyboard(UILogin.this);
                     Utils.sendErrorNotification(UILogin.this, "Invalid username!");
                 }
-            } else if(v == passwordField) {
+            } else if(v == passwordField && actionId == EditorInfo.IME_ACTION_DONE) {
                 Utils.hideKeyboard(UILogin.this);
-                usernameField.clearFocus();
                 passwordField.clearFocus();
                 if(passwordField.getText().toString().isEmpty()) {
                     Utils.sendWarningNotification(UILogin.this, "You must enter your password.");
                 }
-                findViewById(android.R.id.content).requestFocus();
             }
             return true;
         }

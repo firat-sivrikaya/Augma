@@ -9,6 +9,8 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:windowSoftInputMode="stateHidden"
     tools:context="world.augma.ui.login.UILogin">
 
     <TextView
@@ -39,17 +41,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/ui_login_username"
-            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:nextFocusDown="@+id/passwordField"
             android:transitionName="@string/trans_username_edit_text"
             android:textColorHint="@color/colorUILoginTransparentDark"
             android:backgroundTint="@color/colorUILoginTransparentDark"
             android:textColor="@color/colorPrimaryDark"
-            android:drawableStart="@drawable/ic_person_black_24dp"/>
+            android:drawableStart="@drawable/ic_person_black_24dp" />
 
         <EditText
             android:id="@+id/passwordField"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_.0123456789"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:drawablePadding="@dimen/ui_reg_common_edit_text_drawable_padding"
             android:layout_marginLeft="@dimen/ui_reg_common_margin_left_right"
             android:layout_marginRight="@dimen/ui_reg_common_margin_left_right"
@@ -62,7 +66,8 @@
             android:backgroundTint="@color/colorUILoginTransparentDark"
             android:textColorHint="@color/colorUILoginTransparentDark"
             android:textColor="@color/colorPrimaryDark"
-            android:drawableStart="@drawable/ic_lock_black_24dp"/>
+            android:drawableStart="@drawable/ic_lock_black_24dp"
+            />
 
     </LinearLayout>
 

@@ -134,7 +134,6 @@ public class UISignUp extends AppCompatActivity {
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
             if(v == usernameField) {
-                usernameField.clearFocus();
                 passwordField.requestFocus();
 
                 if(usernameField.getText().toString().isEmpty()) {
@@ -144,19 +143,15 @@ public class UISignUp extends AppCompatActivity {
                     Utils.sendErrorNotification(UISignUp.this, "Invalid username!");
                 }
             } else if(v == passwordField) {
-                passwordField.clearFocus();
                 repeatPasswordField.requestFocus();
 
                 if(passwordField.getText().toString().isEmpty()) {
-                    Utils.hideKeyboard(UISignUp.this);
                     Utils.sendWarningNotification(UISignUp.this, "You must enter a password.");
                 }
             } else if(v == repeatPasswordField) {
-                repeatPasswordField.clearFocus();
                 emailField.requestFocus();
 
                 if(passwordField.getText().toString().isEmpty()) {
-                    Utils.hideKeyboard(UISignUp.this);
                     Utils.sendWarningNotification(UISignUp.this, "You must enter a password.");
                 } else if(!passwordField.getText().toString().equals(repeatPasswordField.getText().toString())) {
                     Utils.hideKeyboard(UISignUp.this);
@@ -164,11 +159,7 @@ public class UISignUp extends AppCompatActivity {
                 }
             } else if(v == emailField) {
                 Utils.hideKeyboard(UISignUp.this);
-                usernameField.clearFocus();
-                passwordField.clearFocus();
-                repeatPasswordField.clearFocus();
                 emailField.clearFocus();
-                findViewById(android.R.id.content).requestFocus();
 
                 if(emailField.getText().toString().trim().isEmpty()) {
                     Utils.sendWarningNotification(UISignUp.this, "You must enter a valid email adress.");
