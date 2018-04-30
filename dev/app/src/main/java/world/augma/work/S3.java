@@ -24,10 +24,13 @@ import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.common.util.IOUtils;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.concurrent.ExecutionException;
 
 public class S3 {
@@ -39,24 +42,27 @@ public class S3 {
 
     public static void fetchProfileImage(Activity activity, ImageView img, String userID){
         //TODO burada ilk once localde var mi diye kontrol edip yoksa S3 den cekip locale kaydedicez
-          /*  File image = new File(activity.getApplicationContext().getFilesDir(),userID);
+           File image = new File(activity.getApplicationContext().getFilesDir(),userID);
             if(!image.exists()){
-            */
 
+                Log.e("Fetchin from S3:",URL.concat(userID).concat("/").concat(userID).concat(".jpg"));
+                img.invalidate();
                 Glide.with(activity)
                         .load(URL.concat(userID).concat("/").concat(userID).concat(".jpg"))
                         .crossFade().bitmapTransform(new ProfileImageTransformer(activity))
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .into(img);
 
-           /* }
+            }
             else{
+                Log.e("Fetchin from Internal storage:","Fetched");
+                img.invalidate();
                 Glide.with(activity).load(image).crossFade()
                         .bitmapTransform(new ProfileImageTransformer(activity))
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .into(img);
             }
-                */
+
 
 
 
@@ -90,7 +96,7 @@ public class S3 {
 
     public static boolean saveImageToStorage(Context context,byte[] imageByte, String userID){
 
-        FileOutputStream outputStream;
+       FileOutputStream outputStream;
         try {
             outputStream = context.openFileOutput(userID, Context.MODE_PRIVATE);
             outputStream.write(imageByte);
@@ -100,16 +106,37 @@ public class S3 {
             return false;
         }
         return true;
+
+
+       /* File file = new File(context.getFilesDir(), userID);
+
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(imageByte);
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+        */
+
     }
 
     public static boolean uploadProfileImage(Context context,byte[] imageByte, String userID){
-
-        boolean delRes = false;
-        delRes = context.deleteFile(userID);
+        String base64_image = Base64.encodeToString(imageByte, 0);
+        //boolean delRes = false;
+        //delRes = context.deleteFile(userID);
+        //Log.e("Filedeleted:",""+delRes);
        boolean saveRes = saveImageToStorage(context,imageByte,userID);
+       Log.e("Imagesaved:",""+saveRes);
 
         //upload
-        String base64_image = Base64.encodeToString(imageByte, 0);
+
 
         AWS aws = new AWS();
         boolean uploadRes = false;
@@ -119,10 +146,9 @@ public class S3 {
             e.printStackTrace();
         }
 
+        Log.e("ImageUploaded:",""+uploadRes);
 
-
-        String del = ""+delRes;
-        return saveRes && uploadRes;
+        return /*saveRes &&*/ uploadRes;
 
     }
 
