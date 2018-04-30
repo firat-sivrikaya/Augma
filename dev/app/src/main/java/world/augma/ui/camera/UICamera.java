@@ -20,6 +20,7 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.location.Location;
 import android.media.Image;
 import android.media.ImageReader;
 import android.opengl.GLSurfaceView;
@@ -88,6 +89,8 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
     private Sensor deviceSensor;
     private SensorManager SM;
 
+    private Location passedLastKnownLocation;
+
     private final int SENSOR_TYPE = Sensor.TYPE_ORIENTATION;
 
 
@@ -116,6 +119,8 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_camera);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        passedLastKnownLocation = (Location) getIntent().getExtras().getParcelable("mLastKnownLocation");
 
         // Initialize GL Clear Renderer
         GLClearRenderer = new GLClearRenderer();

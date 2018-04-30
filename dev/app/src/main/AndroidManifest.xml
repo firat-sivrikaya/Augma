@@ -60,6 +60,7 @@
             android:screenOrientation="portrait"/>
 
         <activity android:name=".ui.camera.UICamera" />
+        <activity android:name=".ui.AR.augmaGLActivity"/>
 
     </application>
 
