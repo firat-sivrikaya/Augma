@@ -114,6 +114,13 @@ public class UIProfile extends AppCompatActivity {
 
         userLocation.setText("Bilkent");
 
+        //TODO #24 statDisplayLayout un ici lazim
+       /*
+        statDisplayLayout.setPostNumber(user.getOwnedNotes().size());
+        statDisplayLayout.setLikes(user.getRating.size());
+        statDisplayLayout.setCircles(user.getMemberships().size()); // Bu circles su an icinde bulundugu circle sayisi, bunu getOwnedCircle() yapabiliriz
+        */
+
         //*******
         bioHorizontalSeparator.setText("Bio");
         postsHorizontalSeparator.setText("Posts");

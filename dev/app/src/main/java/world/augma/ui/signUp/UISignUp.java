@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import world.augma.R;
+import world.augma.ui.login.UILogin;
 import world.augma.ui.main.UIMain;
 import world.augma.work.AWS;
 import world.augma.work.AugmaSharedPreferences;
@@ -108,7 +109,7 @@ public class UISignUp extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(UISignUp.this, UIMain.class);
+                        Intent intent = new Intent(UISignUp.this, UILogin.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent,
                                 ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
