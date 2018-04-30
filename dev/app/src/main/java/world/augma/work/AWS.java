@@ -100,7 +100,10 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
             for(int i = 0; i < data.length; i++) {
                 data[i] = params[i + 1];
             }
-
+            /*
+            TODO If we do this servicecalls on case by case basis(Eg. if we need to do 2 different execute service calls for that service, we do 2 different execute service calls )
+            This way we can solve the asynchronous task problem in a better way
+            */
             String response = executeServiceCall(AWSService, data);
             JSONObject jsonObject = new JSONObject(response);
 
