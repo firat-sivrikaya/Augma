@@ -185,10 +185,15 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 cList.add(new Circle(jObj.getString(CIRCLE_NAME), jObj.getString(CIRCLE_ID)));
             }
 
+            User owner = new User(((JSONObject)iObj.get(OWNED_BY)).getString(USER_ID),
+                    ((JSONObject)iObj.get(OWNED_BY)).getString(USERNAME), "", "",
+                    "", "", "", "", -1,
+                    null, null, null, null);
             //No method for getFloat might get errors.
             //We dont get rating and superrating here.
             matchedNotes[i] = new Note(iObj.getString(NOTE_ID), cList, iObj.getString(FILE_LOC),
-                    (Float)iObj.get("lon"), (Float)iObj.get("lat"), null, iObj.getInt("type"),
+                    ((Float)iObj.get("lon")).floatValue(), ((Float)iObj.get("lat")).floatValue(),
+                    owner, iObj.getInt("type"),
                     -1, -1);
         }
     }
