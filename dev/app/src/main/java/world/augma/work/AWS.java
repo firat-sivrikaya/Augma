@@ -120,7 +120,6 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
                     case Service.REGISTER:
                         userJSON = jsonObject.getJSONObject(JSON_BODY);
-                        userID = userJSON.getJSONArray(ITEM_ARRAY).getJSONObject(0).getString(USER_ID);
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     case Service.CIRCLE_SEARCH:

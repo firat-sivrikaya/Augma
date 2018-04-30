@@ -40,7 +40,6 @@ import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.settings.UISettings;
 import world.augma.work.AWS;
 import world.augma.work.AugmaSharedPreferences;
-import world.augma.work.ProfileImageTransformer;
 import world.augma.work.S3;
 
 /** Created by Burak Şahin */
@@ -109,7 +108,7 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
             loadSelectedNavigationView();
         }
 
-        InterActivityShareModel.getInstance().setActivity(this);
+        InterActivityShareModel.getInstance().setUiMain(this);
     }
 
     /**
@@ -120,10 +119,10 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
         userName.setText(user.getUsername());
 
         //Load background image
-        S3.fetchBackgroundImage(this,bgImage,"android.resource://world.augma/drawable/" + R.drawable.background_image);
+        S3.fetchBackgroundImage(this, bgImage,"android.resource://world.augma/drawable/" + R.drawable.background_image);
 
         //Load profile image in circular form -> with adjusted size multiplier
-        S3.fetchProfileImage(this,profileImage,user.getUserID());
+        S3.fetchProfileImage(this, profileImage, user.getUserID());
 
         /* TODO Test notification indicator -> LATER USE: when user has notifications put this indicator */
         //navigationView.getMenu().getItem(3).setActionView(R.layout.notification_indicator);
@@ -267,4 +266,21 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
     public User fetchUser() {
         return user;
     }
+
+    @Override
+    public ImageView getProfileView() {
+        return profileImage;
+    }
+
+    @Override
+    public ImageView getBackgroundView() {
+        return bgImage;
+    }
+
+    @Override
+    public void updateHeader() {
+        loadHeader();
+    }
+
+
 }

@@ -5,15 +5,20 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
@@ -32,27 +37,28 @@ public class S3 {
     /** Don't instantiate */
     private S3() {}
 
-    public static void fetchProfileImage( Activity activity, ImageView img, String userID){
+    public static void fetchProfileImage(Activity activity, ImageView img, String userID){
         //TODO burada ilk once localde var mi diye kontrol edip yoksa S3 den cekip locale kaydedicez
-            File image = new File(activity.getApplicationContext().getFilesDir(),userID);
+          /*  File image = new File(activity.getApplicationContext().getFilesDir(),userID);
             if(!image.exists()){
+            */
+
                 Glide.with(activity)
                         .load(URL.concat(userID).concat("/").concat(userID).concat(".jpg"))
                         .crossFade().bitmapTransform(new ProfileImageTransformer(activity))
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .into(img);
-            }
+
+           /* }
             else{
                 Glide.with(activity).load(image).crossFade()
                         .bitmapTransform(new ProfileImageTransformer(activity))
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(img);
             }
+                */
 
-            /*
 
-
-             */
 
 
     }
@@ -83,10 +89,7 @@ public class S3 {
     }
 
     public static boolean saveImageToStorage(Context context,byte[] imageByte, String userID){
-        File image = new File(context.getFilesDir(),userID);
-        if(image.exists()){
-            image.delete();
-        }
+
         FileOutputStream outputStream;
         try {
             outputStream = context.openFileOutput(userID, Context.MODE_PRIVATE);
@@ -101,7 +104,8 @@ public class S3 {
 
     public static boolean uploadProfileImage(Context context,byte[] imageByte, String userID){
 
-
+        boolean delRes = false;
+        delRes = context.deleteFile(userID);
        boolean saveRes = saveImageToStorage(context,imageByte,userID);
 
         //upload
@@ -114,6 +118,10 @@ public class S3 {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
+
+
+        String del = ""+delRes;
         return saveRes && uploadRes;
 
     }

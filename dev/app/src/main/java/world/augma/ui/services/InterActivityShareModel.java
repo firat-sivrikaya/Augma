@@ -1,12 +1,11 @@
 package world.augma.ui.services;
 
-import android.app.Activity;
 
 public class InterActivityShareModel {
 
     private static InterActivityShareModel singletonObj;
 
-    private Activity activity;
+    private ServiceUIMain uiMain;
 
     private InterActivityShareModel() {}
 
@@ -25,11 +24,12 @@ public class InterActivityShareModel {
         return new CloneNotSupportedException();
     }
 
-    public Activity getActivity() {
-        return activity;
+
+    public ServiceUIMain getUiMain() {
+        return uiMain;
     }
 
-    public void setActivity(Activity activity) {
-        this.activity = activity;
+    public void setUiMain(ServiceUIMain uiMain) {
+        this.uiMain = uiMain;
     }
 }
