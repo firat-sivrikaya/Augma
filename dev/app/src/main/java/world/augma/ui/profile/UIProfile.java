@@ -1,6 +1,7 @@
 package world.augma.ui.profile;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -26,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
@@ -171,14 +173,19 @@ public class UIProfile extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
+
             //TODO image boyutu kontrol et ve image'i daire seklinde göster
-            profileImage.setImageURI(selectedImage);
+            profileImage.setImageURI(selectedImage); //TODO image i augma klasorune koy sonra S3 fetch profileimage la set et
             BitmapDrawable drawable = (BitmapDrawable) profileImage.getDrawable();
             Bitmap bitmap = drawable.getBitmap();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG,100,bos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,bos);
             byte[] bb = bos.toByteArray();
-            String base64_image = Base64.encodeToString(bb, 0);
+            //TODO Needs Fix
+            if(S3.uploadProfileImage(this.getApplicationContext(),bb,user.getUserID())){
+                S3.fetchProfileImage(this,profileImage,user.getUserID());
+            }
+
         }
     }
 
