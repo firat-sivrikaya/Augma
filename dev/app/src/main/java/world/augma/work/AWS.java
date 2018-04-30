@@ -56,6 +56,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private final String NOTE               = "note";
     private final String NOTE_ID            = "noteID";
     private final String NOTE_RATING        = "rating";
+    private final String NOTE_TEXT          = "noteText";
     private final String NOTE_SUPER_RATING  = "beacons";
     private final String CIRCLE_NAME        = "circleName";
     private final String CIRCLE_SEARCH_NAME = "circleSearchName";
@@ -190,10 +191,10 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     null, null, null, null);
             //No method for getFloat might get errors.
             //We dont get rating and superrating here.
-            matchedNotes[i] = new Note(iObj.getString(NOTE_ID), cList, iObj.getString(FILE_LOC),
+            matchedNotes[i] = new Note(iObj.getString(NOTE_ID), cList,
                     ((Float)iObj.get("lon")).floatValue(), ((Float)iObj.get("lat")).floatValue(),
                     owner, iObj.getInt("type"),
-                    -1, -1);
+                    iObj.getInt(NOTE_RATING), -1, iObj.getString(NOTE_TEXT));
         }
     }
 
@@ -363,7 +364,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     String noteID = ((JSONObject) ownedNote.get(i)).getString(NOTE_ID);
                     int rating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_RATING);
                     int superRating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_SUPER_RATING);
-                    Note n = new Note(noteID, null, null, -1, -1, null, -1, rating, superRating);
+                    Note n = new Note(noteID, null,  -1, -1, null, -1, rating, superRating,null);
                     ownedNotes.add(n);
                 }
 

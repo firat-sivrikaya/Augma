@@ -9,26 +9,26 @@ public class Note {
 
     private String noteID;
     private List<Circle> circleList;
-    private String fileLoc;
     private float longitude;
     private float latitude;
     private User owner;
     private int type;
     private int rating;
+    private String noteText;
     private int superRating;
 
-    public Note(String noteID, List<Circle> circleList, String fileLoc, float longitude,
-                float latitude, User owner, int type, int rating, int superRating)
+    public Note(String noteID, List<Circle> circleList,  float longitude,
+                float latitude, User owner, int type, int rating, int superRating, String noteText)
     {
         this.noteID = noteID;
         this.circleList = circleList;
-        this.fileLoc = fileLoc;
         this.longitude = longitude;
         this.latitude = latitude;
         this.owner = owner;
         this.type = type;
         this.rating = rating;
         this.superRating = superRating;
+        this.noteText =  noteText;
     }
     public Note(String noteID,  int rating, int superRating)
     {
@@ -59,13 +59,7 @@ public class Note {
         this.circleList = circleList;
     }
 
-    public String getFileLoc() {
-        return fileLoc;
-    }
 
-    public void setFileLoc(String fileLoc) {
-        this.fileLoc = fileLoc;
-    }
 
     public float getLongitude() {
         return longitude;
@@ -105,5 +99,13 @@ public class Note {
 
     public void setSuperRate(int superRate) {
         this.superRating = superRating;
+    }
+
+    public String getNoteText() {
+        return noteText;
+    }
+
+    public void setNoteText(String noteText) {
+        this.noteText = noteText;
     }
 }
