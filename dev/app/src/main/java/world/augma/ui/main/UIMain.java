@@ -41,6 +41,7 @@ import world.augma.ui.settings.UISettings;
 import world.augma.work.AWS;
 import world.augma.work.AugmaSharedPreferences;
 import world.augma.work.ProfileImageTransformer;
+import world.augma.work.S3;
 
 /** Created by Burak Şahin */
 
@@ -119,20 +120,10 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
         userName.setText(user.getUsername());
 
         //Load background image
-        Glide.with(this)
-                .load("android.resource://world.augma/drawable/" + R.drawable.background_image)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(bgImage);
+        S3.fetchBackgroundImage(this,bgImage,"android.resource://world.augma/drawable/" + R.drawable.background_image);
 
         //Load profile image in circular form -> with adjusted size multiplier
-        Glide.with(this)
-                .load(Uri.parse("android.resource://world.augma/drawable/" + R.drawable.profile_pic))
-                .crossFade()
-                .thumbnail(0.9f)
-                .bitmapTransform(new ProfileImageTransformer(this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(profileImage);
+        S3.fetchProfileImage(this,profileImage,user.getUserID());
 
         /* TODO Test notification indicator -> LATER USE: when user has notifications put this indicator */
         //navigationView.getMenu().getItem(3).setActionView(R.layout.notification_indicator);

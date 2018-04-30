@@ -13,24 +13,37 @@ public class S3 {
     /** Don't instantiate */
     private S3() {}
 
-    public static void fetchProfileImage(Activity activity, ImageView img, String path){
-
+    public static void fetchProfileImage(Activity activity, ImageView img, String userID){
+        //TODO burada ilk once localde var mi diye kontrol edip yoksa S3 den cekip locale kaydedicez
             Glide.with(activity)
-                    .load(URL.concat(path).concat(".jpg"))
+                    .load(URL.concat(userID).concat("/").concat(userID).concat(".jpg"))
                     .crossFade().bitmapTransform(new ProfileImageTransformer(activity))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(img);
     }
 
-    public static void fetchImage(Activity activity, ImageView img, String path) {
+    public static void fetchBackgroundImage(Activity activity, ImageView img, String path) {
 
-        //TODO şimdilik local sonra url çek
+        //TODO burada ilk once localde var mi diye kontrol edip yoksa S3 den cekip locale kaydedicez
 
         Glide.with(activity)
-                .load(path/*URL.concat(path).concat(".jpg")*/)
+                .load(path)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(img);
+
+        /*S3
+        Glide.with(activity)
+                .load(URL.concat(userID).concat("/").concat(userID).concat("B").concat(".jpg"))
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(img);
+
+         */
+    }
+
+    public static void fetchNoteImage(){
+        //TODO
     }
 
 }

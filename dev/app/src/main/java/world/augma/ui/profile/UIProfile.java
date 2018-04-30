@@ -89,8 +89,8 @@ public class UIProfile extends AppCompatActivity {
         serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getActivity();
         user =  serviceUIMain.fetchUser();
 
-        S3.fetchImage(this, backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
-        S3.fetchProfileImage(this, profileImage, user.getUserID().concat("/").concat(user.getUserID()));
+        S3.fetchBackgroundImage(this,backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
+        S3.fetchProfileImage(this, profileImage, user.getUserID());
 
         //Load background image
         /*
