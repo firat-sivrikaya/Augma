@@ -1,6 +1,7 @@
 package world.augma.ui.map;
 
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -16,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -24,14 +27,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.ramotion.circlemenu.CircleMenuView;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.*;
 
 import world.augma.R;
 import world.augma.ui.camera.UICamera;
@@ -79,7 +77,12 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                     case NOTE_POST:
                         return;
                     case OPEN_CAMERA:
-                        startActivity(new Intent(getActivity(), UICamera.class));
+                        Intent intent = new Intent(getActivity(), UICamera.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("mLastKnownLocation", mLastKnownLocation);
+                        intent.putExtras(bundle);
+
+                        startActivity(intent, ActivityOptions.makeCustomAnimation(getContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
                         return;
                 }
             }
