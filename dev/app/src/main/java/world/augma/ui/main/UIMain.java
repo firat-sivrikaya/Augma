@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import java.util.concurrent.ExecutionException;
 
@@ -40,6 +44,7 @@ import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.settings.UISettings;
 import world.augma.work.AWS;
 import world.augma.work.AugmaSharedPreferences;
+import world.augma.work.FirebaseInstance;
 import world.augma.work.S3;
 
 /** Created by Burak Şahin */
@@ -70,6 +75,7 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
     private TextView userName;
     private KenBurnsView bgImage;
     private ImageView profileImage;
+    public FirebaseInstance firebase;
 
     public UIMain () {}
 
@@ -79,6 +85,7 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
         setContentView(R.layout.ui_main);
 
         //Initialize the references
+        Log.e("YOUR FIREBASE TOKEN", FirebaseInstanceId.getInstance().getToken());
         handler = new Handler();
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         drawer = (DrawerLayout) findViewById(R.id.drawer);

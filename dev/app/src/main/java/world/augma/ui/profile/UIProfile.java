@@ -13,11 +13,15 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.ByteArrayOutputStream;
 
@@ -28,6 +32,7 @@ import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.widget.Wave;
 import world.augma.work.AWS;
+import world.augma.work.FirebaseInstance;
 import world.augma.work.S3;
 
 /**
@@ -191,6 +196,7 @@ public class UIProfile extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
+
             if(view == profileImage) {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
