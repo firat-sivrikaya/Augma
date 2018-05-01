@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "284525154141",
+    "firebase_url": "https://augma-198914.firebaseio.com",
+    "project_id": "augma-198914",
+    "storage_bucket": "augma-198914.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284525154141:android:c81f3751e9691775",
+        "android_client_info": {
+          "package_name": "world.augma"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "284525154141-eeope7sg1k65ue2asqera0vujdcv3iqb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHW9vDRFyXf7PIOSeOvojxbjo4on0Psgw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
