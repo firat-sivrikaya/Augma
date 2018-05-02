@@ -86,6 +86,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private String serviceType;
     private String userID;
     private Note[] matchedNotes;
+    private List<Circle> matchedCircles;
+    private List<User> matchedUsers;
     private JSONObject userJSON;
     private JSONObject userData;
     private String newNoteID;
@@ -126,13 +128,24 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     case Service.CIRCLE_SEARCH:
-                        matchingCircleNames = new String[jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT)];
+                        /*matchingCircleNames = new String[jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT)];
                         JSONArray circleArr = jsonObject.getJSONObject(JSON_BODY).getJSONArray(ITEM_ARRAY);
 
                         for(int i = 0; i < matchingCircleNames.length; i++) {
                             matchingCircleNames[i] = circleArr.getJSONObject(i).getString(CIRCLE_NAME);
+                        }*/
+                        JSONArray circles = jsonObject.getJSONObject(JSON_BODY).getJSONArray(ITEM_ARRAY);
+                        for (int i = 0; i < circles.length(); i++) {
+                            String circleID = ((JSONObject) circles.get(i)).getString(CIRCLE_ID);
+                            String name = ((JSONObject) circles.get(i)).getString(CIRCLE_NAME);
+                            Circle c = new Circle(circleID, name);
+                            matchedCircles.add(c);
                         }
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
+
+                    /*case Service.USER_SEARCH:
+
+                        return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;*/
 
                     case Service.GET_USER:
                         userJSON = jsonObject.getJSONObject(JSON_BODY).getJSONObject(ITEM);
@@ -160,6 +173,9 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     case Service.LIGHT_THE_BEACON:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
+                    case Service.JOIN_CIRCLE:
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     case Service.POST_NOTE:
@@ -215,6 +231,10 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
     public Note[] getMatchedNotes() {
         return matchedNotes;
+    }
+
+    public List<Circle> getMatchedCircles(){
+        return matchedCircles;
     }
 
     @Override
@@ -346,7 +366,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 break;
 
             case Service.POST_NOTE:
-                if(data.length == 1) {
+                if(data.length == 5) {
                     jsonObject.put(NOTE_TEXT, data[0]);
                     jsonObject.put("lat", Float.parseFloat(data[1]));
                     jsonObject.put("lon", Float.parseFloat(data[2]));
@@ -354,6 +374,29 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     jsonObject.put(CIRCLE_LIST, data[4]);
                 } else {
                     Log.e(TAG, "ERROR: Something wrong with the note data");
+                    return null;
+                }
+                break;
+
+            case Service.JOIN_CIRCLE:
+                if(data.length == 4) {
+                    jsonObject.put(USER_ID, data[0]);
+                    jsonObject.put(USERNAME, data[1]);
+                    jsonObject.put(CIRCLE_ID, data[2]);
+                    jsonObject.put(CIRCLE_NAME, data[3]);
+
+                } else {
+                    Log.e(TAG, "ERROR: Enter all 4 fields");
+                    return null;
+                }
+                break;
+
+            case Service.USER_SEARCH:
+                if(data.length == 1) {
+                    jsonObject.put(USERNAME, data[0]);
+
+                } else {
+                    Log.e(TAG, "ERROR: Enter a username");
                     return null;
                 }
                 break;
@@ -476,9 +519,13 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
         public static final String CIRCLE_SEARCH = "circle/search";
 
+        public static final String JOIN_CIRCLE = "circle/joincircle";
+
         public static final String GET_USER = "user/getuser";
 
         public static final String GET_USERDATA = "user/userdata";
+
+        public static final String USER_SEARCH = "user/searchuser";
 
         public static final String GET_NOTE_WITH_FILTER = "note/getwithfilter";
 
