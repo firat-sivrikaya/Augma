@@ -167,6 +167,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bio"
-        app:layout_constraintVertical_bias="0.04000002" />
+        app:layout_constraintVertical_bias="0.00999999" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/galleryParent"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_margin="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:cardElevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postsSeparator">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/gallery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.v7.widget.CardView>
 
 </android.support.constraint.ConstraintLayout>

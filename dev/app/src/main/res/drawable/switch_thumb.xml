@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#1222" />
+        </shape>
+    </item>
+    <item android:bottom="2dp" android:left="1dp"
+        android:right="1dp" android:top="1dp">
+        <shape android:shape="oval">
+            <solid android:color="#eee" />
+        </shape>
+    </item>
+
+    <item>
+        <bitmap android:src="@drawable/circle_privacy_lock"
+            android:tint="@color/custom_switch_color" />
+    </item>
+</layer-list>

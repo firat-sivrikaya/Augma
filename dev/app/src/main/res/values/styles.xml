@@ -35,4 +35,14 @@
         <item name="android:fontFamily">@font/nunito</item>
     </style>
 
+
+    <style name="SwitchCompatTheme" >
+        <item name="colorControlActivated">@color/colorCircleGradientStart</item>
+    </style>
+
+    <style name="SwitchCompatStyle">
+        <item name="android:thumb">@drawable/switch_thumb</item>
+        <item name="trackTint">@color/custom_switch_color</item>
+    </style>
+
 </resources>

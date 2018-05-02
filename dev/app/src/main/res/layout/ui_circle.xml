@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="world.augma.ui.circle.UICircle"
+    android:background="@color/colorPrimary"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
@@ -11,33 +12,49 @@
 
     <world.augma.ui.widget.CircleCanvas
         android:id="@+id/circleFrame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:columnCount="4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/circleSearchField"
+        app:layout_constraintVertical_bias="0.45" />
 
     <EditText
         android:id="@+id/circleSearchField"
-        android:digits="ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZabcçdefghıijklmnoöprqsştuüvwxyz "
-        android:inputType="text"
-        android:singleLine="true"
-        android:imeOptions="actionSearch"
         android:layout_width="match_parent"
-        android:gravity="center"
         android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
         android:layout_marginLeft="100dp"
         android:layout_marginRight="100dp"
-        android:ems="5"
-        android:textSize="12sp"
         android:background="@drawable/circle_search_outline"
+        android:digits="ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZabcçdefghıijklmnoöprqsştuüvwxyz "
+        android:ems="5"
+        android:gravity="center"
         android:hint="@string/ui_circle_search"
-        android:textColorHint="@color/colorCircleSearchTransparent"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:singleLine="true"
         android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorCircleSearchTransparent"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.100000024" />
+        app:layout_constraintVertical_bias="0.13" />
+
+    <android.support.v7.widget.SwitchCompat
+        style="@style/SwitchCompatStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </android.support.constraint.ConstraintLayout>

@@ -39,7 +39,6 @@ public class UICircle extends Fragment {
         circleList = new ArrayList<>();
 
         circleSearchField.setOnEditorActionListener(new CircleSearchListener());
-
         root.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -58,29 +57,12 @@ public class UICircle extends Fragment {
             if(aws.execute(AWS.Service.CIRCLE_SEARCH, text.toString().toLowerCase().trim()).get()) {
 
                 for(String match : Arrays.asList(aws.getMatchingCircleNames())) {
-                    circleList.add(new Circle(match, null, null, null,
-                            -1, -1, 200));
+                    circleList.add(new Circle(match, null, null, null, 200));
                 }
-                arrangeCircles();
                 canvas.init(circleList);
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * Implementation of 2D Circle Packing Algorithm for non-overlapping placement of circles on the canvas
-     */
-    private void arrangeCircles() {
-        circleList.get(0).setX(getResources().getDisplayMetrics().widthPixels / 2);
-        circleList.get(0).setY(getResources().getDisplayMetrics().heightPixels / 2);
-        circleList.get(0).setPlaced(true);
-
-        if(circleList.size() > 1) {
-            for(int i = 0; i < circleList.size(); i++) {
-                circleList.get(i).computePositionOnScreen(circleList);
-            }
         }
     }
 
@@ -91,7 +73,6 @@ public class UICircle extends Fragment {
             if(v == circleSearchField && actionId == EditorInfo.IME_ACTION_SEARCH) {
                 circleSearchField.clearFocus();
                 circleList.clear();
-                circleSearchField.clearFocus();
                 canvas.removeAllViews();
                 Utils.hideKeyboard(UICircle.this.getActivity());
                 updateCircleList(circleSearchField.getText());

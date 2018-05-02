@@ -8,24 +8,27 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 import world.augma.R;
 import world.augma.asset.User;
-import world.augma.ui.main.UIDrawerHeader;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.widget.Wave;
@@ -37,13 +40,20 @@ import world.augma.work.S3;
  */
 public class UIProfile extends AppCompatActivity {
 
+    private static final int GALLERY_COLUMN_COUNT = 3;
+
     private ImageView profileImage;
     private ImageView backgroundImage;
+    private List<ImageView> notes;  //TODO Bu liste sonra Note listesi olacak
     private TextView userFullName;
     private TextView bioText;
     private TextView userLocation;
     private TextView bioHorizontalSeparator;
     private TextView postsHorizontalSeparator;
+    private TextView statDisplayPosts;
+    private TextView statDisplayLikes;
+    private TextView statDisplayCircles;
+    private RecyclerView recyclerView;
     private LinearLayout statDisplayLayout;
     private ConstraintSet extendedLayout, shrinkLayout;
     private ConstraintLayout mainLayout;
@@ -70,9 +80,13 @@ public class UIProfile extends AppCompatActivity {
         mainLayout = (ConstraintLayout) findViewById(R.id.ui_profile_layout);
         statDisplayLayout = (LinearLayout) findViewById(R.id.stat_display);
         bottomWave = (Wave) findViewById(R.id.bottomWave);
+        recyclerView = (RecyclerView) ((CardView) findViewById(R.id.galleryParent)).findViewById(R.id.gallery);
+        statDisplayCircles = (TextView) ((LinearLayout) statDisplayLayout.findViewById(R.id.numOfCircles)).findViewById(R.id.numOfCirclesNumText);
+        statDisplayLikes = (TextView) ((LinearLayout) statDisplayLayout.findViewById(R.id.numOfLikes)).findViewById(R.id.numOfLikesNumText);
+        statDisplayPosts = (TextView) ((LinearLayout) statDisplayLayout.findViewById(R.id.numOfPosts)).findViewById(R.id.numOfPostsNum);
 
         profileImage.bringToFront();
-        bottomWave.setTopWaveColor(Color.parseColor("#ce0081"));
+        bottomWave.setTopWaveColor(Color.parseColor("#005DAF"));
         extendedLayout = new ConstraintSet();
         shrinkLayout = new ConstraintSet();
         shrinkLayout.clone(this, R.layout.ui_profile_folded);
@@ -81,7 +95,6 @@ public class UIProfile extends AppCompatActivity {
 
         serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
         user =  serviceUIMain.fetchUser();
-
         S3.fetchBackgroundImage(this,backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
         S3.fetchProfileImage(this, profileImage, user.getUserID());
 
@@ -113,17 +126,16 @@ public class UIProfile extends AppCompatActivity {
         //TODO 115 Char sınırla, essay yazmasın...
         bioText.setText(user.getBio());
         userFullName.setText(user.getName());
-
         userLocation.setText("Bilkent");
 
-        //TODO #24 statDisplayLayout un ici lazim
-       /*
-        statDisplayLayout.setPostNumber(user.getOwnedNotes().size());
-        statDisplayLayout.setLikes(user.getRating.size());
-        statDisplayLayout.setCircles(user.getMemberships().size()); // Bu circles su an icinde bulundugu circle sayisi, bunu getOwnedCircle() yapabiliriz
-        */
+        //TODO Galeriyi başlatmak için aşağıdaki commentleri kaldır
+        //recyclerView.setAdapter(new GridLayoutAdapter());
+        //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(GALLERY_COLUMN_COUNT, StaggeredGridLayoutManager.VERTICAL));
 
-        //*******
+        //statDisplayLikes.setText(user.getRating().size());
+        //statDisplayCircles.setText(user.getMemberships().size());
+        //statDisplayPosts.setText(user.getOwnedNotes().size());
+
         bioHorizontalSeparator.setText("Bio");
         postsHorizontalSeparator.setText("Posts");
         profileImage.setOnClickListener(new ProfileClickListener());
@@ -197,8 +209,38 @@ public class UIProfile extends AppCompatActivity {
             if(view == profileImage) {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
-
             }
+        }
+    }
+
+    private class GalleryItem extends RecyclerView.ViewHolder {
+
+        private ImageView imageView;
+
+        public GalleryItem(View itemView) {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.gallery_item_image);
+        }
+
+    }
+
+    private class GridLayoutAdapter extends RecyclerView.Adapter<GalleryItem> {
+
+        @NonNull
+        @Override
+        public GalleryItem onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new GalleryItem(LayoutInflater.from(UIProfile.this).inflate(R.layout.gallery_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull GalleryItem holder, int position) {
+            holder.imageView.requestLayout();
+            //S3.fetchBackgroundImage(UIProfile.this, holder.imageView, ); TODO buradan noteların imageları girilecek
+        }
+
+        @Override
+        public int getItemCount() {
+            return 0; //TODO Buraya da kaç not olduğu girilecek
         }
     }
 }
