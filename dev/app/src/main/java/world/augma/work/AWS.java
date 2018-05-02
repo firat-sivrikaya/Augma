@@ -143,9 +143,30 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         }
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
 
-                    /*case Service.USER_SEARCH:
+                    case Service.USER_SEARCH:
+                        JSONArray users = jsonObject.getJSONObject(JSON_BODY).getJSONArray(ITEM_ARRAY);
+                        for (int i = 0; i < users.length(); i++) {
 
-                        return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;*/
+                            User u = new User(
+                                    ((JSONObject) users.get(i)).getString(USER_ID),
+                                    ((JSONObject) users.get(i)).getString(USERNAME),
+                                    ((JSONObject) users.get(i)).getString("bio"),
+                                    ((JSONObject) users.get(i)).getString(EMAIL),
+                                    ((JSONObject) users.get(i)).getString("name"),
+                                    ((JSONObject) users.get(i)).getString(PASSWORD),
+                                    ((JSONObject) users.get(i)).getString("profilePic"),
+                                    ((JSONObject) users.get(i)).getString("birthdate"),
+                                    ((JSONObject) users.get(i)).getInt("type"),
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    ((JSONObject) users.get(i)).getInt("rating")
+                            );
+                            matchedUsers.add(u);
+                        }
+
+                        return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
 
                     case Service.GET_USER:
                         userJSON = jsonObject.getJSONObject(JSON_BODY).getJSONObject(ITEM);
@@ -181,6 +202,13 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     case Service.POST_NOTE:
                         newNoteID = jsonObject.getString(JSON_BODY);
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
+                    case Service.INVITE:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
+                    case Service.DELETE_INVITE:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
 
                     default:
                         matchingCircleNames = null;
@@ -401,6 +429,30 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 }
                 break;
 
+            case Service.INVITE:
+                if(data.length == 5) {
+                    jsonObject.put(USERNAME, data[0]);
+                    jsonObject.put("senderID", data[1]);
+                    jsonObject.put("senderName", data[2]);
+                    jsonObject.put(CIRCLE_NAME, data[3]);
+                    jsonObject.put(CIRCLE_ID, data[4]);
+
+                } else {
+                    Log.e(TAG, "ERROR: Enter a username");
+                    return null;
+                }
+                break;
+
+            case Service.DELETE_INVITE:
+                if(data.length == 1) {
+                    jsonObject.put(USER_ID, data[0]);
+
+                } else {
+                    Log.e(TAG, "ERROR: Enter a userID");
+                    return null;
+                }
+                break;
+
             default:
                 Log.e(TAG, "ERROR: No such service is provided.");
                 return null;
@@ -458,7 +510,6 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
                 //getting invitations
 
-           //TODO bu part invitation objesi olusturulduktan sonra biticek
            JSONArray invitation = obj.getJSONArray(INVITATION);
             for(int i = 0; i < invitation.length(); i++) {
                 String circleID = ((JSONObject) invitation.get(i)).getString(CIRCLE_ID);
@@ -522,6 +573,10 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         public static final String JOIN_CIRCLE = "circle/joincircle";
 
         public static final String GET_USER = "user/getuser";
+
+        public static final String INVITE = "user/invite";
+
+        public static final String DELETE_INVITE = "user/deleteinvite";
 
         public static final String GET_USERDATA = "user/userdata";
 
