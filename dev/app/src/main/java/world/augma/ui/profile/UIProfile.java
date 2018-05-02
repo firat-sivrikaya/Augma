@@ -20,8 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.ByteArrayOutputStream;
 
@@ -32,7 +30,6 @@ import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.widget.Wave;
 import world.augma.work.AWS;
-import world.augma.work.FirebaseInstance;
 import world.augma.work.S3;
 
 /**

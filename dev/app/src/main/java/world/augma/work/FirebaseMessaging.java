@@ -14,6 +14,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -21,6 +24,8 @@ import world.augma.R;
 import world.augma.ui.main.UIMain;
 
 public class FirebaseMessaging extends FirebaseMessagingService {
+
+    private final String NOTE_POSTED = "AugmaNotePosted";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -30,10 +35,6 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
         if (remoteMessage.getData().size() > 0){
 
-            //String image = remoteMessage.getNotification().getIcon();
-            //String title = remoteMessage.getNotification().getTitle();
-            //String text = remoteMessage.getNotification().getBody();
-            //String sound = remoteMessage.getNotification().getSound();
 
             int id =0;
             Object obj = remoteMessage.getData().get("id");
@@ -41,13 +42,22 @@ public class FirebaseMessaging extends FirebaseMessagingService {
                 id = Integer.valueOf(obj.toString());
             }
 
-            int type =0;
-            Object obj1 = remoteMessage.getData().get("Type");
-            if(obj1 !=null){
-                type = Integer.valueOf(obj1.toString());
+
+
+            String msg = remoteMessage.getData().get("default");
+            String alarmName = "";
+            try {
+                JSONObject alarm = new JSONObject(msg);
+                Log.d("FireBase Message Alarm:", ""+alarm.get("AlarmName"));
+                alarmName = alarm.get("AlarmName").toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            Log.e("FIREBASE type:", ""+type);
-            Log.d("FireBase Message Data:", ""+remoteMessage.getData());
+
+           // Log.e("FIREBASE type:", ""+type);
+            // Log.d("FireBase Message Data:", ""+remoteMessage.getData());
+
+           // Log.d("FireBase Message notification body:", text);
 
             Intent intent = new Intent(this, UIMain.class);
             intent.putExtra("TEXT","test"/*text*/);
@@ -58,7 +68,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
             NotificationCompat.Builder notificationBuilder = null;
 
-            if(type == 0) {
+            if(alarmName.equals(NOTE_POSTED)) {
 
                 try {
                     notificationBuilder = new NotificationCompat.Builder(this, "default")
