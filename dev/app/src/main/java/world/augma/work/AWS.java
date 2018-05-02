@@ -85,7 +85,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private String[] matchingCircleNames;
     private String serviceType;
     private String userID;
-    private Note[] matchedNotes;
+    private List<Note> matchedNotes;
     private List<Circle> matchedCircles;
     private List<User> matchedUsers;
     private JSONObject userJSON;
@@ -134,6 +134,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         for(int i = 0; i < matchingCircleNames.length; i++) {
                             matchingCircleNames[i] = circleArr.getJSONObject(i).getString(CIRCLE_NAME);
                         }*/
+                        matchedCircles = new ArrayList<>();
                         JSONArray circles = jsonObject.getJSONObject(JSON_BODY).getJSONArray(ITEM_ARRAY);
                         for (int i = 0; i < circles.length(); i++) {
                             String circleID = ((JSONObject) circles.get(i)).getString(CIRCLE_ID);
@@ -144,6 +145,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
 
                     case Service.USER_SEARCH:
+                        matchedUsers = new ArrayList<>();
                         JSONArray users = jsonObject.getJSONObject(JSON_BODY).getJSONArray(ITEM_ARRAY);
                         for (int i = 0; i < users.length(); i++) {
 
@@ -226,13 +228,13 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
     private void generateNotes(JSONObject body) throws JSONException {
         JSONArray itemsArray = body.getJSONArray(ITEM_ARRAY);
-        matchedNotes = new Note[body.getInt(MATCH_COUNT)];
+        matchedNotes = new ArrayList<>();
         JSONArray circleList;
         List<Circle> cList = new ArrayList<>();
         JSONObject jObj;
         JSONObject iObj;
 
-        for(int i = 0; i < matchedNotes.length; i++) {
+        for(int i = 0; i < matchedNotes.size(); i++) {
             iObj = ((JSONObject) itemsArray.get(i));
             circleList = iObj.getJSONArray(CIRCLE_LIST);
 
@@ -246,10 +248,10 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     "", "", "", "", -1,
                     null, null, null, null,-1);
             //No method for getFloat might get errors.
-            matchedNotes[i] = new Note(iObj.getString(NOTE_ID), cList,
+            matchedNotes.add(new Note(iObj.getString(NOTE_ID), cList,
                     ((Float)iObj.get("lon")).floatValue(), ((Float)iObj.get("lat")).floatValue(),
                     owner, iObj.getInt("type"),
-                    iObj.getInt(NOTE_RATING), iObj.getInt(NOTE_BEACON), iObj.getString(NOTE_TEXT));
+                    iObj.getInt(NOTE_RATING), iObj.getInt(NOTE_BEACON), iObj.getString(NOTE_TEXT)));
         }
     }
 
@@ -257,7 +259,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         return matchingCircleNames;
     }
 
-    public Note[] getMatchedNotes() {
+    public List<Note> getMatchedNotes() {
         return matchedNotes;
     }
 
