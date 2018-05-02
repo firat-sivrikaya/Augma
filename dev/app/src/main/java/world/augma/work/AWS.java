@@ -88,6 +88,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private Note[] matchedNotes;
     private JSONObject userJSON;
     private JSONObject userData;
+    private String newNoteID;
 
     /*
      * -------- Fields above are service dependent! ----------
@@ -139,8 +140,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     case Service.GET_NOTE_WITH_FILTER:
-                        userJSON = jsonObject.getJSONObject(JSON_BODY);
-                        generateNotes(userJSON);
+                        generateNotes(jsonObject.getJSONObject(JSON_BODY));
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;
 
                     case Service.UPLOAD_IMAGE:
@@ -151,13 +151,19 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
                     case Service.CREATE_CIRCLE:
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
                     case Service.GET_USERDATA:
                         userData = jsonObject;
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     case Service.UPDATE_RATING:
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
                     case Service.LIGHT_THE_BEACON:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
+                    case Service.POST_NOTE:
+                        newNoteID = jsonObject.getString(JSON_BODY);
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
                     default:
@@ -339,6 +345,19 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 }
                 break;
 
+            case Service.POST_NOTE:
+                if(data.length == 1) {
+                    jsonObject.put(NOTE_TEXT, data[0]);
+                    jsonObject.put("lat", Float.parseFloat(data[1]));
+                    jsonObject.put("lon", Float.parseFloat(data[2]));
+                    jsonObject.put(OWNED_BY, data[3]);
+                    jsonObject.put(CIRCLE_LIST, data[4]);
+                } else {
+                    Log.e(TAG, "ERROR: Something wrong with the note data");
+                    return null;
+                }
+                break;
+
             default:
                 Log.e(TAG, "ERROR: No such service is provided.");
                 return null;
@@ -439,6 +458,10 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         return null;
     }
 
+    public String getNewNoteID() {
+        return newNoteID;
+    }
+
     public static final class Service {
 
         /* ------ Available Services ------ */
@@ -448,6 +471,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         public static final String REGISTER = "user";
 
         public static final String CREATE_CIRCLE = "circle";
+
+        public static final String POST_NOTE = "note";
 
         public static final String CIRCLE_SEARCH = "circle/search";
 
