@@ -9,16 +9,16 @@ public class Note {
 
     private String noteID;
     private List<Circle> circleList;
-    private float longitude;
-    private float latitude;
+    private double longitude;
+    private double latitude;
     private User owner;
     private int type;
     private int rating;
     private String noteText;
     private int beacon;
 
-    public Note(String noteID, List<Circle> circleList, float longitude,
-                float latitude, User owner, int type, int rating, int beacon, String noteText)
+    public Note(String noteID, List<Circle> circleList, double longitude,
+                double latitude, User owner, int type, int rating, int beacon, String noteText)
     {
         this.noteID = noteID;
         this.circleList = circleList;
@@ -61,7 +61,7 @@ public class Note {
 
 
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
@@ -69,7 +69,7 @@ public class Note {
         this.longitude = longitude;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 

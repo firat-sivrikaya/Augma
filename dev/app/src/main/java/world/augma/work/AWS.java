@@ -234,18 +234,19 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private void generateNotes(JSONObject body) throws JSONException {
         JSONArray itemsArray = body.getJSONArray(ITEM_ARRAY);
         matchedNotes = new ArrayList<>();
+        Log.e("itemarray:",itemsArray.toString());
         JSONArray circleList;
         List<Circle> cList = new ArrayList<>();
         JSONObject jObj;
         JSONObject iObj;
 
-        for(int i = 0; i < matchedNotes.size(); i++) {
+        for(int i = 0; i < itemsArray.length(); i++) {
             iObj = ((JSONObject) itemsArray.get(i));
             circleList = iObj.getJSONArray(CIRCLE_LIST);
 
             for(int j = 0; j < circleList.length(); j++) {
-                jObj = ((JSONObject) circleList.get(i));
-                cList.add(new Circle(jObj.getString(CIRCLE_NAME), jObj.getString(CIRCLE_ID)));
+                jObj = (JSONObject) circleList.get(j);
+                cList.add(new Circle(jObj.getString(CIRCLE_ID), jObj.getString(CIRCLE_NAME)));
             }
 
             User owner = new User(((JSONObject)iObj.get(OWNED_BY)).getString(USER_ID),
@@ -253,11 +254,13 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     "", "", "", "", -1,
                     null, null, null, null,-1);
             //No method for getFloat might get errors.
-            matchedNotes.add(new Note(iObj.getString(NOTE_ID), cList,
-                    ((Float)iObj.get("lon")).floatValue(), ((Float)iObj.get("lat")).floatValue(),
+            Note note = new Note(iObj.getString(NOTE_ID), cList,
+                     iObj.getDouble("lon"), iObj.getDouble("lat"),
                     owner, iObj.getInt("type"),
-                    iObj.getInt(NOTE_RATING), iObj.getInt(NOTE_BEACON), iObj.getString(NOTE_TEXT)));
+                    iObj.getInt(NOTE_RATING), 0, "");
+            matchedNotes.add(note);
         }
+        Log.e("matchedNotes:",matchedNotes.toString());
     }
 
     public String[] getMatchingCircleNames() {
@@ -338,8 +341,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 break;
             case Service.GET_NOTE_WITH_FILTER:
                 if(data.length == 2) {
-                    jsonObject.put("lat", Float.parseFloat(data[0]));
-                    jsonObject.put("lon", Float.parseFloat(data[1]));
+                    jsonObject.put("lat", Double.parseDouble(data[0]));
+                    jsonObject.put("lon", Double.parseDouble(data[1]));
                 } else {
                     Log.e(TAG, "ERROR: You must enter latitude and longitute only");
                     return null;
