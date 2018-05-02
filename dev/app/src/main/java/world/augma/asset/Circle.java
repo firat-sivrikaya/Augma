@@ -10,13 +10,17 @@ public class Circle {
     private static final int EXTRA_CHAR_OFFSET = 30;
 
     private String circleID;
+    private int circleType;
     private String name;
     private String description;
-    private List<User> subscribers;
+    private List<User> memberList;
     private User owner;
     private float radius;
 
-    public Circle(String name, String description, List<User> subscribers, User owner, float radius) {
+    public Circle(String circleID, String name, String description, int circleType, List<User> memberList, User owner, float radius) {
+
+        this.circleID = circleID;
+        this.circleType = circleType;
 
         if(radius < MIN_SIZE) {
             this.radius = MIN_SIZE;
@@ -36,13 +40,20 @@ public class Circle {
 
         this.name = name;
         this.description = description;
-        this.subscribers = subscribers;
+        this.memberList = memberList;
         this.owner = owner;
     }
 
     public Circle(String circleID, String name) {
         this.circleID = circleID;
         this.name = name;
+
+        this.radius = 200;
+        this.circleType = 0;
+        this.name = null;
+        this.description = null;
+        this.memberList = null;
+        this.owner = null;
     }
 
     public float getRadius() {
@@ -76,12 +87,12 @@ public class Circle {
         this.description = description;
     }
 
-    public List<User> getSubscribers() {
-        return subscribers;
+    public List<User> getMemberList() {
+        return memberList;
     }
 
-    public void setSubscribers(List<User> subscribers) {
-        this.subscribers = subscribers;
+    public void setMemberList(List<User> memberList) {
+        this.memberList = memberList;
     }
 
     public User getOwner() {
@@ -105,4 +116,11 @@ public class Circle {
         return name.concat("@").concat(owner == null ? "[NULL]" : owner.toString());
     }
 
+    public int getCircleType() {
+        return circleType;
+    }
+
+    public void setCircleType(int circleType) {
+        this.circleType = circleType;
+    }
 }

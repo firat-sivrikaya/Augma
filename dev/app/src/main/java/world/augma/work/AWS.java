@@ -139,7 +139,12 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         for (int i = 0; i < circles.length(); i++) {
                             String circleID = ((JSONObject) circles.get(i)).getString(CIRCLE_ID);
                             String name = ((JSONObject) circles.get(i)).getString(CIRCLE_NAME);
-                            Circle c = new Circle(circleID, name);
+                            JSONObject ownerObject = ((JSONObject) circles.get(i)).getJSONObject(OWNED_BY);
+                            User owner = new User(ownerObject.getString(USER_ID),ownerObject.getString(USERNAME),null,null,null,null,null,null,0,null,null,null,null,0);
+                            Circle c = new Circle(circleID, name,
+                                    ((JSONObject) circles.get(i)).getString(DESC),
+                                    ((JSONObject) circles.get(i)).getInt("circleType"),
+                                    null,owner,200 );
                             matchedCircles.add(c);
                         }
                         return jsonObject.getJSONObject(JSON_BODY).getInt(MATCH_COUNT) >= VALID;

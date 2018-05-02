@@ -15,6 +15,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -130,11 +131,12 @@ public class UIProfile extends AppCompatActivity {
 
         //TODO Galeriyi başlatmak için aşağıdaki commentleri kaldır
         //recyclerView.setAdapter(new GridLayoutAdapter());
+        //
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(GALLERY_COLUMN_COUNT, StaggeredGridLayoutManager.VERTICAL));
 
-        //statDisplayLikes.setText(user.getRating().size());
-        //statDisplayCircles.setText(user.getMemberships().size());
-        //statDisplayPosts.setText(user.getOwnedNotes().size());
+        statDisplayLikes.setText(""+user.getRating());
+        statDisplayCircles.setText(""+user.getMemberships().size());
+        statDisplayPosts.setText(""+user.getOwnedNotes().size());
 
         bioHorizontalSeparator.setText("Bio");
         postsHorizontalSeparator.setText("Posts");
@@ -221,7 +223,6 @@ public class UIProfile extends AppCompatActivity {
             super(itemView);
             imageView = itemView.findViewById(R.id.gallery_item_image);
         }
-
     }
 
     private class GridLayoutAdapter extends RecyclerView.Adapter<GalleryItem> {
@@ -240,7 +241,7 @@ public class UIProfile extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return 0; //TODO Buraya da kaç not olduğu girilecek
+            return user.getOwnedNotes().size();
         }
     }
 }

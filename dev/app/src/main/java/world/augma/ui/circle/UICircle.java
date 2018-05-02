@@ -56,8 +56,8 @@ public class UICircle extends Fragment {
         try {
             if(aws.execute(AWS.Service.CIRCLE_SEARCH, text.toString().toLowerCase().trim()).get()) {
 
-                for(String match : Arrays.asList(aws.getMatchingCircleNames())) {
-                    circleList.add(new Circle(match, null, null, null, 200));
+                for(Circle circle: aws.getMatchedCircles()) {
+                    circleList.add(circle);
                 }
                 canvas.init(circleList);
             }
