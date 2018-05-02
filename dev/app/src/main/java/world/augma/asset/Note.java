@@ -15,10 +15,10 @@ public class Note {
     private int type;
     private int rating;
     private String noteText;
-    private int superRating;
+    private int beacon;
 
-    public Note(String noteID, List<Circle> circleList,  float longitude,
-                float latitude, User owner, int type, int rating, int superRating, String noteText)
+    public Note(String noteID, List<Circle> circleList, float longitude,
+                float latitude, User owner, int type, int rating, int beacon, String noteText)
     {
         this.noteID = noteID;
         this.circleList = circleList;
@@ -27,14 +27,14 @@ public class Note {
         this.owner = owner;
         this.type = type;
         this.rating = rating;
-        this.superRating = superRating;
+        this.beacon = beacon;
         this.noteText =  noteText;
     }
-    public Note(String noteID,  int rating, int superRating)
+    public Note(String noteID,  int rating, int beacon)
     {
         this.noteID = noteID;
         this.rating = rating;
-        this.superRating = superRating;
+        this.beacon = beacon;
     }
 
     public void setLongitudeFromLatLng(LatLng noteLoc)
@@ -94,11 +94,11 @@ public class Note {
     }
 
     public int getSuperRate() {
-        return superRating;
+        return beacon;
     }
 
     public void setSuperRate(int superRate) {
-        this.superRating = superRating;
+        this.beacon = beacon;
     }
 
     public String getNoteText() {

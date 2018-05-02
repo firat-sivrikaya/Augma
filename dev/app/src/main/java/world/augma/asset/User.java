@@ -15,15 +15,16 @@ public class User {
 
     private String birthdate;
     private int type;
+    private int rating;
 
     private List<Circle> memberships;
-    private List<Circle> invitations;
+    private List<Invitation> invitations;
     private List<Note> ownedNotes;
     private List<Circle> ownedCircles;
 
     public User(String userID, String username, String bio, String email, String name, String password,
-                String profilePic, String birthdate, int type, List<Circle> memberships, List<Circle> invitations,
-                List<Note> ownedNotes, List<Circle> ownedCircles) {
+                String profilePic, String birthdate, int type, List<Circle> memberships, List<Invitation> invitations,
+                List<Note> ownedNotes, List<Circle> ownedCircles, int rating) {
         this.userID = userID;
         this.username = username;
         this.bio = bio;
@@ -37,6 +38,7 @@ public class User {
         this.invitations = invitations;
         this.ownedNotes = ownedNotes;
         this.ownedCircles = ownedCircles;
+        this.rating = rating;
     }
 
     public String getUserID() {
@@ -111,11 +113,11 @@ public class User {
         this.memberships = memberships;
     }
 
-    public List<Circle> getInvitations() {
+    public List<Invitation> getInvitations() {
         return invitations;
     }
 
-    public void setInvitations(List<Circle> invitations) {
+    public void setInvitations(List<Invitation> invitations) {
         this.invitations = invitations;
     }
 
@@ -146,5 +148,13 @@ public class User {
     @Override
     public String toString() {
         return userID + " " + username + " " + email;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 }

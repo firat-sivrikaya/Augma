@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import world.augma.asset.Circle;
+import world.augma.asset.Invitation;
 import world.augma.asset.Note;
 import world.augma.asset.User;
 
@@ -57,7 +58,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
     private final String NOTE_ID            = "noteID";
     private final String NOTE_RATING        = "rating";
     private final String NOTE_TEXT          = "noteText";
-    private final String NOTE_SUPER_RATING  = "beacons";
+    private final String NOTE_BEACON        = "beacon";
     private final String CIRCLE_NAME        = "circleName";
     private final String CIRCLE_SEARCH_NAME = "circleSearchName";
     private final String CIRCLE_LIST        = "circleList";
@@ -154,6 +155,11 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         userData = jsonObject;
                         return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
 
+                    case Service.UPDATE_RATING:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+                    case Service.LIGHT_THE_BEACON:
+                        return jsonObject.getString(STATUS_CODE).equals(STATUS_APPROVED);
+
                     default:
                         matchingCircleNames = null;
                         return false;
@@ -188,13 +194,12 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
             User owner = new User(((JSONObject)iObj.get(OWNED_BY)).getString(USER_ID),
                     ((JSONObject)iObj.get(OWNED_BY)).getString(USERNAME), "", "",
                     "", "", "", "", -1,
-                    null, null, null, null);
+                    null, null, null, null,-1);
             //No method for getFloat might get errors.
-            //We dont get rating and superrating here.
             matchedNotes[i] = new Note(iObj.getString(NOTE_ID), cList,
                     ((Float)iObj.get("lon")).floatValue(), ((Float)iObj.get("lat")).floatValue(),
                     owner, iObj.getInt("type"),
-                    iObj.getInt(NOTE_RATING), -1, iObj.getString(NOTE_TEXT));
+                    iObj.getInt(NOTE_RATING), iObj.getInt(NOTE_BEACON), iObj.getString(NOTE_TEXT));
         }
     }
 
@@ -313,6 +318,27 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 }
                 break;
 
+
+            case Service.UPDATE_RATING:
+                if(data.length == 3) {
+                    jsonObject.put(NOTE_ID, data[0]);
+                    jsonObject.put("val", data[1]);
+                    jsonObject.put(OWNED_BY, data[2]);
+                } else {
+                    Log.e(TAG, "ERROR: You must fill in all three fields.");
+                    return null;
+                }
+                break;
+
+            case Service.LIGHT_THE_BEACON:
+                if(data.length == 1) {
+                    jsonObject.put(NOTE_ID, data[0]);
+                } else {
+                    Log.e(TAG, "ERROR: You must give a noteID");
+                    return null;
+                }
+                break;
+
             default:
                 Log.e(TAG, "ERROR: No such service is provided.");
                 return null;
@@ -345,7 +371,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
             if( aws1.execute(Service.GET_USERDATA, userID).get()) {
                 JSONObject obj = aws1.getUserData().getJSONObject(JSON_BODY).getJSONObject(ITEM);
                 List<Note> ownedNotes = new ArrayList<>();
-                List<Circle> invitations = new ArrayList<>();
+                List<Invitation> invitations = new ArrayList<>();
                 List<Circle> ownedCircles = new ArrayList<>();
 
 
@@ -363,13 +389,13 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 for (int i = 0; i < ownedNote.length(); i++) {
                     String noteID = ((JSONObject) ownedNote.get(i)).getString(NOTE_ID);
                     int rating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_RATING);
-                    int superRating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_SUPER_RATING);
-                    Note n = new Note(noteID, null,  -1, -1, null, -1, rating, superRating,null);
+                    int beacon = ((JSONObject) ownedNote.get(i)).getInt(NOTE_BEACON);
+                    Note n = new Note(noteID, null,  -1, -1, null, -1, rating, beacon,null);
                     ownedNotes.add(n);
                 }
 
                 //getting invitations
-           /*
+
            //TODO bu part invitation objesi olusturulduktan sonra biticek
            JSONArray invitation = obj.getJSONArray(INVITATION);
             for(int i = 0; i < invitation.length(); i++) {
@@ -377,8 +403,10 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                 String circleName = ((JSONObject) invitation.get(i)).getString(CIRCLE_NAME);
                 String userID = ((JSONObject) invitation.get(i)).getString(USER_ID);
                 String userName = ((JSONObject) invitation.get(i)).getString(USERNAME);
+                Invitation inv = new Invitation(userID,userName,circleID,circleName);
+                invitations.add(inv);
 
-            }*/
+            }
 
 
                 return new User(
@@ -394,7 +422,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                         circleMembershipList,
                         invitations,
                         ownedNotes,
-                        ownedCircles
+                        ownedCircles,
+                        userJSON.getInt("rating")
                 );
             }
 
@@ -429,6 +458,10 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         public static final String GET_NOTE_WITH_FILTER = "note/getwithfilter";
 
         public static final String UPLOAD_IMAGE = "note/uploadimage";
+
+        public static final String UPDATE_RATING = "note/updaterating";
+
+        public static final String LIGHT_THE_BEACON = "note/lightthebeacon";
 
         public static final String EDIT_USER_INFO = "user/edituserinfo";
 
