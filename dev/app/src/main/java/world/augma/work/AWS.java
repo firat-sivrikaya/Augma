@@ -236,14 +236,14 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
         matchedNotes = new ArrayList<>();
         Log.e("itemarray:",itemsArray.toString());
         JSONArray circleList;
-        List<Circle> cList = new ArrayList<>();
+        List<Circle> cList;
         JSONObject jObj;
         JSONObject iObj;
 
         for(int i = 0; i < itemsArray.length(); i++) {
             iObj = ((JSONObject) itemsArray.get(i));
             circleList = iObj.getJSONArray(CIRCLE_LIST);
-
+            cList = new ArrayList<>();
             for(int j = 0; j < circleList.length(); j++) {
                 jObj = (JSONObject) circleList.get(j);
                 cList.add(new Circle(jObj.getString(CIRCLE_ID), jObj.getString(CIRCLE_NAME)));

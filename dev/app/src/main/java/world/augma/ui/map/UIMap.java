@@ -27,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -91,6 +92,9 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.ui_map, container, false);
 
+        serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
+        user = serviceUIMain.fetchUser();
+
         circleMenu = (CircleMenuView) root.findViewById(R.id.circleMenu);
 
         circleMenu.setEventListener(new CircleMenuView.EventListener() {
@@ -106,8 +110,8 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("mLastKnownLocation", mLastKnownLocation);
                         intent.putExtras(bundle);
-                        Log.e("ASLKDJAKSDAD", "My Lat: " + mLastKnownLocation.getLatitude() +
-                                " My Lon: " + mLastKnownLocation.getLongitude());
+                        //Log.e("ASLKDJAKSDAD", "My Lat: " + mLastKnownLocation.getLatitude() +
+                                //" My Lon: " + mLastKnownLocation.getLongitude());
                         startActivity(intent, ActivityOptions.makeCustomAnimation(getContext(),
                                 R.anim.fade_in, R.anim.fade_out).toBundle());
                         return;
@@ -168,8 +172,6 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                 updateLocationUI();
 
                 getDeviceLocation();
-
-
             }
 
         });
@@ -189,8 +191,9 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                 }
             }
         };
-        serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
-        user = serviceUIMain.fetchUser();
+
+
+
 
         return root;
     }
@@ -201,6 +204,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
         mMap.clear();
         for(Note n : nearbyNotes)
         {
+            boolean added = false;
             Location.distanceBetween(mLastKnownLocation.getLatitude(),
                     mLastKnownLocation.getLongitude(), n.getLatitude(), n.getLongitude(), result);
             if(result[0] <= 1000) // Notes within the 100 meter radius are shown.
@@ -211,16 +215,20 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                     {
                         if(c1.getName().equals(c2.getName()))
                         {
+                            //Log.e("AAAAAAAAAAAAAAAAAAAA", c1.getCircleID());
                             //We deduce that user can see this note.
                             mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(n.getLatitude(), n.getLongitude()))
                             .title(c1.getName())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2))
                             );
+                            added = true;
 
                             break;
                         }
                     }
-
+                    if(added)
+                        break;
                 }
             }
         }
@@ -353,7 +361,15 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 //                            updateCameraBearing(mMap, mLastKnownLocation.getBearing());
-
+                            AWS aws = new AWS();
+                            try {
+                                aws.execute(AWS.Service.GET_NOTE_WITH_FILTER, "" + mLastKnownLocation.getLatitude(),
+                                        "" + mLastKnownLocation.getLongitude()).get();
+                            } catch (InterruptedException | ExecutionException e) {
+                                e.printStackTrace();
+                            }
+                            nearbyNotes = aws.getMatchedNotes();
+                            putMarker(mMap, nearbyNotes);
                         }
                         else
                         {

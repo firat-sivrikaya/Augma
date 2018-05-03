@@ -2,10 +2,8 @@ package world.augma.work;
 
 import android.util.Log;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.google.firebase.iid.zzw;
 
 public class FirebaseInstance extends FirebaseInstanceIdService {
 
