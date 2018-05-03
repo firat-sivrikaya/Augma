@@ -130,9 +130,9 @@ public class UIProfile extends AppCompatActivity {
         userLocation.setText("Bilkent");
 
         //TODO Galeriyi başlatmak için aşağıdaki commentleri kaldır
-        //recyclerView.setAdapter(new GridLayoutAdapter());
-        //
-        //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(GALLERY_COLUMN_COUNT, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setAdapter(new GridLayoutAdapter());
+
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(GALLERY_COLUMN_COUNT, StaggeredGridLayoutManager.VERTICAL));
 
         statDisplayLikes.setText(""+user.getRating());
         statDisplayCircles.setText(""+user.getMemberships().size());
@@ -187,15 +187,12 @@ public class UIProfile extends AppCompatActivity {
         if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
 
-            //TODO image boyutu kontrol et ve image'i daire seklinde göster
-            profileImage.setImageURI(selectedImage); //TODO image i augma klasorune koy sonra S3 fetch profileimage la set et
+            profileImage.setImageURI(selectedImage);
             BitmapDrawable drawable = (BitmapDrawable) profileImage.getDrawable();
             Bitmap bitmap = drawable.getBitmap();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG,100,bos);
             byte[] bb = bos.toByteArray();
-
-            //TODO Needs Fix
             if(S3.uploadProfileImage(this.getApplicationContext(),bb,user.getUserID())){
                 S3.fetchProfileImage(this,profileImage,user.getUserID());
                 serviceUIMain.updateHeader();
@@ -236,7 +233,7 @@ public class UIProfile extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull GalleryItem holder, int position) {
             holder.imageView.requestLayout();
-            //S3.fetchBackgroundImage(UIProfile.this, holder.imageView, ); TODO buradan noteların imageları girilecek
+            S3.fetchProfileImage(UIProfile.this,holder.imageView,user.getUserID()); //TODO buradan noteların imageları girilecek
         }
 
         @Override
