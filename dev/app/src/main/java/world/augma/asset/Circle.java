@@ -50,7 +50,6 @@ public class Circle {
 
         this.radius = 200;
         this.circleType = 0;
-        this.name = null;
         this.description = null;
         this.memberList = null;
         this.owner = null;
