@@ -36,8 +36,7 @@
 
     <!-- ui main -->
     <color name="colorPopUpPostNote">#3E79CD</color>
-    <color name="colorPopUpPreview">#A642CF</color>#CC2B5E
-    <color name="colorPopUpGetNotes">#CC2B5E</color>
+    <color name="colorPopUpPreview">#A642CF</color>
 
     <!-- ui profile -->
     <color name="colorStatRectTransparentBackgroundStart">#800051F2</color>

@@ -18,9 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,22 +27,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.ramotion.circlemenu.CircleMenuView;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import world.augma.R;
-import world.augma.asset.Circle;
-import world.augma.asset.Note;
-import world.augma.asset.User;
 import world.augma.ui.camera.UICamera;
-import world.augma.ui.services.InterActivityShareModel;
-import world.augma.ui.services.ServiceUIMain;
-import world.augma.work.AWS;
 
 /** Created by Burak */
 
@@ -56,7 +43,6 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int NOTE_POST = 0;
     private static final int OPEN_CAMERA = 1;
-    private static final int GET_NOTES = 2;
 
     private static final String KEY_LOCATION = "location";
     private static final String KEY_CAMERA_POSITION = "camera_position";
@@ -73,17 +59,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
     private boolean mLocationPermissionGranted;
 
     private CameraPosition mCameraPosition;
-    private static Location mLastKnownLocation;
-
-    private LocationCallback mLocationCallback;
-    private LocationRequest mLocationRequest;
-
-    private List<Note> nearbyNotes;
-    private User user;
-    private ServiceUIMain serviceUIMain;
-    // The entry points to the Places API.
-//    private GeoDataClient mGeoDataClient;
-//    private PlaceDetectionClient mPlaceDetectionClient;
+    private Location mLastKnownLocation;
 
 
     @Nullable
@@ -101,26 +77,13 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                     case NOTE_POST:
                         return;
                     case OPEN_CAMERA:
-                        //startActivity(new Intent(getActivity(), UICamera.class));
                         Intent intent = new Intent(getActivity(), UICamera.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("mLastKnownLocation", mLastKnownLocation);
                         intent.putExtras(bundle);
-                        Log.e("ASLKDJAKSDAD", "My Lat: " + mLastKnownLocation.getLatitude() +
-                                " My Lon: " + mLastKnownLocation.getLongitude());
-                        startActivity(intent, ActivityOptions.makeCustomAnimation(getContext(),
-                                R.anim.fade_in, R.anim.fade_out).toBundle());
+
+                        startActivity(intent, ActivityOptions.makeCustomAnimation(getContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
                         return;
-                    case GET_NOTES:
-                        AWS aws = new AWS();
-                        try {
-                            aws.execute(AWS.Service.GET_NOTE_WITH_FILTER, "" + mLastKnownLocation.getLatitude(),
-                                    "" + mLastKnownLocation.getLongitude()).get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
-                        }
-                        nearbyNotes = aws.getMatchedNotes();
-                        putMarker(mMap, nearbyNotes);
                 }
             }
         });
@@ -135,11 +98,6 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
         }
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(2000)
-                .setFastestInterval(1000);
 
         MapsInitializer.initialize(getActivity().getApplicationContext());
 
@@ -168,62 +126,9 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                 updateLocationUI();
 
                 getDeviceLocation();
-
-
             }
-
         });
-
-
-
-
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
-                for (Location location : locationResult.getLocations()) {
-                    mLastKnownLocation = location;
-                    updateLocationUI();
-                }
-            }
-        };
-        serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
-        user = serviceUIMain.fetchUser();
-
         return root;
-    }
-
-    public void putMarker(GoogleMap mMap, List<Note> nearbyNotes)
-    {
-        float[] result = new float[1];
-        mMap.clear();
-        for(Note n : nearbyNotes)
-        {
-            Location.distanceBetween(mLastKnownLocation.getLatitude(),
-                    mLastKnownLocation.getLongitude(), n.getLatitude(), n.getLongitude(), result);
-            if(result[0] <= 1000) // Notes within the 100 meter radius are shown.
-            {
-                for(Circle c1 : n.getCircleList())
-                {
-                    for(Circle c2 : user.getMemberships())
-                    {
-                        if(c1.getName().equals(c2.getName()))
-                        {
-                            //We deduce that user can see this note.
-                            mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(n.getLatitude(), n.getLongitude()))
-                            .title(c1.getName())
-                            );
-
-                            break;
-                        }
-                    }
-
-                }
-            }
-        }
     }
 
     @Override
@@ -245,12 +150,6 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                 circleMenu.invalidate();
             }
         });
-        stopLocationUpdates();
-
-    }
-
-    private void stopLocationUpdates() {
-        mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
     }
 
     @Override
@@ -263,26 +162,6 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                 circleMenu.invalidate();
             }
         });
-        if (mLocationPermissionGranted) {
-            startLocationUpdates();
-        }
-
-    }
-
-
-
-    private void startLocationUpdates() {
-        try
-        {
-            mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest,
-                    mLocationCallback,
-                    null /* Looper */);
-//            updateCameraBearing(mMap, mLastKnownLocation.getBearing());
-        }
-        catch(SecurityException e)
-        {
-            Log.e(TAG, "No location updates for you my friend.");
-        }
     }
 
     private void getLocationPermission()
@@ -352,7 +231,6 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-//                            updateCameraBearing(mMap, mLastKnownLocation.getBearing());
 
                         }
                         else
@@ -362,7 +240,6 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                             mMap.moveCamera(CameraUpdateFactory
                                     .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-//                            updateCameraBearing(mMap, mLastKnownLocation.getBearing());
                         }
                     }
                 });
@@ -373,14 +250,4 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
             Log.e("Exception: %s", e.getMessage());
         }
     }
-//    private void updateCameraBearing(GoogleMap googleMap, float bearing) {
-//        if ( googleMap == null) return;
-//        CameraPosition camPos = CameraPosition
-//                .builder(
-//                        googleMap.getCameraPosition() // current Camera
-//                )
-//                .bearing(bearing)
-//                .build();
-//        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
-//    }
 }

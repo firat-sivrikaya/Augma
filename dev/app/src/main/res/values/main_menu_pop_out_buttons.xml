@@ -4,13 +4,11 @@
     <array name="icons">
         <item>@drawable/ic_ui_main_pop_out_note_post</item>
         <item>@drawable/ic_ui_main_note_preview</item>
-        <item>@drawable/ic_refresh_black_24dp</item>
     </array>
 
     <array name="button_colors">
         <item>@color/colorPopUpPostNote</item>
         <item>@color/colorPopUpPreview</item>
-        <item>@color/colorPopUpGetNotes</item>
     </array>
 
 </resources>
