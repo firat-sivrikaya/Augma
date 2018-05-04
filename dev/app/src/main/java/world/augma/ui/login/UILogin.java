@@ -1,9 +1,7 @@
 package world.augma.ui.login;
 
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,10 +22,10 @@ import java.util.concurrent.ExecutionException;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import world.augma.R;
+import world.augma.asset.AugmaSharedPreferences;
 import world.augma.ui.main.UIMain;
 import world.augma.ui.signUp.UISignUp;
 import world.augma.work.AWS;
-import world.augma.work.AugmaSharedPreferences;
 import world.augma.work.Utils;
 
 /**
@@ -74,17 +72,11 @@ public class UILogin extends AppCompatActivity {
         usernameField.setOnEditorActionListener(keyListener);
         passwordField.setOnEditorActionListener(keyListener);
 
-        initiateButton.setVisibility(View.GONE);
-
         findViewById(android.R.id.content).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 Utils.hideKeyboard(UILogin.this);
-                if(!(usernameField.getText().toString().isEmpty() || passwordField.getText().toString().isEmpty()))
-                    initiateButton.setVisibility(View.VISIBLE);
-                else
-                    initiateButton.setVisibility(View.GONE);
-                return false;
+                return true;
             }
         });
     }
@@ -115,9 +107,7 @@ public class UILogin extends AppCompatActivity {
         try {
             if(aws.execute(AWS.Service.LOGIN, usernameField.getText().toString().trim(),
                     passwordField.getText().toString().trim()).get()) {
-                SharedPreferences.Editor sp = getSharedPreferences(AugmaSharedPreferences.SHARED_PREFS, Context.MODE_PRIVATE).edit();
-                sp.putString(AugmaSharedPreferences.USER_ID, aws.getUserID());
-                sp.apply();
+                AugmaSharedPreferences.login(this, aws.getUserID());
 
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -164,37 +154,22 @@ public class UILogin extends AppCompatActivity {
 
             if(v == usernameField && actionId == EditorInfo.IME_ACTION_NEXT) {
                 if(usernameField.getText().toString().isEmpty()
-                        || !Utils.validateUsername(usernameField.getText().toString().trim())){
+                        || !Utils.validateUsername(usernameField.getText().toString().trim())) {
                     Utils.sendErrorNotification(UILogin.this, "Invalid username!");
                     usernameField.requestFocus();
-                }
-                else
-                {
+                } else {
                     passwordField.requestFocus();
                 }
             } else if(v == passwordField && actionId == EditorInfo.IME_ACTION_DONE) {
                 if(passwordField.getText().toString().isEmpty()) {
                     Utils.hideKeyboard(UILogin.this);
                     Utils.sendWarningNotification(UILogin.this, "You must enter your password.");
-                }
-                else
-                {
+                } else {
                     Utils.hideKeyboard(UILogin.this);
                     passwordField.clearFocus();
                 }
             }
-
-            if(!(usernameField.getText().toString().isEmpty() || passwordField.getText().toString().isEmpty()))
-                initiateButton.setVisibility(View.VISIBLE);
-            else
-                initiateButton.setVisibility(View.GONE);
             return true;
         }
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-
     }
 }

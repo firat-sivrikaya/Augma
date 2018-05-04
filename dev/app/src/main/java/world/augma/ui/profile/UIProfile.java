@@ -8,33 +8,38 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.TransitionManager;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.vivchar.rendererrecyclerviewadapter.DefaultCompositeViewModel;
+import com.github.vivchar.rendererrecyclerviewadapter.RendererRecyclerViewAdapter;
+import com.github.vivchar.rendererrecyclerviewadapter.binder.CompositeViewBinder;
+
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import world.augma.R;
+import world.augma.asset.AugmaVisualType;
 import world.augma.asset.User;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
+import world.augma.ui.widget.ItemSpaceDecoration;
+import world.augma.ui.widget.ProfileGalleryItem;
 import world.augma.ui.widget.Wave;
-import world.augma.work.AWS;
-import world.augma.work.S3;
+import world.augma.work.visual.AugmaImager;
+import world.augma.work.visual.S3;
 
 /**
  * Created by Burak.
@@ -58,6 +63,7 @@ public class UIProfile extends AppCompatActivity {
     private LinearLayout statDisplayLayout;
     private ConstraintSet extendedLayout, shrinkLayout;
     private ConstraintLayout mainLayout;
+    private CardView bio;
     private Wave bottomWave;
     private ServiceUIMain serviceUIMain;
     private static final int RESULT_LOAD_IMAGE = 1;
@@ -81,6 +87,7 @@ public class UIProfile extends AppCompatActivity {
         mainLayout = (ConstraintLayout) findViewById(R.id.ui_profile_layout);
         statDisplayLayout = (LinearLayout) findViewById(R.id.stat_display);
         bottomWave = (Wave) findViewById(R.id.bottomWave);
+        bio = (CardView) findViewById(R.id.bio);
         recyclerView = (RecyclerView) ((CardView) findViewById(R.id.galleryParent)).findViewById(R.id.gallery);
         statDisplayCircles = (TextView) ((LinearLayout) statDisplayLayout.findViewById(R.id.numOfCircles)).findViewById(R.id.numOfCirclesNumText);
         statDisplayLikes = (TextView) ((LinearLayout) statDisplayLayout.findViewById(R.id.numOfLikes)).findViewById(R.id.numOfLikesNumText);
@@ -96,43 +103,19 @@ public class UIProfile extends AppCompatActivity {
 
         serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
         user =  serviceUIMain.fetchUser();
-        S3.fetchBackgroundImage(this,backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
-        S3.fetchProfileImage(this, profileImage, user.getUserID());
-
-
-        //Load background image
-        /*
-
-        Glide.with(this)
-                .load("android.resource://world.augma/drawable/" + R.drawable.background_image)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(backgroundImage);
-
-        */
-
-        //Load profile image in circular form -> with adjusted size multiplier
-        /*
-        Glide.with(this)
-
-                .load(Uri.parse("android.resource://world.augma/drawable/" + R.drawable.profile_pic))
-                .crossFade()
-                .thumbnail(0.9f)
-                .bitmapTransform(new ProfileImageTransformer(this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(profileImage);
-
-                */
+        //S3.fetchBackgroundImage(this,backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image); TODO DEGISTIR
+        //S3.fetchProfileImage(this, profileImage, user.getUserID());
+        AugmaImager.set(AugmaVisualType.NOTE, this, backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
+        AugmaImager.set(AugmaVisualType.NOTE, this, profileImage, "android.resource://world.augma/drawable/" + R.drawable.profile_pic);
 
         //TODO 115 Char sınırla, essay yazmasın...
-        bioText.setText(user.getBio());
-        userFullName.setText(user.getName());
+        //bioText.setText(user.getBio()); TODO DEGISTIR
+        //userFullName.setText(user.getName());
+        bioText.setText("Professional Designer. Santa Monica, CA.");
+        userFullName.setText("Burcu Şahin");
         userLocation.setText("Bilkent");
 
-        //TODO Galeriyi başlatmak için aşağıdaki commentleri kaldır
-        recyclerView.setAdapter(new GridLayoutAdapter());
-
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(GALLERY_COLUMN_COUNT, StaggeredGridLayoutManager.VERTICAL));
+        setGalleryAdapter();
 
         statDisplayLikes.setText(""+user.getRating());
         statDisplayCircles.setText(""+user.getMemberships().size());
@@ -146,9 +129,11 @@ public class UIProfile extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction()) {
+
             case MotionEvent.ACTION_DOWN:
                 y = event.getY();
                 return true;
+
             case MotionEvent.ACTION_UP:
                 TransitionManager.beginDelayedTransition(mainLayout);
                 if(event.getY() - y < 0) {
@@ -157,10 +142,12 @@ public class UIProfile extends AppCompatActivity {
                         public void run() {
                             bottomWave.setVisibility(View.INVISIBLE);
                             statDisplayLayout.setVisibility(View.INVISIBLE);
+                            bioHorizontalSeparator.setVisibility(View.INVISIBLE);
+                            bio.setVisibility(View.INVISIBLE);
+
                         }
                     });
                     shrinkLayout.applyTo(mainLayout);
-
                 } else {
                     extendedLayout.applyTo(mainLayout);
                     runOnUiThread(new Runnable() {
@@ -168,17 +155,14 @@ public class UIProfile extends AppCompatActivity {
                         public void run() {
                             bottomWave.setVisibility(View.VISIBLE);
                             statDisplayLayout.setVisibility(View.VISIBLE);
+                            bioHorizontalSeparator.setVisibility(View.VISIBLE);
+                            bio.setVisibility(View.VISIBLE);
                         }
                     });
                 }
                 return true;
         }
         return false;
-    }
-
-    private void updateUserProfile(String userID)
-    {
-        AWS aws = new AWS();
     }
 
     @Override
@@ -193,11 +177,45 @@ public class UIProfile extends AppCompatActivity {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG,100,bos);
             byte[] bb = bos.toByteArray();
-            if(S3.uploadProfileImage(this.getApplicationContext(),bb,user.getUserID())){
+
+            if(S3.uploadProfileImage(bb,user.getUserID())){
                 S3.fetchProfileImage(this,profileImage,user.getUserID());
                 serviceUIMain.updateHeader();
             }
         }
+    }
+
+    public void setGalleryAdapter() {
+        RendererRecyclerViewAdapter adapter = new RendererRecyclerViewAdapter();
+        adapter.registerRenderer(
+                new CompositeViewBinder<>(
+                        R.layout.gallery_item,
+                        R.id.gallery,
+                        DefaultCompositeViewModel.class,
+                        Collections.singletonList(new ItemSpaceDecoration(10, 10))
+                )
+        );
+
+
+        //TODO SONRA SIL
+        int[] galleryImages = {R.drawable.sample1, R.drawable.sample2, R.drawable.sample3,
+                R.drawable.sample4, R.drawable.sample5, R.drawable.sample6, R.drawable.sample7,
+                R.drawable.sample8, R.drawable.sample9, R.drawable.sample10, R.drawable.sample11,
+                R.drawable.sample12, R.drawable.sample13, R.drawable.sample14};
+
+        List<ProfileGalleryItem> galleryItemList = new ArrayList<>();
+
+        for(int i = 0; i < galleryImages.length; i++) {
+            galleryItemList.add(new ProfileGalleryItem(UIProfile.this, galleryImages[i]));
+        }
+
+        adapter.setItems(galleryItemList);
+
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new ItemSpaceDecoration(10, 10));
+
+
     }
 
     private class ProfileClickListener implements View.OnClickListener {
@@ -212,16 +230,7 @@ public class UIProfile extends AppCompatActivity {
         }
     }
 
-    private class GalleryItem extends RecyclerView.ViewHolder {
-
-        private ImageView imageView;
-
-        public GalleryItem(View itemView) {
-            super(itemView);
-            imageView = itemView.findViewById(R.id.gallery_item_image);
-        }
-    }
-
+    /*
     private class GridLayoutAdapter extends RecyclerView.Adapter<GalleryItem> {
 
         @NonNull
@@ -233,12 +242,16 @@ public class UIProfile extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull GalleryItem holder, int position) {
             holder.imageView.requestLayout();
-            S3.fetchProfileImage(UIProfile.this,holder.imageView,user.getUserID()); //TODO buradan noteların imageları girilecek
+            //S3.fetchNoteImage(UIProfile.this,holder.imageView,user.getUserID(), user.getOwnedNotes().get(position).getNoteID());
+            AugmaImager.set(AugmaVisualType.NOTE, UIProfile.this, holder.imageView, "android.resource://world.augma/drawable/" + galleryImages[position]);
         }
 
         @Override
         public int getItemCount() {
-            return user.getOwnedNotes().size();
+            //return user.getOwnedNotes().size();
+            return 14;
         }
     }
+
+    */
 }

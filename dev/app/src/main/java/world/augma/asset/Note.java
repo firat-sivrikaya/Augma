@@ -59,8 +59,6 @@ public class Note {
         this.circleList = circleList;
     }
 
-
-
     public double getLongitude() {
         return longitude;
     }

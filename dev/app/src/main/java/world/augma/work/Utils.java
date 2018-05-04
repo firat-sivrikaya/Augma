@@ -97,7 +97,7 @@ public final class Utils {
                 .sneakWarning();
     }
 
-    public static void sendSuccessnNotification(Activity activity, String successMsg) {
+    public static void sendSuccessNotification(Activity activity, String successMsg) {
         Sneaker.with(activity)
                 .setTitle("Success!")
                 .setMessage(successMsg)

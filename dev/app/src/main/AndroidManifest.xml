@@ -33,50 +33,55 @@
             android:name=".ui.intro.UIIntro"
             android:noHistory="true"
             android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-        </activity>
 
+        </activity>
         <activity
             android:name=".ui.login.UILogin"
             android:noHistory="true"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.signUp.UISignUp"
             android:noHistory="true"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".ui.profile.UIProfile"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".ui.main.UIMain"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".ui.main.UIDrawerHeader"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.profile.UIProfile"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.main.UIMain"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.main.UIDrawerHeader"
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.camera.UICamera" />
-        <activity android:name=".ui.AR.augmaGLActivity"/>
+        <activity android:name=".ui.AR.augmaGLActivity" />
 
-        <service
-            android:name=".work.FirebaseMessaging">
+        <service android:name=".work.FirebaseMessaging">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
-        <service
-            android:name=".work.FirebaseInstance">
+        <service android:name=".work.FirebaseInstance">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
+        <activity android:name=".ui.note.UINotePost">
 
+        </activity>
+        <activity android:name=".ui.note.UINoteDisplay">
+
+
+
+        </activity>
 
     </application>
 

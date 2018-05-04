@@ -8,7 +8,6 @@
     android:background="@drawable/background_gradient_anim"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    android:focusable="true"
     android:focusableInTouchMode="true"
     android:windowSoftInputMode="stateHidden"
     tools:context="world.augma.ui.login.UILogin">

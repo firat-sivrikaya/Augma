@@ -71,69 +71,6 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <include
-        android:id="@+id/bioSeparator"
-        layout="@layout/profile_horizontal_separator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/bio"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statBottomWave"
-        app:layout_constraintVertical_bias="0.64" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/bio"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_margin="16dp"
-        android:layout_marginBottom="212dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:cardElevation="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.26">
-
-        <LinearLayout
-            android:id="@+id/profileContent"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/bio_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|left"
-                android:layout_margin="15dp"
-                android:src="@drawable/ic_bio" />
-
-            <View
-                android:id="@+id/bioSeparatorLine"
-                android:layout_width="2dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center|left"
-                android:layout_margin="5dp"
-                android:background="?android:attr/listDivider" />
-
-            <TextView
-                android:id="@+id/bio_text"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:alpha="0.5"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-    <include
         android:id="@+id/postsSeparator"
         layout="@layout/profile_horizontal_separator"
         android:layout_width="match_parent"
@@ -144,20 +81,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bio"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.19" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/galleryParent"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
+        android:layout_height="402dp"
         android:layout_margin="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         app:cardElevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postsSeparator">
+        app:layout_constraintTop_toTopOf="@+id/background_image"
+        app:layout_constraintVertical_bias="1.0">
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"

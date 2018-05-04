@@ -1,12 +1,7 @@
 package world.augma.ui.main;
 
 import android.app.ActivityOptions;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -24,16 +19,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.flaviofaria.kenburnsview.KenBurnsView;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.irozon.alertview.AlertActionStyle;
+import com.irozon.alertview.AlertStyle;
+import com.irozon.alertview.AlertView;
+import com.irozon.alertview.interfaces.AlertActionListener;
+import com.irozon.alertview.objects.AlertAction;
+import com.ms_square.etsyblur.BlurSupport;
 
 import java.util.concurrent.ExecutionException;
 
 import world.augma.R;
+import world.augma.asset.AugmaSharedPreferences;
+import world.augma.asset.AugmaVisualType;
 import world.augma.asset.User;
 import world.augma.ui.circle.UICircle;
 import world.augma.ui.login.UILogin;
@@ -43,9 +42,8 @@ import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.settings.UISettings;
 import world.augma.work.AWS;
-import world.augma.work.AugmaSharedPreferences;
 import world.augma.work.FirebaseInstance;
-import world.augma.work.S3;
+import world.augma.work.visual.AugmaImager;
 
 /** Created by Burak Şahin */
 
@@ -89,17 +87,16 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
         handler = new Handler();
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         drawer = (DrawerLayout) findViewById(R.id.drawer);
-
+        BlurSupport.addTo(drawer);
         View navHeader = navigationView.getHeaderView(0);
         userName = (TextView) navHeader.findViewById(R.id.drawer_usernameDisplay);
         bgImage = (KenBurnsView) navHeader.findViewById(R.id.drawer_background_image);
         profileImage = (ImageView) navHeader.findViewById(R.id.drawer_profilePic);
 
-        SharedPreferences sp = getSharedPreferences(AugmaSharedPreferences.SHARED_PREFS, Context.MODE_PRIVATE);
         AWS aws = new AWS();
 
         try {
-            if(aws.execute(AWS.Service.GET_USER, sp.getString(AugmaSharedPreferences.USER_ID, "DEFAULT")).get()) {
+            if(aws.execute(AWS.Service.GET_USER, AugmaSharedPreferences.getUserId(UIMain.this)).get()) {
                 user = aws.fetchUser();
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -123,13 +120,16 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
      */
     private void loadHeader() {
         //Create User's name and surname in displayable format
-        userName.setText(user.getUsername());
+        //userName.setText(user.getUsername()); TODO DEGISTIR
+        userName.setText("Burcu Şahin");
 
         //Load background image
-        S3.fetchBackgroundImage(this, bgImage,"android.resource://world.augma/drawable/" + R.drawable.background_image);
+        //S3.fetchBackgroundImage(this, bgImage,"android.resource://world.augma/drawable/" + R.drawable.background_image); TODO DEGISTIR
+        AugmaImager.set(AugmaVisualType.NOTE, this, bgImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
 
         //Load profile image in circular form -> with adjusted size multiplier
-        S3.fetchProfileImage(this, profileImage, user.getUserID());
+        //S3.fetchProfileImage(this, profileImage, user.getUserID());
+        AugmaImager.set(AugmaVisualType.NOTE, this, profileImage, "android.resource://world.augma/drawable/" + R.drawable.profile_pic);
 
         /* TODO Test notification indicator -> LATER USE: when user has notifications put this indicator */
         //navigationView.getMenu().getItem(3).setActionView(R.layout.notification_indicator);
@@ -154,23 +154,20 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
                         break;
                     case R.id.side_menu_logout:
 
-                        new AlertDialog.Builder(UIMain.this)
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setTitle("Log out")
-                                .setMessage("Are you sure you want to log out?")
-                                .setNegativeButton(R.string.no, null)
-                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        SharedPreferences.Editor sp = getSharedPreferences(AugmaSharedPreferences.SHARED_PREFS, Context.MODE_PRIVATE).edit();
-                                        sp.remove(AugmaSharedPreferences.USER_ID);
-                                        sp.apply();
-                                        startActivity(new Intent(UIMain.this, UILogin.class),
-                                                ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
-                                        finish();
-                                    }
-                                }).show();
+                        AlertView alert = new AlertView("Logout", "Are you sure you want to log out?", AlertStyle.IOS);
+                        alert.addAction(new AlertAction("Logout", AlertActionStyle.NEGATIVE, new AlertActionListener() {
+
+                            @Override
+                            public void onActionClick(AlertAction alertAction) {
+                                AugmaSharedPreferences.logout(UIMain.this);
+                                startActivity(new Intent(UIMain.this, UILogin.class),
+                                        ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
+                                finish();
+                            }
+                        }));
+                        alert.show(UIMain.this);
                         break;
+
                     default:
                         navIndex = 0;
                         break;

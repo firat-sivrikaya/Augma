@@ -1,8 +1,6 @@
 package world.augma.ui.signUp;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -19,10 +17,9 @@ import java.util.concurrent.ExecutionException;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import world.augma.R;
+import world.augma.asset.AugmaSharedPreferences;
 import world.augma.ui.login.UILogin;
-import world.augma.ui.main.UIMain;
 import world.augma.work.AWS;
-import world.augma.work.AugmaSharedPreferences;
 import world.augma.work.Utils;
 
 /**
@@ -64,19 +61,12 @@ public class UISignUp extends AppCompatActivity {
         repeatPasswordField.setOnEditorActionListener(listener);
         emailField.setOnEditorActionListener(listener);
 
-        initiateButton.setVisibility(View.GONE);
-
 		findViewById(android.R.id.content).setOnTouchListener(new View.OnTouchListener() {
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-            Utils.hideKeyboard(UISignUp.this);
-            if (!(usernameField.getText().toString().isEmpty() || passwordField.getText().toString().isEmpty()
-                    || repeatPasswordField.getText().toString().isEmpty()
-                    || emailField.getText().toString().trim().isEmpty()))
-                initiateButton.setVisibility(View.VISIBLE);
-            else
-                initiateButton.setVisibility(View.GONE);
-            return false;
+                Utils.hideKeyboard(UISignUp.this);
+                return true;
             }
         });
     }
@@ -94,9 +84,7 @@ public class UISignUp extends AppCompatActivity {
         try {
             if(aws.execute(AWS.Service.REGISTER, usernameField.getText().toString().trim(),
                     passwordField.getText().toString().trim(), emailField.getText().toString().trim()).get()) {
-                SharedPreferences.Editor sp = getSharedPreferences(AugmaSharedPreferences.SHARED_PREFS, Context.MODE_PRIVATE).edit();
-                sp.putString(AugmaSharedPreferences.USER_ID, aws.getUserID());
-                sp.apply();
+                AugmaSharedPreferences.login(this, aws.getUserID());
 
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -182,14 +170,6 @@ public class UISignUp extends AppCompatActivity {
                     emailField.clearFocus();
                 }
             }
-
-            if (!(usernameField.getText().toString().isEmpty() || passwordField.getText().toString().isEmpty()
-                    || repeatPasswordField.getText().toString().isEmpty()
-                    || emailField.getText().toString().trim().isEmpty()))
-                initiateButton.setVisibility(View.VISIBLE);
-            else
-                initiateButton.setVisibility(View.GONE);
-
             return true;
         }
     }
