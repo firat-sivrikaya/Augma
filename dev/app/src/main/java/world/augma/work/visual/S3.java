@@ -19,15 +19,18 @@ public class S3 {
     private S3() {}
 
     public static void fetchProfileImage(Activity activity, ImageView img, String userID){
-          AugmaImager.set(AugmaVisualType.PROFILE, activity, img, new S3UrlBuilder(BASE_URL, userID, true));
+          //AugmaImager.set(AugmaVisualType.PROFILE, activity, img, new S3UrlBuilder(BASE_URL, userID, true));
+        AugmaImager.set(AugmaVisualType.PROFILE, activity, img, BASE_URL.concat(userID).concat("/").concat(userID).concat(".jpg"));
     }
 
     public static void fetchBackgroundImage(Activity activity, ImageView img, String userID) {
-        AugmaImager.set(AugmaVisualType.BACKGROUND, activity, img, new S3UrlBuilder(BASE_URL, userID, false));
+        //AugmaImager.set(AugmaVisualType.BACKGROUND, activity, img, new S3UrlBuilder(BASE_URL, userID, false));
+        AugmaImager.set(AugmaVisualType.BACKGROUND, activity, img, BASE_URL.concat(userID).concat("/").concat(userID).concat("B.jpg"));
     }
 
     public static void fetchNoteImage(Activity activity, ImageView img, String userID, String noteID){
-        AugmaImager.set(AugmaVisualType.NOTE, activity, img, new S3UrlBuilder(BASE_URL, userID, noteID));
+        //AugmaImager.set(AugmaVisualType.NOTE, activity, img, new S3UrlBuilder(BASE_URL, userID, noteID));
+        AugmaImager.set(AugmaVisualType.NOTE, activity, img, BASE_URL.concat(userID).concat("/").concat(noteID).concat(".jpg"));
     }
 
     public static boolean uploadProfileImage(byte[] imageByte, String userID){
