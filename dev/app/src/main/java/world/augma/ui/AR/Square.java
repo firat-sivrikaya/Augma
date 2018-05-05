@@ -34,7 +34,7 @@ public class Square {
     private int mMVPMatrixHandle;
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
-    static float squareCoords[] = {
+    private float squareCoords[] = {
             -0.5f,  0.5f, 0.0f,   // top left
             -0.5f, -0.5f, 0.0f,   // bottom left
             0.5f, -0.5f, 0.0f,   // bottom right
@@ -45,7 +45,22 @@ public class Square {
     /**
      * Sets up the drawing object data for use in an OpenGL ES context.
      */
-    public Square() {
+    public Square(float scaleAmount, float translateX, float translateY) {
+
+        // Scale the square by multiplying each value in coordinate matrix with the given scale amount
+        for ( int i = 0; i < squareCoords.length ; i++ )
+        {
+            squareCoords[i] *= scaleAmount;
+            if ( i % 3 == 0 ) // Translate the square in X Y axis ( don't touch Z )
+            {
+                squareCoords[i] += translateX;
+            }
+            else if ( i % 3 == 1 )
+            {
+                squareCoords[i] += translateY;
+            }
+
+        }
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (# of coordinate values * 4 bytes per float)
