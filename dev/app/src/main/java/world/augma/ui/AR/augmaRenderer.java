@@ -1,5 +1,6 @@
 package world.augma.ui.AR;
 
+import android.location.Location;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -7,14 +8,19 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import world.augma.asset.Note;
+import world.augma.ui.map.UIMap;
+import world.augma.work.AWS;
+
 public class augmaRenderer implements GLSurfaceView.Renderer{
     private static final String TAG = "augmaRenderer";
     private List<Square> mSquare;
-
+    private List<Note> nearbyNotes;
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
@@ -31,19 +37,59 @@ public class augmaRenderer implements GLSurfaceView.Renderer{
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        // initialize a square
-        float scaleAmount = 0.2f;
-        float translateX = 0.0f;
-        float translateY = 0.0f;
 
+
+        Location loc = UIMap.mLastKnownLocation;
+        nearbyNotes = new ArrayList<Note>();
+
+        AWS aws = new AWS();
+        try {
+            aws.execute(AWS.Service.GET_NOTE_WITH_FILTER, "" + loc.getLatitude(),
+                    "" + loc.getLongitude()).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        nearbyNotes = aws.getMatchedNotes();
+
+        // initialize a square
+        double scaleAmount = 1.0f;
+        double translateX = 0.0f;
+        double translateY = 0.0f;
+        double deltaLat = 0.0f;
+        double deltaLon = 0.0f;
+        double distanceToNote = 0.0f;
         // Initialize multiple squares with different scales and translates
-        for ( int i = 0 ; i < 3 ; i++ )
+        for ( int i = 0 ; i < nearbyNotes.size() ; i++ )
         {
+            // Calculate lat and lon difference between the device and the note
+            deltaLat = Math.abs(loc.getLatitude() - nearbyNotes.get(i).getLatitude());
+            deltaLon = Math.abs(loc.getLongitude() - nearbyNotes.get(i).getLongitude());
+
+            // Log output to trace the locations
+            Log.e("DEVICELAT", loc.getLatitude() + "");
+            Log.e("DEVICELON", loc.getLongitude() + "");
+            Log.e("NOTELAT", nearbyNotes.get(i).getLatitude() + "");
+            Log.e("NOTELON", nearbyNotes.get(i).getLongitude() + "");
+            Log.e("DELTALAT", deltaLat + "");
+            Log.e("DELTALON", deltaLon+ "");
+
+            // Calculate the distance to note
+            distanceToNote = Math.sqrt(deltaLat*deltaLat + deltaLon*deltaLon);
+            Log.e("DISTANCETONOTE", distanceToNote + "");
+
+            // Arrange the scale amount with the given distance
+            scaleAmount = scaleAmount * (1/distanceToNote) / 10000;
+            Log.e("SCALEAMOUNT", scaleAmount + "");
+
+            // Add the square to the list to get it drawn later
             mSquare.add(new Square(scaleAmount, translateX, translateY));
             //scaleAmount += -0.3f;
+
+            // Translate the next square
             translateX += 0.2f;
             translateY += 0.2f;
         }
+
 
     }
 
@@ -59,7 +105,7 @@ public class augmaRenderer implements GLSurfaceView.Renderer{
 
 
         // Draw square
-        for ( int i = 0 ; i < 3 ; i++ )
+        for ( int i = 0 ; i < nearbyNotes.size() ; i++ )
             mSquare.get(i).draw(mMVPMatrix);
 
     }

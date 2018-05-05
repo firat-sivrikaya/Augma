@@ -46,6 +46,7 @@ import world.augma.R;
 import world.augma.asset.Circle;
 import world.augma.asset.Note;
 import world.augma.asset.User;
+import world.augma.ui.AR.augmaGLActivity;
 import world.augma.ui.camera.UICamera;
 import world.augma.ui.login.UILogin;
 import world.augma.ui.main.UIMain;
@@ -84,7 +85,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
     private boolean mLocationPermissionGranted;
 
     private CameraPosition mCameraPosition;
-    private static Location mLastKnownLocation;
+    public static Location mLastKnownLocation;
 
     private LocationCallback mLocationCallback;
     private LocationRequest mLocationRequest;
@@ -116,7 +117,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                         return;
                     case OPEN_CAMERA:
                         //startActivity(new Intent(getActivity(), UICamera.class));
-                        Intent intent = new Intent(getActivity(), UICamera.class);
+                        Intent intent = new Intent(getActivity(), augmaGLActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("mLastKnownLocation", mLastKnownLocation);
                         intent.putExtras(bundle);

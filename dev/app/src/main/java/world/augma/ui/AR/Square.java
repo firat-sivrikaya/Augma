@@ -45,7 +45,7 @@ public class Square {
     /**
      * Sets up the drawing object data for use in an OpenGL ES context.
      */
-    public Square(float scaleAmount, float translateX, float translateY) {
+    public Square(double scaleAmount, double translateX, double translateY) {
 
         // Scale the square by multiplying each value in coordinate matrix with the given scale amount
         for ( int i = 0; i < squareCoords.length ; i++ )
