@@ -58,6 +58,10 @@ dependencies {
     implementation 'com.ms-square:etsyblur:0.2.1'
     implementation 'com.github.vivchar:RendererRecyclerViewAdapter:2.6.0'
     implementation 'com.otaliastudios:cameraview:1.5.0'
+    implementation 'com.github.yalantis:multi-selection:v0.1'
+    implementation 'com.github.developer-shivam:FeaturedRecyclerView:1.0.0'
+    implementation 'com.sothree.slidinguppanel:library:3.4.0'
+    implementation 'com.github.mmin18:realtimeblurview:1.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

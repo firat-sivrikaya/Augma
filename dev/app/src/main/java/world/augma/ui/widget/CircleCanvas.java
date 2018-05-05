@@ -31,6 +31,7 @@ public class CircleCanvas extends GridLayout {
     }
 
     public void init(List<Circle> circleList) {
+
         circleCreation = AnimationUtils.loadAnimation(getContext(), R.anim.circle_creation);
         circleGrow = AnimationUtils.loadAnimation(getContext(), R.anim.circle_page_grow);
 

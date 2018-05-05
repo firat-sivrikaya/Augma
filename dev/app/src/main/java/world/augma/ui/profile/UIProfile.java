@@ -15,28 +15,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.github.vivchar.rendererrecyclerviewadapter.DefaultCompositeViewModel;
-import com.github.vivchar.rendererrecyclerviewadapter.RendererRecyclerViewAdapter;
-import com.github.vivchar.rendererrecyclerviewadapter.binder.CompositeViewBinder;
-
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import shivam.developer.featuredrecyclerview.FeatureLinearLayoutManager;
+import shivam.developer.featuredrecyclerview.FeatureRecyclerViewAdapter;
+import shivam.developer.featuredrecyclerview.FeaturedRecyclerView;
 import world.augma.R;
 import world.augma.asset.AugmaVisualType;
 import world.augma.asset.User;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
-import world.augma.ui.widget.ItemSpaceDecoration;
-import world.augma.ui.widget.ProfileGalleryItem;
 import world.augma.ui.widget.Wave;
 import world.augma.work.visual.AugmaImager;
 import world.augma.work.visual.S3;
@@ -45,8 +42,6 @@ import world.augma.work.visual.S3;
  * Created by Burak.
  */
 public class UIProfile extends AppCompatActivity {
-
-    private static final int GALLERY_COLUMN_COUNT = 3;
 
     private ImageView profileImage;
     private ImageView backgroundImage;
@@ -59,7 +54,7 @@ public class UIProfile extends AppCompatActivity {
     private TextView statDisplayPosts;
     private TextView statDisplayLikes;
     private TextView statDisplayCircles;
-    private RecyclerView recyclerView;
+    private FeaturedRecyclerView recyclerView;
     private LinearLayout statDisplayLayout;
     private ConstraintSet extendedLayout, shrinkLayout;
     private ConstraintLayout mainLayout;
@@ -88,10 +83,14 @@ public class UIProfile extends AppCompatActivity {
         statDisplayLayout = (LinearLayout) findViewById(R.id.stat_display);
         bottomWave = (Wave) findViewById(R.id.bottomWave);
         bio = (CardView) findViewById(R.id.bio);
-        recyclerView = (RecyclerView) ((CardView) findViewById(R.id.galleryParent)).findViewById(R.id.gallery);
+        recyclerView = (FeaturedRecyclerView) ((CardView) findViewById(R.id.galleryParent)).findViewById(R.id.gallery);
         statDisplayCircles = (TextView) ((LinearLayout) statDisplayLayout.findViewById(R.id.numOfCircles)).findViewById(R.id.numOfCirclesNumText);
         statDisplayLikes = (TextView) ((LinearLayout) statDisplayLayout.findViewById(R.id.numOfLikes)).findViewById(R.id.numOfLikesNumText);
         statDisplayPosts = (TextView) ((LinearLayout) statDisplayLayout.findViewById(R.id.numOfPosts)).findViewById(R.id.numOfPostsNum);
+
+        FeatureLinearLayoutManager layoutManager = new FeatureLinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(new GalleryAdapter());
 
         profileImage.bringToFront();
         bottomWave.setTopWaveColor(Color.parseColor("#005DAF"));
@@ -114,8 +113,6 @@ public class UIProfile extends AppCompatActivity {
         bioText.setText("Professional Designer. Santa Monica, CA.");
         userFullName.setText("Burcu Şahin");
         userLocation.setText("Bilkent");
-
-        setGalleryAdapter();
 
         statDisplayLikes.setText(""+user.getRating());
         statDisplayCircles.setText(""+user.getMemberships().size());
@@ -185,39 +182,6 @@ public class UIProfile extends AppCompatActivity {
         }
     }
 
-    public void setGalleryAdapter() {
-        RendererRecyclerViewAdapter adapter = new RendererRecyclerViewAdapter();
-        adapter.registerRenderer(
-                new CompositeViewBinder<>(
-                        R.layout.gallery_item,
-                        R.id.gallery,
-                        DefaultCompositeViewModel.class,
-                        Collections.singletonList(new ItemSpaceDecoration(10, 10))
-                )
-        );
-
-
-        //TODO SONRA SIL
-        int[] galleryImages = {R.drawable.sample1, R.drawable.sample2, R.drawable.sample3,
-                R.drawable.sample4, R.drawable.sample5, R.drawable.sample6, R.drawable.sample7,
-                R.drawable.sample8, R.drawable.sample9, R.drawable.sample10, R.drawable.sample11,
-                R.drawable.sample12, R.drawable.sample13, R.drawable.sample14};
-
-        List<ProfileGalleryItem> galleryItemList = new ArrayList<>();
-
-        for(int i = 0; i < galleryImages.length; i++) {
-            galleryItemList.add(new ProfileGalleryItem(UIProfile.this, galleryImages[i]));
-        }
-
-        adapter.setItems(galleryItemList);
-
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new ItemSpaceDecoration(10, 10));
-
-
-    }
-
     private class ProfileClickListener implements View.OnClickListener {
 
         @Override
@@ -230,28 +194,57 @@ public class UIProfile extends AppCompatActivity {
         }
     }
 
-    /*
-    private class GridLayoutAdapter extends RecyclerView.Adapter<GalleryItem> {
+    private class GalleryAdapter extends FeatureRecyclerViewAdapter<RecyclerView.ViewHolder> {
 
-        @NonNull
+        /* Data set değiştiğikten sonra notifyDataSetChanged();'i çağır. */
+
+        //TODO sonra sil
+        private int[] images = {R.drawable.image_one, R.drawable.image_two,
+                R.drawable.image_three, R.drawable.image_four, R.drawable.image_five};
+
         @Override
-        public GalleryItem onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new GalleryItem(LayoutInflater.from(UIProfile.this).inflate(R.layout.gallery_item, parent, false));
+        public RecyclerView.ViewHolder onCreateFeaturedViewHolder(ViewGroup viewGroup, int i) {
+            return new GalleryItem(LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.gallery_item, viewGroup, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull GalleryItem holder, int position) {
-            holder.imageView.requestLayout();
-            //S3.fetchNoteImage(UIProfile.this,holder.imageView,user.getUserID(), user.getOwnedNotes().get(position).getNoteID());
-            AugmaImager.set(AugmaVisualType.NOTE, UIProfile.this, holder.imageView, "android.resource://world.augma/drawable/" + galleryImages[position]);
+        public void onBindFeaturedViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
+            GalleryItem galleryItem = (GalleryItem) viewHolder;
+            AugmaImager.set(AugmaVisualType.NOTE, viewHolder.itemView.getContext(),
+                    galleryItem.image, images[i]);
+            galleryItem.text.setText("" + i);
         }
 
         @Override
-        public int getItemCount() {
-            //return user.getOwnedNotes().size();
-            return 14;
+        public int getFeaturedItemsCount() {
+            return images.length;
+        }
+
+        @Override
+        public void onSmallItemResize(RecyclerView.ViewHolder viewHolder, int i, float v) {
+            GalleryItem galleryItem = (GalleryItem) viewHolder;
+            galleryItem.text.setAlpha(v / 100f);
+        }
+
+        @Override
+        public void onBigItemResize(RecyclerView.ViewHolder viewHolder, int i, float v) {
+            GalleryItem galleryItem = (GalleryItem) viewHolder;
+            galleryItem.text.setAlpha(v / 100f);
         }
     }
 
-    */
+    private class GalleryItem extends RecyclerView.ViewHolder {
+
+        ImageView image;
+        TextView text;
+
+        public GalleryItem(View itemView) {
+            super(itemView);
+
+            image = (ImageView) itemView.findViewById(R.id.galleryItemBackground);
+            text = (TextView) itemView.findViewById(R.id.titleText);
+        }
+
+    }
 }

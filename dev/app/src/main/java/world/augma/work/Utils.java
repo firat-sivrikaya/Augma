@@ -19,6 +19,9 @@ import java.util.regex.Pattern;
 
 public final class Utils {
 
+    public static final float GLOBAL_BLUR_SCALE_FACTOR = 8.0f;
+    public static final float GLOBAL_BLUR_SCALE_RADIUS = 2;
+
     /**
      * Regular expressions for validation.
      */

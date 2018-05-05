@@ -93,7 +93,6 @@ public class UICamera extends AppCompatActivity implements SensorEventListener{
 
     private final int SENSOR_TYPE = Sensor.TYPE_ORIENTATION;
 
-
     //TODO kodu sonra toparla
     CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
