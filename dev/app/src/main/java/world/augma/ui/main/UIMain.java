@@ -120,7 +120,8 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
      */
     private void loadHeader() {
         //Create User's name and surname in displayable format
-        //userName.setText(user.getUsername()); TODO DEGISTIR
+        //userName.setText(user.getUsername()); TODO DEGISTIR silmiyo
+
         userName.setText("Burcu Şahin");
 
         //Load background image
