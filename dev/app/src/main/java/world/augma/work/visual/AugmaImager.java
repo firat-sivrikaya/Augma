@@ -31,6 +31,8 @@ public class AugmaImager extends AppGlideModule {
 
     private static void process(AugmaVisualType type, GlideRequest requestBuilder, ImageView imageView) {
 
+        //GlideApp.getPhotoCacheDir(imageView.getContext()).delete();
+
         switch (type) {
             case PROFILE:
                 requestBuilder

@@ -102,16 +102,16 @@ public class UIProfile extends AppCompatActivity {
 
         serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
         user =  serviceUIMain.fetchUser();
-        //S3.fetchBackgroundImage(this,backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image); TODO DEGISTIR
-        //S3.fetchProfileImage(this, profileImage, user.getUserID());
-        AugmaImager.set(AugmaVisualType.NOTE, this, backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
-        AugmaImager.set(AugmaVisualType.NOTE, this, profileImage, "android.resource://world.augma/drawable/" + R.drawable.profile_pic);
+        S3.fetchBackgroundImage(this,backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image); //TODO DEGISTIR
+        S3.fetchProfileImage(this, profileImage, user.getUserID());
+       // AugmaImager.set(AugmaVisualType.NOTE, this, backgroundImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
+        //AugmaImager.set(AugmaVisualType.NOTE, this, profileImage, "android.resource://world.augma/drawable/" + R.drawable.profile_pic);
 
         //TODO 115 Char sınırla, essay yazmasın...
-        //bioText.setText(user.getBio()); TODO DEGISTIR
-        //userFullName.setText(user.getName());
-        bioText.setText("Professional Designer. Santa Monica, CA.");
-        userFullName.setText("Burcu Şahin");
+        bioText.setText(user.getBio()); //TODO DEGISTIR
+        userFullName.setText(user.getName());
+        //bioText.setText("Professional Designer. Santa Monica, CA.");
+        //userFullName.setText("Burcu Şahin");
         userLocation.setText("Bilkent");
 
         statDisplayLikes.setText(""+user.getRating());

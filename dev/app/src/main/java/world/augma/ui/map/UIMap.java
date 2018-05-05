@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -44,13 +47,20 @@ import world.augma.asset.Circle;
 import world.augma.asset.Note;
 import world.augma.asset.User;
 import world.augma.ui.camera.UICamera;
+import world.augma.ui.login.UILogin;
+import world.augma.ui.main.UIMain;
+import world.augma.ui.note.UINoteDisplay;
+import world.augma.ui.profile.UIProfile;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
+import world.augma.ui.signUp.UISignUp;
 import world.augma.work.AWS;
 
 /** Created by Burak */
 
-public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback{
+public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback ,
+        GoogleMap.OnMarkerClickListener,
+        OnMapReadyCallback{
 
     private static final String TAG = UIMap.class.getSimpleName();
 
@@ -172,9 +182,26 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                 updateLocationUI();
 
                 getDeviceLocation();
+
+
+
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+
+                        Note nt= (Note)marker.getTag();
+                        Intent intent = new Intent(getContext(), UINoteDisplay.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.putExtra("obj", nt);
+                        startActivity(intent,
+                                ActivityOptionsCompat.makeCustomAnimation(getContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
+                        return false;
+                    }
+                });
             }
 
         });
+
 
 
 
@@ -202,6 +229,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
     {
         float[] result = new float[1];
         mMap.clear();
+        Marker mPerth;
         for(Note n : nearbyNotes)
         {
             boolean added = false;
@@ -217,11 +245,14 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                         {
                             //Log.e("AAAAAAAAAAAAAAAAAAAA", c1.getCircleID());
                             //We deduce that user can see this note.
-                            mMap.addMarker(new MarkerOptions()
+                            mPerth = mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(n.getLatitude(), n.getLongitude()))
                             .title(c1.getName())
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2))
                             );
+                            //mMap.setOnMarkerClickListener(this);
+                            mPerth.setTag(n);
+
                             added = true;
 
                             break;
@@ -388,6 +419,16 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
         {
             Log.e("Exception: %s", e.getMessage());
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
     }
 //    private void updateCameraBearing(GoogleMap googleMap, float bearing) {
 //        if ( googleMap == null) return;
