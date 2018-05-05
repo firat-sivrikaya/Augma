@@ -116,6 +116,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                                 R.anim.fade_in, R.anim.fade_out).toBundle());
                         return;
                     case GET_NOTES:
+                        getDeviceLocation();
                         AWS aws = new AWS();
                         try {
                             aws.execute(AWS.Service.GET_NOTE_WITH_FILTER, "" + mLastKnownLocation.getLatitude(),
