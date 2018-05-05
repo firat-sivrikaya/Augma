@@ -192,8 +192,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                     public boolean onMarkerClick(Marker marker) {
 
                         Note nt= (Note)marker.getTag();
-                        Intent intent = new Intent(getContext(), UINoteDisplay.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        Intent intent = new Intent(getActivity(), UINoteDisplay.class);
                         intent.putExtra("obj", nt);
                         startActivity(intent,
                                 ActivityOptionsCompat.makeCustomAnimation(getContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
@@ -226,6 +225,8 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
 
         return root;
     }
+
+
 
     public void putMarker(GoogleMap mMap, List<Note> nearbyNotes)
     {

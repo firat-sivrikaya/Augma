@@ -198,10 +198,6 @@ public class UIProfile extends AppCompatActivity {
 
         /* Data set değiştiğikten sonra notifyDataSetChanged();'i çağır. */
 
-        //TODO sonra sil
-        private int[] images = {R.drawable.image_one, R.drawable.image_two,
-                R.drawable.image_three, R.drawable.image_four, R.drawable.image_five};
-
         @Override
         public RecyclerView.ViewHolder onCreateFeaturedViewHolder(ViewGroup viewGroup, int i) {
             return new GalleryItem(LayoutInflater.from(viewGroup.getContext())
@@ -211,14 +207,14 @@ public class UIProfile extends AppCompatActivity {
         @Override
         public void onBindFeaturedViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
             GalleryItem galleryItem = (GalleryItem) viewHolder;
-            AugmaImager.set(AugmaVisualType.NOTE, viewHolder.itemView.getContext(),
-                    galleryItem.image, images[i]);
-            galleryItem.text.setText("" + i);
+            
+            galleryItem.text.setText(user.getOwnedNotes().get(i).getNoteText());
+            S3.fetchNoteImage(UIProfile.this, galleryItem.image,user.getUserID(),user.getOwnedNotes().get(i).getNoteID());
         }
 
         @Override
         public int getFeaturedItemsCount() {
-            return images.length;
+            return user.getOwnedNotes().size();
         }
 
         @Override
@@ -245,6 +241,7 @@ public class UIProfile extends AppCompatActivity {
             image = (ImageView) itemView.findViewById(R.id.galleryItemBackground);
             text = (TextView) itemView.findViewById(R.id.titleText);
         }
+
 
     }
 }

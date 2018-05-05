@@ -1,14 +1,21 @@
 package world.augma.work.visual;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.module.AppGlideModule;
+import com.bumptech.glide.signature.ObjectKey;
+
+import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.Signature;
 
 import world.augma.R;
 import world.augma.asset.AugmaVisualType;
@@ -19,16 +26,16 @@ import world.augma.asset.effects.CircleCropTransformation;
 public class AugmaImager extends AppGlideModule {
 
     public static void set(AugmaVisualType type, Context context, ImageView imageView, S3UrlBuilder path) {
-        process(type, GlideApp.with(context).load(path), imageView);
+        process(type, GlideApp.with(context).load(path)/*.signature(new ObjectKey())*/, imageView);
     }
 
     public static void set(AugmaVisualType type, Context context, ImageView imageView, String path) {
         Log.e("IMAGER SET", "PATH: " + path.toString());
-        process(type, GlideApp.with(context).load(path), imageView);
+        process(type, GlideApp.with(context).load(path)/*.signature(new ObjectKey())*/, imageView);
     }
 
     public static void set(AugmaVisualType type, Context context, ImageView imageView, int resource) {
-        process(type, GlideApp.with(context).load(resource), imageView);
+        process(type, GlideApp.with(context).load(resource)/*.signature(new ObjectKey())*/, imageView);
     }
 
     private static void process(AugmaVisualType type, GlideRequest requestBuilder, ImageView imageView) {
@@ -41,7 +48,7 @@ public class AugmaImager extends AppGlideModule {
                         .priority(Priority.HIGH)
                         .transform(new CircleCropTransformation())
                         .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE);
+                        .diskCacheStrategy(DiskCacheStrategy.ALL);
                 break;
 
             case BACKGROUND:
@@ -62,5 +69,6 @@ public class AugmaImager extends AppGlideModule {
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageView);
     }
+
 }
 

@@ -1,6 +1,8 @@
 package world.augma.ui.note;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
@@ -66,6 +68,7 @@ public class UINoteDisplay extends AppCompatActivity {
         S3.fetchProfileImage(this, profilePic, user.getUserID());
         S3.fetchNoteImage(this,noteImage,user.getUserID(),note.getNoteID());
     }
+
 
 }
 

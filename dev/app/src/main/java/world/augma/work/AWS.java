@@ -514,7 +514,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
                     String noteID = ((JSONObject) ownedNote.get(i)).getString(NOTE_ID);
                     int rating = ((JSONObject) ownedNote.get(i)).getInt(NOTE_RATING);
                     int beacon = ((JSONObject) ownedNote.get(i)).getInt(NOTE_BEACON);
-                    Note n = new Note(noteID, null,  -1, -1, null, -1, rating, beacon,null);
+                    Note n = new Note(noteID, null,  -1, -1, null, -1, rating, beacon,((JSONObject) ownedNote.get(i)).getString(NOTE_TEXT));
                     ownedNotes.add(n);
                 }
 
