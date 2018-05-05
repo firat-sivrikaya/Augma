@@ -5,12 +5,15 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class augmaRenderer implements GLSurfaceView.Renderer{
     private static final String TAG = "augmaRenderer";
-    private Square mSquare;
+    private List<Square> mSquare;
 
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
@@ -18,13 +21,29 @@ public class augmaRenderer implements GLSurfaceView.Renderer{
     private final float[] mRotationMatrix = new float[16];
 
     private float mAngle;
+
+
+    public augmaRenderer()
+    {
+        mSquare = new ArrayList<Square>();
+    }
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         // initialize a square
-        mSquare = new Square();
+        float scaleAmount = 0.2f;
+        float translateX = 0.0f;
+        float translateY = 0.0f;
 
+        // Initialize multiple squares with different scales and translates
+        for ( int i = 0 ; i < 3 ; i++ )
+        {
+            mSquare.add(new Square(scaleAmount, translateX, translateY));
+            //scaleAmount += -0.3f;
+            translateX += 0.2f;
+            translateY += 0.2f;
+        }
 
     }
 
@@ -37,8 +56,11 @@ public class augmaRenderer implements GLSurfaceView.Renderer{
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+
         // Draw square
-        mSquare.draw(mMVPMatrix);
+        for ( int i = 0 ; i < 3 ; i++ )
+            mSquare.get(i).draw(mMVPMatrix);
 
     }
 
