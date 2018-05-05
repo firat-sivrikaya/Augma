@@ -2,6 +2,7 @@ package world.augma.ui.note;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,6 +38,8 @@ public class UINoteDisplay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_note_display);
 
+        note = (Note) getIntent().getExtras().getSerializable("obj");
+
         root                = (SlidingUpPanelLayout) findViewById(R.id.noteDisplayRoot);
         topBar              = (RelativeLayout) findViewById(R.id.noteDisplayTopBar);
         bottomPanel         = (RelativeLayout) findViewById(R.id.noteDisplayBottomSlider);
@@ -50,7 +53,7 @@ public class UINoteDisplay extends AppCompatActivity {
         AWS aws = new AWS();
 
         try {
-            if(aws.execute(AWS.Service.GET_USER, AugmaSharedPreferences.getUserId(UINoteDisplay.this)).get()) {
+            if(aws.execute(AWS.Service.GET_USER, note.getOwner().getUserID()).get()) {
                 user = aws.fetchUser();
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -58,10 +61,10 @@ public class UINoteDisplay extends AppCompatActivity {
         }
 
         noteText.setText(note.getNoteText());
+        Log.e("@@@@@@@@@@@@@@@@@@@@@@@@", note.getNoteText());
         userNameText.setText(user.getName());
         S3.fetchProfileImage(this, profilePic, user.getUserID());
         S3.fetchNoteImage(this,noteImage,user.getUserID(),note.getNoteID());
-        note = (Note) getIntent().getExtras().getSerializable("obj");
     }
 
 }

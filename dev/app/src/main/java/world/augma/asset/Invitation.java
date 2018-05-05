@@ -1,6 +1,8 @@
 package world.augma.asset;
 
-public class Invitation {
+import java.io.Serializable;
+
+public class Invitation implements Serializable {
 
     private String senderID;
     private String senderName;
