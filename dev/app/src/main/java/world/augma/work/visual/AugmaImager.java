@@ -1,7 +1,6 @@
 package world.augma.work.visual;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Priority;
@@ -23,7 +22,6 @@ public class AugmaImager extends AppGlideModule {
     }
 
     public static void set(AugmaVisualType type, Context context, ImageView imageView, String path) {
-        Log.e("IMAGER SET", "PATH: " + path.toString());
         process(type, GlideApp.with(context).load(path), imageView);
     }
 
@@ -33,23 +31,19 @@ public class AugmaImager extends AppGlideModule {
 
     private static void process(AugmaVisualType type, GlideRequest requestBuilder, ImageView imageView) {
 
-        GlideApp.getPhotoCacheDir(imageView.getContext()).delete();
-
         switch (type) {
             case PROFILE:
                 requestBuilder
                         .priority(Priority.HIGH)
                         .transform(new CircleCropTransformation())
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.DATA);
+                        .diskCacheStrategy(DiskCacheStrategy.ALL);
                 break;
 
             case BACKGROUND:
                 requestBuilder
                         .priority(Priority.HIGH)
                         .centerCrop()
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.DATA);
+                        .diskCacheStrategy(DiskCacheStrategy.ALL);
                 break;
 
             case NOTE:

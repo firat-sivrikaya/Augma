@@ -257,7 +257,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
             Note note = new Note(iObj.getString(NOTE_ID), cList,
                      iObj.getDouble("lon"), iObj.getDouble("lat"),
                     owner, iObj.getInt("type"),
-                    iObj.getInt(NOTE_RATING), 0, iObj.getString(NOTE_TEXT));
+                    iObj.getInt(NOTE_RATING), 0, "");
             matchedNotes.add(note);
         }
         Log.e("matchedNotes:",matchedNotes.toString());

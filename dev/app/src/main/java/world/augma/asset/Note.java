@@ -3,10 +3,9 @@ package world.augma.asset;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class Note implements Serializable {
+public class Note {
 
     private String noteID;
     private List<Circle> circleList;

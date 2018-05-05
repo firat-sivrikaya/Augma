@@ -1,9 +1,8 @@
 package world.augma.asset;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class Circle implements Serializable {
+public class Circle {
 
     private static final float MIN_SIZE = 200.0f;
     private static final float MAX_SIZE = 500.0f;

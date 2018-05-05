@@ -44,8 +44,6 @@ import world.augma.ui.settings.UISettings;
 import world.augma.work.AWS;
 import world.augma.work.FirebaseInstance;
 import world.augma.work.visual.AugmaImager;
-import world.augma.work.visual.GlideApp;
-import world.augma.work.visual.S3;
 
 /** Created by Burak Şahin */
 
@@ -81,7 +79,6 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_main);
 
@@ -95,8 +92,6 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
         userName = (TextView) navHeader.findViewById(R.id.drawer_usernameDisplay);
         bgImage = (KenBurnsView) navHeader.findViewById(R.id.drawer_background_image);
         profileImage = (ImageView) navHeader.findViewById(R.id.drawer_profilePic);
-
-        GlideApp.getPhotoCacheDir(this.getApplicationContext()).delete();
 
         AWS aws = new AWS();
 
@@ -125,17 +120,17 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
      */
     private void loadHeader() {
         //Create User's name and surname in displayable format
-        userName.setText(user.getUsername());
+        //userName.setText(user.getUsername()); TODO DEGISTIR silmiyo
 
-        //userName.setText("Burcu Şahin");
+        userName.setText("Burcu Şahin");
 
         //Load background image
-        S3.fetchBackgroundImage(this, bgImage,user.getUserID());
-        //AugmaImager.set(AugmaVisualType.NOTE, this, bgImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
+        //S3.fetchBackgroundImage(this, bgImage,"android.resource://world.augma/drawable/" + R.drawable.background_image); TODO DEGISTIR
+        AugmaImager.set(AugmaVisualType.NOTE, this, bgImage, "android.resource://world.augma/drawable/" + R.drawable.background_image);
 
         //Load profile image in circular form -> with adjusted size multiplier
-        S3.fetchProfileImage(this, profileImage, user.getUserID());
-        //AugmaImager.set(AugmaVisualType.NOTE, this, profileImage, "android.resource://world.augma/drawable/" + R.drawable.profile_pic);
+        //S3.fetchProfileImage(this, profileImage, user.getUserID());
+        AugmaImager.set(AugmaVisualType.NOTE, this, profileImage, "android.resource://world.augma/drawable/" + R.drawable.profile_pic);
 
         /* TODO Test notification indicator -> LATER USE: when user has notifications put this indicator */
         //navigationView.getMenu().getItem(3).setActionView(R.layout.notification_indicator);

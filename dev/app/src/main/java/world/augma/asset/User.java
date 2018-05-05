@@ -1,10 +1,9 @@
 package world.augma.asset;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class User implements Serializable {
+public class User {
 
     private String userID;
     private String username;

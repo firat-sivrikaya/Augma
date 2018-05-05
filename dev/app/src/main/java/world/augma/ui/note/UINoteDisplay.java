@@ -2,24 +2,15 @@ package world.augma.ui.note;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import java.util.concurrent.ExecutionException;
-
 import world.augma.R;
-import world.augma.asset.AugmaSharedPreferences;
 import world.augma.asset.AugmaVisualType;
-import world.augma.asset.Note;
-import world.augma.asset.User;
-import world.augma.ui.main.UIMain;
-import world.augma.work.AWS;
 import world.augma.work.visual.AugmaImager;
-import world.augma.work.visual.S3;
 
 public class UINoteDisplay extends AppCompatActivity {
 
@@ -30,15 +21,11 @@ public class UINoteDisplay extends AppCompatActivity {
     private ImageView noteImage;
     private RelativeLayout topBar;
     private RelativeLayout bottomPanel;
-    private Note note;
-    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_note_display);
-
-        note = (Note) getIntent().getExtras().getSerializable("obj");
 
         root                = (SlidingUpPanelLayout) findViewById(R.id.noteDisplayRoot);
         topBar              = (RelativeLayout) findViewById(R.id.noteDisplayTopBar);
@@ -50,21 +37,14 @@ public class UINoteDisplay extends AppCompatActivity {
                 .findViewById(R.id.noteDisplayProfilePic);
 
         //TODO Sonra sil
-        AWS aws = new AWS();
-
-        try {
-            if(aws.execute(AWS.Service.GET_USER, note.getOwner().getUserID()).get()) {
-                user = aws.fetchUser();
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        noteText.setText(note.getNoteText());
-        Log.e("@@@@@@@@@@@@@@@@@@@@@@@@", note.getNoteText());
-        userNameText.setText(user.getName());
-        S3.fetchProfileImage(this, profilePic, user.getUserID());
-        S3.fetchNoteImage(this,noteImage,user.getUserID(),note.getNoteID());
+        noteText.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim, " +
+                "nulla commodo venenatis malesuada, metus metus ult" +
+                "ricies velit, eu sodales justo urna at massa. Donec" +
+                " ac lorem dolor. Mauris leo augue, faucibus ac neque a, egestas " +
+                "fermentum turpis. Phasellus lacinia varius lacus, a tempus felis sagittis eu.");
+        userNameText.setText("Burcu Şahin");
+        AugmaImager.set(AugmaVisualType.NOTE, this, profilePic, "android.resource://world.augma/drawable/" + R.drawable.profile_pic);
+        AugmaImager.set(AugmaVisualType.NOTE, this, noteImage, "android.resource://world.augma/drawable/" + R.drawable.sample);
     }
 
 }
