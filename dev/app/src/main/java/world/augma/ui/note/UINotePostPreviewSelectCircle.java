@@ -1,10 +1,7 @@
 package world.augma.ui.note;
 
-<<<<<<< HEAD
 import android.location.Location;
-=======
 import android.graphics.Rect;
->>>>>>> 598b99b3ce36117e93ac42d97cc9685cd732e3bc
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -68,7 +65,6 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
         });
 
         leftAdapter.addAll(circleList);
-<<<<<<< HEAD
         builder.withLeftAdapter(leftAdapter).withRightAdapter(rightAdapter);
         findViewById(R.id.notePostPreviewSelecCircleProceedButton).setOnClickListener(new NotePostPreviewSelecCircleProceedButtonListener());
         multiSelect.showSelectedPage();
@@ -107,12 +103,7 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
 
         }
-=======
-        multiSelect = builder.withLeftAdapter(leftAdapter).withRightAdapter(rightAdapter).build();
-        CircleSelectionItemDecorator decorator = new CircleSelectionItemDecorator(60);
-        //multiSelect.getRecyclerLeft().addItemDecoration(decorator);
-        //multiSelect.getRecyclerRight().addItemDecoration(decorator);
->>>>>>> 598b99b3ce36117e93ac42d97cc9685cd732e3bc
+
     }
 
 }
