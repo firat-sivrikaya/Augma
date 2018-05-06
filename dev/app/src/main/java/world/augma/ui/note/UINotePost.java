@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -33,7 +32,6 @@ import java.util.HashMap;
 
 import world.augma.R;
 import world.augma.asset.AugmaCameraIconType;
-import world.augma.work.Utils;
 
 public class UINotePost extends AppCompatActivity {
 
@@ -141,15 +139,24 @@ public class UINotePost extends AppCompatActivity {
 
         if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
 
-            Intent intent = new Intent(this, UINoteDisplay.class);
+            //We currently do not support gallery functionality.
+           /* Intent intent = new Intent(this, UINoteDisplay.class);
             intent.setData(data.getData());
             startActivity(intent,
                     ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
+                    */
         }
     }
 
     public void notePostTakePhoto(View view) {
         camera.capturePicture();
+    }
+
+    private void proceedToPreview(Bitmap data) {
+        Intent intent = new Intent(this, UINotePostPreview.class);
+        intent.putExtra("previewPic", data);
+        startActivity(intent,
+                ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
     }
 
     private class NoteCameraListener extends CameraListener {
@@ -161,7 +168,8 @@ public class UINotePost extends AppCompatActivity {
             CameraUtils.decodeBitmap(jpeg, new CameraUtils.BitmapCallback() {
                 @Override
                 public void onBitmapReady(Bitmap bitmap) {
-                    Utils.storeImage(bitmap, getApplicationContext());
+                    //Utils.storeImage(bitmap, getApplicationContext());
+                    proceedToPreview(bitmap);
                 }
             });
         }
@@ -229,8 +237,8 @@ public class UINotePost extends AppCompatActivity {
                     camera.setFacing(Facing.BACK);
                 }
             } else if(v == galleryButton) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
+                /* Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE); */
             } else if(v == whiteBalanceButton) {
 
                 switch (camera.getWhiteBalance()) {

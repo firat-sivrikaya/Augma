@@ -32,7 +32,6 @@ android {
 
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
-
     }
 
     buildTypes {
@@ -59,10 +58,18 @@ dependencies {
     implementation 'com.otaliastudios:cameraview:1.5.0'
     implementation 'com.github.yalantis:multi-selection:v0.1'
     implementation 'com.github.developer-shivam:FeaturedRecyclerView:1.0.0'
-    implementation 'com.sothree.slidinguppanel:library:3.4.0'
     implementation 'com.ms-square:etsyblur:0.2.1'
     implementation 'com.eightbitlab:blurview:1.4.0'
     implementation 'com.github.doctoror.particlesdrawable:library:1.0.9'
+    implementation 'com.github.zzz40500:AndroidSweetSheet:1.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:+'
+}
+
+dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:+'
+}
