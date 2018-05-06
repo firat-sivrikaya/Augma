@@ -44,7 +44,7 @@ public class CameraViewActivity extends Activity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_view);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         nearbyNotes = (List<Note>) getIntent().getExtras().getSerializable("nearbyNotes");
 
@@ -176,7 +176,7 @@ public class CameraViewActivity extends Activity implements
     private void setupLayout() {
 
         getWindow().setFormat(PixelFormat.UNKNOWN);
-        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.camera);
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.cameraview);
         mSurfaceHolder = surfaceView.getHolder();
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);

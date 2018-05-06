@@ -87,6 +87,7 @@
 
 
         </activity>
+        <activity android:name=".ui.AR.CameraViewActivity" />
 
     </application>
 
