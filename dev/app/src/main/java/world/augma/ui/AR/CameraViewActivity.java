@@ -36,14 +36,14 @@ public class CameraViewActivity extends Activity implements
     private MyCurrentAzimuth myCurrentAzimuth;
     private MyCurrentLocation myCurrentLocation;
 
-    TextView descriptionTextView;
+    //TextView descriptionTextView;
     ImageView pointerIcon;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_view);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         setupListeners();
         setupLayout();
@@ -114,9 +114,9 @@ public class CameraViewActivity extends Activity implements
     }
 
     private void updateDescription() {
-        descriptionTextView.setText(mPoi.getPoiName() + " azimuthTeoretical "
+        /*descriptionTextView.setText(mPoi.getPoiName() + " azimuthTeoretical "
                 + mAzimuthTeoretical + " azimuthReal " + mAzimuthReal + " latitude "
-                + mMyLatitude + " longitude " + mMyLongitude);
+                + mMyLatitude + " longitude " + mMyLongitude);*/
     }
 
     @Override
@@ -171,10 +171,9 @@ public class CameraViewActivity extends Activity implements
     }
 
     private void setupLayout() {
-        descriptionTextView = (TextView) findViewById(R.id.cameraTextView);
 
         getWindow().setFormat(PixelFormat.UNKNOWN);
-        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.cameraview);
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.camera);
         mSurfaceHolder = surfaceView.getHolder();
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
