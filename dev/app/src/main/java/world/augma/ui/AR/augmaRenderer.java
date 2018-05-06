@@ -39,17 +39,33 @@ public class augmaRenderer implements GLSurfaceView.Renderer{
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 
-        Location loc = UIMap.mLastKnownLocation;
-        nearbyNotes = new ArrayList<Note>();
+        nearbyNotes = augmaGLActivity.nearbyNotes;
 
-        AWS aws = new AWS();
+
+    }
+
+    public void onDrawFrame(GL10 unused) {
+        float[] scratch = new float[16];
+        // Redraw background color
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        mSquare = new ArrayList<Square>();
+        // Set the camera position (View matrix)
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        // Calculate the projection and view transformation
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+
+        Location loc = UIMap.mLastKnownLocation;
+
+
+        /*AWS aws = new AWS();
         try {
             aws.execute(AWS.Service.GET_NOTE_WITH_FILTER, "" + loc.getLatitude(),
                     "" + loc.getLongitude()).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        nearbyNotes = aws.getMatchedNotes();
+        nearbyNotes = aws.getMatchedNotes();*/
 
         // initialize a square
         double scaleAmount = 1.0f;
@@ -78,7 +94,7 @@ public class augmaRenderer implements GLSurfaceView.Renderer{
             Log.e("DISTANCETONOTE", distanceToNote + "");
 
             // Arrange the scale amount with the given distance
-            scaleAmount = scaleAmount * (1/distanceToNote) / 10000;
+            scaleAmount = scaleAmount * (1/distanceToNote) / 7000;
             Log.e("SCALEAMOUNT", scaleAmount + "");
 
             // Add the square to the list to get it drawn later
@@ -89,20 +105,6 @@ public class augmaRenderer implements GLSurfaceView.Renderer{
             translateX += 0.2f;
             translateY += 0.2f;
         }
-
-
-    }
-
-    public void onDrawFrame(GL10 unused) {
-        float[] scratch = new float[16];
-        // Redraw background color
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-        // Set the camera position (View matrix)
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-        // Calculate the projection and view transformation
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-
 
         // Draw square
         for ( int i = 0 ; i < nearbyNotes.size() ; i++ )

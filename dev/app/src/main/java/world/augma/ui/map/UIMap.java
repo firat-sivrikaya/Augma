@@ -39,6 +39,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.ramotion.circlemenu.CircleMenuView;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -77,7 +78,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
     private MapView mMapView;
     private CircleMenuView circleMenu;
 
-    private FusedLocationProviderClient mFusedLocationProviderClient;
+    public static FusedLocationProviderClient mFusedLocationProviderClient;
 
     private final LatLng mDefaultLocation = new LatLng(39.871291, 32.749957);
     private static final int DEFAULT_ZOOM = 15;
@@ -88,7 +89,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
     public static Location mLastKnownLocation;
 
     private LocationCallback mLocationCallback;
-    private LocationRequest mLocationRequest;
+    public static LocationRequest mLocationRequest;
 
     private List<Note> nearbyNotes;
     private User user;
@@ -121,6 +122,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("mLastKnownLocation", mLastKnownLocation);
                         intent.putExtras(bundle);
+                        intent.putExtra("nearbyNotes", (Serializable) nearbyNotes);
                         //Log.e("ASLKDJAKSDAD", "My Lat: " + mLastKnownLocation.getLatitude() +
                                 //" My Lon: " + mLastKnownLocation.getLongitude());
                         startActivity(intent, ActivityOptions.makeCustomAnimation(getContext(),
