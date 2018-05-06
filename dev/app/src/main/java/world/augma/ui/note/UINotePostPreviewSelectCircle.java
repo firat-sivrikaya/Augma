@@ -24,6 +24,7 @@ import world.augma.ui.services.InterActivityShareModel;
 public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
     private MultiSelect<Circle> multiSelect;
+    private List<Circle> selectedCircleList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,20 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
         leftAdapter.addAll(circleList);
         builder.withLeftAdapter(leftAdapter).withRightAdapter(rightAdapter);
+        findViewById(R.id.notePostPreviewSelecCircleProceedButton).setOnClickListener(new NotePostPreviewSelecCircleProceedButtonListener());
+        multiSelect.showSelectedPage();
+        multiSelect.showNotSelectedPage();
+    }
+
+    private class NotePostPreviewSelecCircleProceedButtonListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+
+            List<Circle>  circleLst= multiSelect.getSelectedItems();
+
+                //AWS aws1
+        }
     }
 
 }

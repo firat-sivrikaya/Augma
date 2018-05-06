@@ -111,6 +111,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                 switch(buttonIndex) {
                     case NOTE_POST:
                         Intent intent2 = new Intent(getActivity(), UINotePost.class);
+                        //intent2.putExtra("lastLocation",myL)
                         startActivity(intent2, ActivityOptions.makeCustomAnimation(getContext(),
                                 R.anim.fade_in, R.anim.fade_out).toBundle());
                         return;
