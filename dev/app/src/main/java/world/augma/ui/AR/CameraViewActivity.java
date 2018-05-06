@@ -18,14 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import world.augma.R;
-import world.augma.ui.AR.AugmaPOI;
-import world.augma.ui.AR.MyCurrentAzimuth;
-import world.augma.ui.AR.MyCurrentLocation;
-import world.augma.ui.AR.OnAzimuthChangedListener;
 
-/**
- * Created by krzysztofjackowski on 24/09/15.
- */
 public class CameraViewActivity extends Activity implements
         SurfaceHolder.Callback, OnLocationChangedListener, OnAzimuthChangedListener {
 

@@ -6,9 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-/**
- * Created by krzysztofjackowski on 24/09/15.
- */
+
 public class MyCurrentAzimuth implements SensorEventListener {
 
     private SensorManager sensorManager;
