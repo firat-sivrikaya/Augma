@@ -30,7 +30,6 @@ public class UINoteDisplay extends AppCompatActivity {
     private ImageView noteImage;
     private SweetSheet sheet;
     private RelativeLayout topBar;
-    private RelativeLayout bottomPanel;
     private Note note;
     private User user;
 
@@ -39,18 +38,26 @@ public class UINoteDisplay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_note_display);
 
+        RelativeLayout noteLayout = (RelativeLayout) LayoutInflater.from(this)
+                .inflate(R.layout.note_display_slider, null, false);
+        CustomDelegate delegate = new CustomDelegate(true,
+                CustomDelegate.AnimationType.DuangLayoutAnimation);
+        delegate.setCustomView(noteLayout);
+
         note = (Note) getIntent().getExtras().getSerializable("obj");
 
         root                = (RelativeLayout) findViewById(R.id.noteDisplayRoot);
         topBar              = (RelativeLayout) findViewById(R.id.noteDisplayTopBar);
-        bottomPanel         = (RelativeLayout) findViewById(R.id.noteDisplayBottomSlider);
         noteImage           = (ImageView) findViewById(R.id.noteDisplayImage);
+        noteText            = (TextView) noteLayout.findViewById(R.id.noteDisplayNoteText);
         userNameText        = (TextView) topBar.findViewById(R.id.noteDisplayUserNameText);
-        noteText            = (TextView) bottomPanel.findViewById(R.id.noteDisplayNoteText);
         profilePic          = (ImageView) ((RelativeLayout) topBar.findViewById(R.id.noteDisplayProfilePicLayout))
                 .findViewById(R.id.noteDisplayProfilePic);
 
-        //TODO Sonra sil
+        sheet = new SweetSheet(root);
+        sheet.setDelegate(delegate);
+
+
         AWS aws = new AWS();
 
         if(null == note.getOwner() ){
@@ -67,16 +74,10 @@ public class UINoteDisplay extends AppCompatActivity {
             }
         }
 
-        noteText.setText(note.getNoteText());
         userNameText.setText(user.getName());
+        noteText.setText(note.getNoteText());
         S3.fetchProfileImage(this, profilePic, user.getUserID());
         S3.fetchNoteImage(this,noteImage,user.getUserID(),note.getNoteID());
-
-        CustomDelegate delegate = new CustomDelegate(true,
-                CustomDelegate.AnimationType.DuangLayoutAnimation);
-        delegate.setCustomView(LayoutInflater.from(this)
-                .inflate(R.layout.note_post_preview_text_edit, null, false));
-        sheet.setDelegate(delegate);
     }
 
     @Override

@@ -14,13 +14,6 @@
         android:layout_width="match_parent"
         />
 
-    <include
-        android:id="@+id/noteDisplayBottomSlider"
-        layout="@layout/note_display_slider"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        />
-
 </RelativeLayout>
 
 

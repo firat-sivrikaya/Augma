@@ -83,7 +83,7 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
 
 
-            byte[] image = getIntent().getExtras().getParcelable("previewPic");
+            byte[] image = getIntent().getExtras().getByteArray("previewPic");
             String noteText = getIntent().getExtras().getString("noteText");
             ServiceUIMain serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
             User user =  serviceUIMain.fetchUser();
