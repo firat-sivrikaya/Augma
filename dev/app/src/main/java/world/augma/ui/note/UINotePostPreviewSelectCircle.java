@@ -66,6 +66,7 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
         leftAdapter.addAll(circleList);
         builder.withLeftAdapter(leftAdapter).withRightAdapter(rightAdapter);
+        multiSelect = builder.withLeftAdapter(leftAdapter).withRightAdapter(rightAdapter).build();
         findViewById(R.id.notePostPreviewSelecCircleProceedButton).setOnClickListener(new NotePostPreviewSelecCircleProceedButtonListener());
         multiSelect.showSelectedPage();
         multiSelect.showNotSelectedPage();
