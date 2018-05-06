@@ -10,7 +10,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import world.augma.R;
+import world.augma.asset.Note;
 
 public class CameraViewActivity extends Activity implements
         SurfaceHolder.Callback, OnLocationChangedListener, OnAzimuthChangedListener {
@@ -36,6 +36,7 @@ public class CameraViewActivity extends Activity implements
     private MyCurrentAzimuth myCurrentAzimuth;
     private MyCurrentLocation myCurrentLocation;
 
+    private List<Note> nearbyNotes;
     //TextView descriptionTextView;
     ImageView pointerIcon;
 
@@ -44,6 +45,8 @@ public class CameraViewActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_view);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        nearbyNotes = (List<Note>) getIntent().getExtras().getSerializable("nearbyNotes");
 
         setupListeners();
         setupLayout();
