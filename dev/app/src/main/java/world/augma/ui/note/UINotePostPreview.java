@@ -42,7 +42,7 @@ public class UINotePostPreview extends AppCompatActivity {
         sheet = new SweetSheet(root);
 
         this.bg = getIntent().getExtras().getByteArray("previewPic");
-        setupBackground(bg);
+        setupBackground();
 
         proceedButton.setOnClickListener(new PostPreviewButtonListener());
         CustomDelegate delegate = new CustomDelegate(true,
@@ -60,12 +60,12 @@ public class UINotePostPreview extends AppCompatActivity {
         return true;
     }
 
-    public void setupBackground(byte[] bg) {
+    public void setupBackground() {
         Bitmap bitmap = BitmapFactory.decodeByteArray(bg, 0, bg.length);
-        Matrix mat = new Matrix();
+       /* Matrix mat = new Matrix();
         mat.postRotate(90);
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
-
+*/
         ImageView background = findViewById(R.id.notePostPreviewBackground);
         background.setImageBitmap(bitmap);
     }
