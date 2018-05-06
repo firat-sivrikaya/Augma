@@ -1,5 +1,6 @@
 package world.augma.ui.AR;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ public class MyCurrentLocation implements GoogleApiClient.ConnectionCallbacks, G
     public void stop(){
         mGoogleApiClient.disconnect();
     }
+    @SuppressLint("MissingPermission")
     @Override
     public void onConnected(Bundle bundle) {
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -63,6 +65,7 @@ public class MyCurrentLocation implements GoogleApiClient.ConnectionCallbacks, G
         Log.e("MyApp", "Location services connection failed with code " + connectionResult.getErrorCode());
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
