@@ -47,15 +47,13 @@ public class AugmaImager extends AppGlideModule {
                 requestBuilder
                         .priority(Priority.HIGH)
                         .transform(new CircleCropTransformation())
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL);
+                        .diskCacheStrategy(DiskCacheStrategy.NONE);
                 break;
 
             case BACKGROUND:
                 requestBuilder
                         .priority(Priority.HIGH)
                         .centerCrop()
-                        .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.DATA);
                 break;
 

@@ -19,6 +19,8 @@ import world.augma.asset.AugmaVisualType;
 import world.augma.asset.Note;
 import world.augma.asset.User;
 import world.augma.ui.main.UIMain;
+import world.augma.ui.services.InterActivityShareModel;
+import world.augma.ui.services.ServiceUIMain;
 import world.augma.work.AWS;
 import world.augma.work.visual.AugmaImager;
 import world.augma.work.visual.S3;
@@ -54,13 +56,22 @@ public class UINoteDisplay extends AppCompatActivity {
         //TODO Sonra sil
         AWS aws = new AWS();
 
-        try {
-            if(aws.execute(AWS.Service.GET_USER, note.getOwner().getUserID()).get()) {
-                user = aws.fetchUser();
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+        if(null == note.getOwner() ){
+            ServiceUIMain uiMain =(ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
+            user = uiMain.fetchUser();
+
         }
+        else{
+            try {
+                if(aws.execute(AWS.Service.GET_USER, note.getOwner().getUserID()).get()) {
+                    user = aws.fetchUser();
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
+
 
         noteText.setText(note.getNoteText());
         Log.e("@@@@@@@@@@@@@@@@@@@@@@@@", note.getNoteText());

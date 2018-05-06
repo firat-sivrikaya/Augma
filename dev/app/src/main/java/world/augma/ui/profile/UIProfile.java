@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +32,9 @@ import shivam.developer.featuredrecyclerview.FeatureRecyclerViewAdapter;
 import shivam.developer.featuredrecyclerview.FeaturedRecyclerView;
 import world.augma.R;
 import world.augma.asset.AugmaVisualType;
+import world.augma.asset.Note;
 import world.augma.asset.User;
+import world.augma.ui.note.UINoteDisplay;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.widget.Wave;
@@ -200,15 +203,28 @@ public class UIProfile extends AppCompatActivity {
 
         @Override
         public RecyclerView.ViewHolder onCreateFeaturedViewHolder(ViewGroup viewGroup, int i) {
-            return new GalleryItem(LayoutInflater.from(viewGroup.getContext())
+            GalleryItem item = new GalleryItem(LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.gallery_item, viewGroup, false));
+            final GalleryItem innerItem = item;
+            item.image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Note nt= innerItem.note;
+                    Intent intent = new Intent(v.getContext(), UINoteDisplay.class);
+                    intent.putExtra("obj", nt);
+                    startActivity(intent,
+                            ActivityOptionsCompat.makeCustomAnimation(v.getContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
+                }
+            });
+            return item;
         }
 
         @Override
         public void onBindFeaturedViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
             GalleryItem galleryItem = (GalleryItem) viewHolder;
-            
+            galleryItem.note = user.getOwnedNotes().get(i);
             galleryItem.text.setText(user.getOwnedNotes().get(i).getNoteText());
+            galleryItem.rating.setText(""+user.getOwnedNotes().get(i).getRating());
             S3.fetchNoteImage(UIProfile.this, galleryItem.image,user.getUserID(),user.getOwnedNotes().get(i).getNoteID());
         }
 
@@ -221,12 +237,14 @@ public class UIProfile extends AppCompatActivity {
         public void onSmallItemResize(RecyclerView.ViewHolder viewHolder, int i, float v) {
             GalleryItem galleryItem = (GalleryItem) viewHolder;
             galleryItem.text.setAlpha(v / 100f);
+            galleryItem.rating.setAlpha(v / 100f);
         }
 
         @Override
         public void onBigItemResize(RecyclerView.ViewHolder viewHolder, int i, float v) {
             GalleryItem galleryItem = (GalleryItem) viewHolder;
             galleryItem.text.setAlpha(v / 100f);
+            galleryItem.rating.setAlpha(v / 100f);
         }
     }
 
@@ -234,12 +252,17 @@ public class UIProfile extends AppCompatActivity {
 
         ImageView image;
         TextView text;
+        TextView rating;
+        Note note;
+
 
         public GalleryItem(View itemView) {
             super(itemView);
 
             image = (ImageView) itemView.findViewById(R.id.galleryItemBackground);
             text = (TextView) itemView.findViewById(R.id.titleText);
+            rating = (TextView) itemView.findViewById(R.id.ratingText);
+            note = null;
         }
 
 
