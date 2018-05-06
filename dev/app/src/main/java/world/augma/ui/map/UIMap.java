@@ -14,7 +14,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,14 +46,10 @@ import world.augma.asset.Circle;
 import world.augma.asset.Note;
 import world.augma.asset.User;
 import world.augma.ui.AR.augmaGLActivity;
-import world.augma.ui.camera.UICamera;
-import world.augma.ui.login.UILogin;
-import world.augma.ui.main.UIMain;
 import world.augma.ui.note.UINoteDisplay;
-import world.augma.ui.profile.UIProfile;
+import world.augma.ui.note.UINotePost;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
-import world.augma.ui.signUp.UISignUp;
 import world.augma.work.AWS;
 
 /** Created by Burak */
@@ -114,6 +109,9 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
             public void onButtonClickAnimationEnd(@NonNull CircleMenuView view, int buttonIndex) {
                 switch(buttonIndex) {
                     case NOTE_POST:
+                        Intent intent2 = new Intent(getActivity(), UINotePost.class);
+                        startActivity(intent2, ActivityOptions.makeCustomAnimation(getContext(),
+                                R.anim.fade_in, R.anim.fade_out).toBundle());
                         return;
                     case OPEN_CAMERA:
                         //startActivity(new Intent(getActivity(), UICamera.class));
