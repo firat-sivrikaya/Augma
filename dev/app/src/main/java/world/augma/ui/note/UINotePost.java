@@ -62,7 +62,7 @@ public class UINotePost extends AppCompatActivity {
         iconMap.put(AugmaCameraIconType.FLASH_AUTO, R.drawable.note_post_flash_auto);
         iconMap.put(AugmaCameraIconType.GRID_ON, R.drawable.note_post_grid_on);
         iconMap.put(AugmaCameraIconType.GRID_OFF, R.drawable.note_post_grid_off);
-        iconMap.put(AugmaCameraIconType.GALLERY, R.drawable.note_post_gallery);
+        iconMap.put(AugmaCameraIconType.GALLERY, R.drawable.note_post_gallery_2);
         iconMap.put(AugmaCameraIconType.EFFECTS, R.drawable.note_post_effect_button_icon);
         iconMap.put(AugmaCameraIconType.WHITE_BALANCE_DAYLIGHT, R.drawable.note_post_wb_daylight);
         iconMap.put(AugmaCameraIconType.WHITE_BALANCE_AUTO, R.drawable.note_post_wb_auto);
