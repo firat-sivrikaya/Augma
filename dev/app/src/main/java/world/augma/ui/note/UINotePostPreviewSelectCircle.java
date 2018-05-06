@@ -1,5 +1,6 @@
 package world.augma.ui.note;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ import world.augma.ui.services.InterActivityShareModel;
 public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
     private MultiSelect<Circle> multiSelect;
+    private byte[] background;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,10 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
         });
 
         leftAdapter.addAll(circleList);
-        builder.withLeftAdapter(leftAdapter).withRightAdapter(rightAdapter);
+        multiSelect = builder.withLeftAdapter(leftAdapter).withRightAdapter(rightAdapter).build();
+        CircleSelectionItemDecorator decorator = new CircleSelectionItemDecorator(60);
+        //multiSelect.getRecyclerLeft().addItemDecoration(decorator);
+        //multiSelect.getRecyclerRight().addItemDecoration(decorator);
     }
 
 }
@@ -60,17 +65,14 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
     class CircleSelectionItem extends RecyclerView.ViewHolder {
 
         private TextView circleName;
-        private TextView circleSize;
 
         public CircleSelectionItem(View itemView) {
             super(itemView);
             circleName = itemView.findViewById(R.id.notePostPreviewSelectCircleItemName);
-            circleSize = itemView.findViewById(R.id.notePostPreviewSelectCircleSize);
         }
 
         public void bind(Circle item) {
             circleName.setText(item.getName());
-            circleSize.setText(String.valueOf(item.getMemberList().size()));
         }
     }
 
@@ -153,6 +155,43 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
                     }, 200);
                 }
             });
+        }
+    }
+
+    class CircleSelectionItemDecorator extends RecyclerView.ItemDecoration {
+
+        private int size;
+
+        public CircleSelectionItemDecorator(int size) {
+            this.size = size;
+        }
+
+        /**
+         * Retrieve any offsets for the given item. Each field of <code>outRect</code> specifies
+         * the number of pixels that the item view should be inset by, similar to padding or margin.
+         * The default implementation sets the bounds of outRect to 0 and returns.
+         * <p>
+         * <p>
+         * If this ItemDecoration does not affect the positioning of item views, it should set
+         * all four fields of <code>outRect</code> (left, top, right, bottom) to zero
+         * before returning.
+         * <p>
+         * <p>
+         * If you need to access Adapter for additional data, you can call
+         * {@link RecyclerView#getChildAdapterPosition(View)} to get the adapter position of the
+         * View.
+         *
+         * @param outRect Rect to receive the output.
+         * @param view    The child view to decorate
+         * @param parent  RecyclerView this ItemDecoration is decorating
+         * @param state   The current state of RecyclerView.
+         */
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            outRect.bottom = size;
+            outRect.left = 0;
+            outRect.right = 0;
+            outRect.top = 0;
         }
     }
 

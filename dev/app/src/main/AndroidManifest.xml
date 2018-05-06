@@ -32,6 +32,11 @@
 
         <!-- Google Maps API KEY -->
 
+        <meta-data
+            tools:replace="android:value"
+            android:name="android.support.VERSION"
+            android:value="27.1.1" />
+
         <activity
             android:name=".ui.intro.UIIntro"
             android:noHistory="true"
@@ -84,10 +89,14 @@
 
         <activity android:name=".ui.note.UINoteDisplay">
 
-
-
         </activity>
         <activity android:name=".ui.AR.CameraViewActivity" />
+
+        <activity
+            android:name=".ui.note.UINotePostPreview">
+
+        </activity>
+        <activity android:name=".ui.note.UINotePostPreviewSelectCircle"></activity>
 
     </application>
 
