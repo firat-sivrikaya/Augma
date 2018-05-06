@@ -1,9 +1,11 @@
 package world.augma.asset;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.List;
 
-public class Circle implements Serializable {
+public class Circle implements Serializable, Comparable<Circle> {
 
     private static final float MIN_SIZE = 200.0f;
     private static final float MAX_SIZE = 500.0f;
@@ -122,5 +124,10 @@ public class Circle implements Serializable {
 
     public void setCircleType(int circleType) {
         this.circleType = circleType;
+    }
+
+    @Override
+    public int compareTo(@NonNull Circle o) {
+        return name.compareTo(o.getName());
     }
 }

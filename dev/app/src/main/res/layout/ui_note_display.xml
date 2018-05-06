@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sothree.slidinguppanel.SlidingUpPanelLayout
+<RelativeLayout
     android:id="@+id/noteDisplayRoot"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="bottom"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    app:umanoPanelHeight="80dp"
-    app:umanoShadowHeight="4dp">
+    android:fitsSystemWindows="true">
 
     <include
         android:id="@+id/noteDisplayTopBar"
@@ -24,6 +21,6 @@
         android:layout_width="match_parent"
         />
 
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+</RelativeLayout>
 
 

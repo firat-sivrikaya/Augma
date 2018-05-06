@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/notePostPreviewRoot"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.note.UINotePostPreview">
+
+    <include layout="@layout/note_post_preview_proceed_button"
+        android:id="@+id/notePostPreviewProceedButton"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="300dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

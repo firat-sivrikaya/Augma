@@ -1,37 +1,34 @@
 package world.augma.ui.note;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.mingle.sweetpick.CustomDelegate;
+import com.mingle.sweetpick.SweetSheet;
 
 import java.util.concurrent.ExecutionException;
 
 import world.augma.R;
-import world.augma.asset.AugmaSharedPreferences;
-import world.augma.asset.AugmaVisualType;
 import world.augma.asset.Note;
 import world.augma.asset.User;
-import world.augma.ui.main.UIMain;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
 import world.augma.work.AWS;
-import world.augma.work.visual.AugmaImager;
 import world.augma.work.visual.S3;
 
 public class UINoteDisplay extends AppCompatActivity {
 
-    private SlidingUpPanelLayout root;
+    private RelativeLayout root;
     private TextView userNameText;
     private TextView noteText;
     private ImageView profilePic;
     private ImageView noteImage;
+    private SweetSheet sheet;
     private RelativeLayout topBar;
     private RelativeLayout bottomPanel;
     private Note note;
@@ -44,7 +41,7 @@ public class UINoteDisplay extends AppCompatActivity {
 
         note = (Note) getIntent().getExtras().getSerializable("obj");
 
-        root                = (SlidingUpPanelLayout) findViewById(R.id.noteDisplayRoot);
+        root                = (RelativeLayout) findViewById(R.id.noteDisplayRoot);
         topBar              = (RelativeLayout) findViewById(R.id.noteDisplayTopBar);
         bottomPanel         = (RelativeLayout) findViewById(R.id.noteDisplayBottomSlider);
         noteImage           = (ImageView) findViewById(R.id.noteDisplayImage);
@@ -59,7 +56,6 @@ public class UINoteDisplay extends AppCompatActivity {
         if(null == note.getOwner() ){
             ServiceUIMain uiMain =(ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
             user = uiMain.fetchUser();
-
         }
         else{
             try {
@@ -71,16 +67,23 @@ public class UINoteDisplay extends AppCompatActivity {
             }
         }
 
-
-
         noteText.setText(note.getNoteText());
-        Log.e("@@@@@@@@@@@@@@@@@@@@@@@@", note.getNoteText());
         userNameText.setText(user.getName());
         S3.fetchProfileImage(this, profilePic, user.getUserID());
         S3.fetchNoteImage(this,noteImage,user.getUserID(),note.getNoteID());
+
+        CustomDelegate delegate = new CustomDelegate(true,
+                CustomDelegate.AnimationType.DuangLayoutAnimation);
+        delegate.setCustomView(LayoutInflater.from(this)
+                .inflate(R.layout.note_post_preview_text_edit, null, false));
+        sheet.setDelegate(delegate);
     }
 
-
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        sheet.toggle();
+        return true;
+    }
 }
 
 
