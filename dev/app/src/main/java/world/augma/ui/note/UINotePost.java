@@ -2,7 +2,6 @@ package world.augma.ui.note;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,12 +27,12 @@ import com.otaliastudios.cameraview.Grid;
 import com.otaliastudios.cameraview.SessionType;
 import com.otaliastudios.cameraview.WhiteBalance;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
 
 import world.augma.R;
 import world.augma.asset.AugmaCameraIconType;
+import world.augma.ui.services.InterActivityShareModel;
 
 public class UINotePost extends AppCompatActivity {
 
@@ -154,14 +153,8 @@ public class UINotePost extends AppCompatActivity {
         camera.capturePicture();
     }
 
-    private void proceedToPreview(Bitmap data) {
-        Intent intent = new Intent(this, UINotePostPreview.class);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-        data.compress(Bitmap.CompressFormat.JPEG, 50, bos);
-        byte[] compressed = bos.toByteArray();
-        intent.putExtra("previewPic", compressed);
-        startActivity(intent,
+    private void proceedToPreview() {
+        startActivity(new Intent(this, UINotePostPreview.class),
                 ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
     }
 
@@ -171,15 +164,14 @@ public class UINotePost extends AppCompatActivity {
         public void onPictureTaken(byte[] jpeg) {
             super.onPictureTaken(jpeg);
 
-
             CameraUtils.decodeBitmap(jpeg, new CameraUtils.BitmapCallback() {
                 @Override
                 public void onBitmapReady(Bitmap bitmap) {
                     //Utils.storeImage(bitmap, getApplicationContext());
-                    proceedToPreview(bitmap);
+                    InterActivityShareModel.getInstance().setBitmap(bitmap);
+                    proceedToPreview();
                 }
             });
-
         }
 
         @Override

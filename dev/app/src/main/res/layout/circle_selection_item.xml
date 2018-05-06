@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notePostPreviewSelectCircleItemRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center">
@@ -10,22 +11,36 @@
         android:layout_height="wrap_content"
         android:gravity="left">
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
         <ImageView
-            android:src="@drawable/circle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:src="@drawable/circle_prev_selection_item"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="10dp"/>
+
+        <com.devlomi.hidely.hidelyviews.HidelyImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:visibility="gone"
+            android:id="@+id/notePostPreviewSelectCircleItemCheckMark"
+            android:background="@drawable/circle"
+            android:src="@drawable/confirm_button_icon" />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/notePostPreviewSelectCircleItemName"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:text="Public"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

@@ -1,11 +1,14 @@
 package world.augma.ui.services;
 
 
+import android.graphics.Bitmap;
+
 public class InterActivityShareModel {
 
     private static InterActivityShareModel singletonObj;
 
     private ServiceUIMain uiMain;
+    private Bitmap bitmap;
 
     private InterActivityShareModel() {}
 
@@ -31,5 +34,13 @@ public class InterActivityShareModel {
 
     public void setUiMain(ServiceUIMain uiMain) {
         this.uiMain = uiMain;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 }
