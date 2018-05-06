@@ -1,10 +1,12 @@
 package world.augma.ui.AR;
 
+import android.content.res.Resources;
 import android.location.Location;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,4 +172,29 @@ public class augmaRenderer implements GLSurfaceView.Renderer{
     public void setAngle(float angle) {
         mAngle = angle;
     }
+
+    public void processTouchEvent(MotionEvent event)
+    {
+        float x = event.getX();
+        float y = event.getY();
+        float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+
+        Log.e(TAG, "width" + screenWidth + ", height " + screenHeight);
+
+        float sceneX = (x/screenWidth)*2.0f - 1.0f;
+        float sceneY = (y/screenHeight)*-2.0f + 1.0f; //if bottom is at -1. Otherwise same as X
+
+        for(int i = 0; i < mSquare.size(); i++)
+        {
+            Log.e(TAG, "sceneX: " + sceneX + ", " + "sceneY: " + sceneY);
+            if ( mSquare.get(i).squareCoords[0] <= sceneX && mSquare.get(i).squareCoords[6] >= sceneX && mSquare.get(i).squareCoords[1] >= sceneY && mSquare.get(i).squareCoords[7] <= sceneY )
+            {
+                Log.e(TAG, "kareye basıldım, i:" + i);
+            }
+        }
+
+    }
+
+
 }

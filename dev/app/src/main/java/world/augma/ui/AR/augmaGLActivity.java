@@ -135,6 +135,8 @@ public class augmaGLActivity extends AppCompatActivity {
 
             mPreviousX = x;
             mPreviousY = y;
+
+            mRenderer.processTouchEvent(e);
             return true;
         }
 
