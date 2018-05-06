@@ -1,0 +1,32 @@
+package world.augma.asset;
+
+public enum AugmaCameraIconType {
+
+    FACING_FRONT,
+
+    FACING_BACK,
+
+    FLASH_ON,
+
+    FLASH_OFF,
+
+    FLASH_AUTO,
+
+    GRID_ON,
+
+    GRID_OFF,
+
+    GALLERY,
+
+    EFFECTS,
+
+    WHITE_BALANCE_INCANDESCENT,
+
+    WHITE_BALANCE_FLOURESCENT,
+
+    WHITE_BALANCE_CLOUDY,
+
+    WHITE_BALANCE_DAYLIGHT,
+
+    WHITE_BALANCE_AUTO
+}

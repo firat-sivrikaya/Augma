@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/note_post_take_photo_button_background"
+    android:gravity="center"
+    android:onClick="notePostTakePhoto">
+
+    <View
+        android:background="@drawable/note_post_take_photo_button_inner"
+        android:layout_width="45dp"
+        android:layout_height="45dp" />
+
+</RelativeLayout>

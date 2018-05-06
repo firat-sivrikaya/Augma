@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.github.mmin18.widget.RealtimeBlurView
-        android:id="@+id/blurOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:realtimeBlurRadius="10dp"/>
+    android:layout_height="wrap_content">
 
     <ImageView
         android:src="@drawable/ic_arrow_upward_black_24dp"

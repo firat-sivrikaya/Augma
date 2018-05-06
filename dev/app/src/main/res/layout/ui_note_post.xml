@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<FrameLayout android:id="@+id/notePostRoot"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,17 +9,15 @@
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera"
         android:keepScreenOn="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
-    <Button
-        android:id="@+id/takePhotoButton"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="500dp"
-        android:layout_marginLeft="150dp"
-        android:onClick="takePhoto"
-        android:text="Take Photo"
-        android:textAlignment="center" />
+    <include layout="@layout/note_post_bottom_bar"
+        android:id="@+id/notePostBottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_gravity="bottom"
+        />
 
 </FrameLayout>
