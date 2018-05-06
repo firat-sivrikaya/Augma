@@ -152,7 +152,7 @@ public class UINotePost extends AppCompatActivity {
         camera.capturePicture();
     }
 
-    private void proceedToPreview(Bitmap data) {
+    private void proceedToPreview(byte[] data) {
         Intent intent = new Intent(this, UINotePostPreview.class);
         intent.putExtra("previewPic", data);
         startActivity(intent,
@@ -165,13 +165,15 @@ public class UINotePost extends AppCompatActivity {
         public void onPictureTaken(byte[] jpeg) {
             super.onPictureTaken(jpeg);
 
-            CameraUtils.decodeBitmap(jpeg, new CameraUtils.BitmapCallback() {
+            proceedToPreview(jpeg);
+            /*CameraUtils.decodeBitmap(jpeg, new CameraUtils.BitmapCallback() {
                 @Override
                 public void onBitmapReady(Bitmap bitmap) {
                     //Utils.storeImage(bitmap, getApplicationContext());
                     proceedToPreview(bitmap);
                 }
-            });
+            });*/
+
         }
 
         @Override
