@@ -1,9 +1,12 @@
 package world.augma.ui.note;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +17,20 @@ import com.yalantis.multiselection.lib.MultiSelectBuilder;
 import com.yalantis.multiselection.lib.adapter.BaseLeftAdapter;
 import com.yalantis.multiselection.lib.adapter.BaseRightAdapter;
 
+import org.json.JSONArray;
+
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import world.augma.R;
 import world.augma.asset.AugmaCallback;
 import world.augma.asset.Circle;
+import world.augma.asset.User;
+import world.augma.ui.map.UIMap;
 import world.augma.ui.services.InterActivityShareModel;
+import world.augma.ui.services.ServiceUIMain;
+import world.augma.work.AWS;
+import world.augma.work.visual.S3;
 
 public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
@@ -64,9 +75,32 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            List<Circle>  circleLst= multiSelect.getSelectedItems();
+            List<Circle>  circleLst = multiSelect.getSelectedItems();
+            JSONArray jsnCircleLst = new JSONArray(circleLst);
 
-                //AWS aws1
+
+
+
+            byte[] image = getIntent().getExtras().getParcelable("previewPic");
+            String noteText = getIntent().getExtras().getString("noteText");
+            ServiceUIMain serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
+            User user =  serviceUIMain.fetchUser();
+            Location location = UIMap.mLastKnownLocation;
+            String noteID = "";
+
+
+            AWS aws1 = new AWS();
+            try {
+                if(aws1.execute(AWS.Service.POST_NOTE,noteText, ""+location.getLatitude(), ""+location.getLongitude(),user.getUserID(),jsnCircleLst.toString()).get()){
+                    noteID = aws1.getNewNoteID();
+                    S3.uploadNoteImage(image,user.getUserID(),noteID);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                Log.e("AWS Error", "ERROR: Cannot post note");
+            }
+
+
+
         }
     }
 

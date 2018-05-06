@@ -406,10 +406,12 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
             case Service.POST_NOTE:
                 if(data.length == 5) {
                     jsonObject.put(NOTE_TEXT, data[0]);
-                    jsonObject.put("lat", Float.parseFloat(data[1]));
-                    jsonObject.put("lon", Float.parseFloat(data[2]));
+                    jsonObject.put("lat", Double.parseDouble(data[1]));
+                    jsonObject.put("lon", Double.parseDouble(data[2]));
                     jsonObject.put(OWNED_BY, data[3]);
-                    jsonObject.put(CIRCLE_LIST, data[4]);
+
+                    JSONArray circleList = new JSONArray(data[4]);
+                    jsonObject.put(CIRCLE_LIST, (Object)circleList);
                 } else {
                     Log.e(TAG, "ERROR: Something wrong with the note data");
                     return null;

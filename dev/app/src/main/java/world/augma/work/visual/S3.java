@@ -42,4 +42,13 @@ public class S3 {
         return false;
     }
 
+    public static boolean uploadNoteImage(byte[] imageByte, String userID,String noteID){
+        try {
+            return new AWS().execute(AWS.Service.UPLOAD_IMAGE, userID, noteID,Base64.encodeToString(imageByte, 0)).get();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "ERROR: Cannot upload image to cloud.");
+        }
+        return false;
+    }
+
 }
