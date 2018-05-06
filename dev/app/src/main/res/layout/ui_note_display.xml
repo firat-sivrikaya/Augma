@@ -5,8 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="bottom"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:umanoPanelHeight="100dp"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    app:umanoPanelHeight="80dp"
     app:umanoShadowHeight="4dp">
 
     <include
