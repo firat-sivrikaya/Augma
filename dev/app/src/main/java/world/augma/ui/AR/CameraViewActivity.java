@@ -1,3 +1,5 @@
+package world.augma.ui.AR;
+
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
@@ -56,7 +58,7 @@ public class CameraViewActivity extends Activity implements
     }
 
     private void setAugmentedRealityPoint() {
-        mPoi = new AugmentedPOI(
+        mPoi = new AugmaPOI(
                 "Kościół Marciacki",
                 "Kościół Marciacki w Krakowie",
                 50.06169631,
