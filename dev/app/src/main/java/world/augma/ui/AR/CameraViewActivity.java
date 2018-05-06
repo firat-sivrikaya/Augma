@@ -10,6 +10,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -25,10 +26,9 @@ public class CameraViewActivity extends Activity implements
     private Camera mCamera;
     private SurfaceHolder mSurfaceHolder;
     private boolean isCameraviewOn = false;
-    private AugmaPOI mPoi;
 
     private double mAzimuthReal = 0;
-    private double mAzimuthTeoretical = 0;
+    private double[] mAzimuthTheoretical;
     private static double AZIMUTH_ACCURACY = 5;
     private double mMyLatitude = 0;
     private double mMyLongitude = 0;
@@ -37,7 +37,7 @@ public class CameraViewActivity extends Activity implements
     private MyCurrentLocation myCurrentLocation;
 
     private List<Note> nearbyNotes;
-    //TextView descriptionTextView;
+    TextView descriptionTextView;
     ImageView pointerIcon;
 
     @Override
@@ -46,43 +46,35 @@ public class CameraViewActivity extends Activity implements
         setContentView(R.layout.activity_camera_view);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        nearbyNotes = (List<Note>) getIntent().getExtras().getSerializable("nearbyNotes");
-
         setupListeners();
         setupLayout();
-        setAugmentedRealityPoint();
+        nearbyNotes = (List<Note>) getIntent().getExtras().getSerializable("nearbyNotes");
+        mAzimuthTheoretical = new double[nearbyNotes.size()];
     }
 
-    private void setAugmentedRealityPoint() {
-        mPoi = new AugmaPOI(
-                "Kościół Marciacki",
-                "Kościół Marciacki w Krakowie",
-                50.06169631,
-                19.93919566
-        );
-    }
 
-    public double calculateTeoreticalAzimuth() {
-        double dX = mPoi.getPoiLatitude() - mMyLatitude;
-        double dY = mPoi.getPoiLongitude() - mMyLongitude;
+    public double calculateTheoreticalAzimuth(Note note) {
 
-        double phiAngle;
-        double tanPhi;
-        double azimuth = 0;
+            double dX = note.getLatitude() - mMyLatitude;
+            double dY = note.getLongitude() - mMyLongitude;
 
-        tanPhi = Math.abs(dY / dX);
-        phiAngle = Math.atan(tanPhi);
-        phiAngle = Math.toDegrees(phiAngle);
+            double phiAngle;
+            double tanPhi;
+            double azimuth = 0;
 
-        if (dX > 0 && dY > 0) { // I quater
-            return azimuth = phiAngle;
-        } else if (dX < 0 && dY > 0) { // II
-            return azimuth = 180 - phiAngle;
-        } else if (dX < 0 && dY < 0) { // III
-            return azimuth = 180 + phiAngle;
-        } else if (dX > 0 && dY < 0) { // IV
-            return azimuth = 360 - phiAngle;
-        }
+            tanPhi = Math.abs(dY / dX);
+            phiAngle = Math.atan(tanPhi);
+            phiAngle = Math.toDegrees(phiAngle);
+
+            if (dX > 0 && dY > 0) { // I quater
+                return azimuth = phiAngle;
+            } else if (dX < 0 && dY > 0) { // II
+                return azimuth = 180 - phiAngle;
+            } else if (dX < 0 && dY < 0) { // III
+                return azimuth = 180 + phiAngle;
+            } else if (dX > 0 && dY < 0) { // IV
+                return azimuth = 360 - phiAngle;
+            }
 
         return phiAngle;
     }
@@ -117,8 +109,9 @@ public class CameraViewActivity extends Activity implements
     }
 
     private void updateDescription() {
-        /*descriptionTextView.setText(mPoi.getPoiName() + " azimuthTeoretical "
-                + mAzimuthTeoretical + " azimuthReal " + mAzimuthReal + " latitude "
+        /*
+        descriptionTextView.setText(" azimuthTheoretical "
+                + mAzimuthTheoretical + " azimuthReal " + mAzimuthReal + " latitude "
                 + mMyLatitude + " longitude " + mMyLongitude);*/
     }
 
@@ -126,7 +119,9 @@ public class CameraViewActivity extends Activity implements
     public void onLocationChanged(Location location) {
         mMyLatitude = location.getLatitude();
         mMyLongitude = location.getLongitude();
-        mAzimuthTeoretical = calculateTeoreticalAzimuth();
+        for(int i = 0; i < nearbyNotes.size(); i++) {
+            mAzimuthTheoretical[i] = calculateTheoreticalAzimuth(nearbyNotes.get(i));
+        }
         Toast.makeText(this,"latitude: "+location.getLatitude()+" longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
         updateDescription();
     }
@@ -134,20 +129,42 @@ public class CameraViewActivity extends Activity implements
     @Override
     public void onAzimuthChanged(float azimuthChangedFrom, float azimuthChangedTo) {
         mAzimuthReal = azimuthChangedTo;
-        mAzimuthTeoretical = calculateTeoreticalAzimuth();
+        for(int i = 0; i < nearbyNotes.size(); i++){
+            mAzimuthTheoretical[i] = calculateTheoreticalAzimuth(nearbyNotes.get(i));
 
-        pointerIcon = (ImageView) findViewById(R.id.icon);
+            pointerIcon = (ImageView) findViewById(R.id.icon);
 
-        double minAngle = calculateAzimuthAccuracy(mAzimuthTeoretical).get(0);
-        double maxAngle = calculateAzimuthAccuracy(mAzimuthTeoretical).get(1);
+            pointerIcon.setX(0 + i * 100);
+            pointerIcon.setY(0 + i * 100);
 
-        if (isBetween(minAngle, maxAngle, mAzimuthReal)) {
-            pointerIcon.setVisibility(View.VISIBLE);
-        } else {
-            pointerIcon.setVisibility(View.INVISIBLE);
+            double minAngle = calculateAzimuthAccuracy(mAzimuthTheoretical[i]).get(0);
+            double maxAngle = calculateAzimuthAccuracy(mAzimuthTheoretical[i]).get(1);
+
+            /*
+            θ = atan2( sin Δλ ⋅ cos φ2 , cos φ1 ⋅ sin φ2 − sin φ1 ⋅ cos φ2 ⋅ cos Δλ );
+
+            where φ1,λ1 is the start point, φ2,λ2 the end point (Δλ is the difference in longitude);*/
+
+            double noteLat = nearbyNotes.get(i).getLatitude();
+            double noteLon = nearbyNotes.get(i).getLongitude();
+
+            double usersLat = mMyLatitude;
+            double usersLon = mMyLongitude;
+
+            double deltaLon = Math.abs(usersLon-noteLon);
+
+            double degree = Math.toDegrees(Math.atan2(Math.sin(deltaLon) * Math.cos(noteLat),
+                    Math.cos(usersLat) * Math.sin(noteLat) - Math.sin(usersLat) * Math.cos(noteLat) * Math.cos(deltaLon)));
+
+            if (isBetween(minAngle, maxAngle, mAzimuthReal) ) {
+                pointerIcon.setVisibility(View.VISIBLE);
+            } else {
+                pointerIcon.setVisibility(View.INVISIBLE);
+            }
+
+            updateDescription();
         }
 
-        updateDescription();
     }
 
     @Override
