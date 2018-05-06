@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,9 +14,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.devlomi.hidely.hidelyviews.HidelyImageButton;
 import com.devlomi.hidely.hidelyviews.HidelyImageView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,14 +40,23 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
     private List<Circle> circleList;
     private List<Circle> selectedCirclelist;
+    private HidelyImageButton proceedButton;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_note_post_preview_select_circle);
 
+        recyclerView = findViewById(R.id.notePostPreviewSelectCircleList);
+        proceedButton = findViewById(R.id.notePostPreviewSelectCircleConfirmButton);
         circleList = InterActivityShareModel.getInstance().getUiMain().fetchUser().getMemberships();
-        selectedCirclelist = new ArrayList<>(circleList.size());
+
+        Log.e("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", circleList.toString());
+
+
+        selectedCirclelist = new ArrayList<>();
+        proceedButton.setOnClickListener(new NotePostPreviewSelecCircleProceedButtonListener());
 
         CircleSelectionAdapter adapter = new CircleSelectionAdapter(new OnItemClick() {
             @Override
@@ -57,19 +70,53 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
                     hidelyImageView.hide();
                     selectedCirclelist.remove(c);
                 }
+
+                if(!selectedCirclelist.isEmpty()) {
+                    proceedButton.show();
+                } else {
+                    proceedButton.hide();
+                }
             }
         });
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
     }
 
     private class NotePostPreviewSelecCircleProceedButtonListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            JSONArray jsnCircleLst = new JSONArray(circleList);
+            JSONArray jsnCircleLst = new JSONArray();
+            Log.e("selected circle list:",selectedCirclelist.toString());
+            Log.e("Json selected circle list:",jsnCircleLst.toString());
+
+            for (int i = 0; i< selectedCirclelist.size();i++){
+                JSONObject iObj = new JSONObject();
+                try {
+                    iObj.put("circleID",selectedCirclelist.get(i).getCircleID());
+                    iObj.put("circleName",selectedCirclelist.get(i).getName());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                jsnCircleLst.put(iObj);
+            }
+            Log.e("Json selected circle list 2:",jsnCircleLst.toString());
 
             String noteText = getIntent().getExtras().getString("noteText");
             ServiceUIMain serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
             User user =  serviceUIMain.fetchUser();
+            JSONObject jsonUser = new JSONObject();
+
+            try {
+                jsonUser.put("userID",user.getUserID());
+                jsonUser.put("username",user.getUsername());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
             Location location = UIMap.mLastKnownLocation;
             String noteID = "";
 
@@ -87,7 +134,7 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
             AWS aws1 = new AWS();
             try {
                 if(aws1.execute(AWS.Service.POST_NOTE,noteText, ""+location.getLatitude(), ""+location.getLongitude(),
-                        user.getUserID(), jsnCircleLst.toString()).get()){
+                        jsonUser.toString(), jsnCircleLst.toString()).get()){
                     noteID = aws1.getNewNoteID();
                     S3.uploadNoteImage(image,user.getUserID(),noteID);
                 }
