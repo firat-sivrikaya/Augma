@@ -372,7 +372,8 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
 
             case Service.CREATE_CIRCLE:
                 if(data.length == 4) {
-                    jsonObject.put(OWNED_BY, data[0]); //TODO user id yi sessiondan burda mi alicaz yoksa servis call un yapildigi yer de mi?
+                    JSONObject owner = new JSONObject(data[0]);
+                    jsonObject.put(OWNED_BY, owner);
                     jsonObject.put(CIRCLE_NAME, data[1]);
                     jsonObject.put(CIRCLE_SEARCH_NAME, data[2]);
                     jsonObject.put(DESC, data[3]);

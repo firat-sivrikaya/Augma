@@ -17,12 +17,18 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import world.augma.R;
 import world.augma.asset.Circle;
+import world.augma.asset.User;
+import world.augma.ui.services.InterActivityShareModel;
+import world.augma.ui.services.ServiceUIMain;
 import world.augma.ui.widget.CircleCanvas;
 import world.augma.work.AWS;
 import world.augma.work.Utils;
@@ -33,6 +39,7 @@ public class UICircle extends Fragment {
     private List<Circle> circleList;
     private CircleCanvas canvas;
     private LottieAnimationView addCircleButton;
+    private User user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,6 +49,8 @@ public class UICircle extends Fragment {
         circleSearchField = (EditText) root.findViewById(R.id.circleSearchField);
         addCircleButton = root.findViewById(R.id.circleAddCircleButton);
         circleList = new ArrayList<>();
+        ServiceUIMain serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
+        user =  serviceUIMain.fetchUser();
 
         circleSearchField.setOnEditorActionListener(new CircleSearchListener());
         root.setOnTouchListener(new View.OnTouchListener() {
@@ -70,7 +79,26 @@ public class UICircle extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //TODO AWS burada eklesin
-                                Utils.sendSuccessNotification(UICircle.this.getActivity(), "CIRCLE: " + circleName.getText().toString());
+                                JSONObject jsonUser = new JSONObject();
+
+                                try {
+                                    jsonUser.put("userID",user.getUserID());
+                                    jsonUser.put("username",user.getUsername());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                AWS aws = new AWS();
+
+                                try {
+                                    if(aws.execute(AWS.Service.CREATE_CIRCLE,jsonUser.toString(),circleName.getText().toString(),circleName.getText().toString().toLowerCase(),circleDesc.getText().toString()).get())
+                                        Utils.sendSuccessNotification(UICircle.this.getActivity(), "CIRCLE: " + circleName.getText().toString());
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                }
+
                                 addCircleButton.playAnimation();
                             }
                         })

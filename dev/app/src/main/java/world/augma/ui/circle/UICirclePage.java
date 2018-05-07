@@ -7,7 +7,13 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
 
+import java.util.concurrent.ExecutionException;
+
 import world.augma.R;
+import world.augma.asset.User;
+import world.augma.ui.services.InterActivityShareModel;
+import world.augma.ui.services.ServiceUIMain;
+import world.augma.work.AWS;
 import world.augma.work.Utils;
 import world.augma.work.visual.OnSwipeTouchListener;
 
@@ -21,11 +27,13 @@ public class UICirclePage extends AppCompatActivity {
     private TextView circleDescriptionField;
     private LottieAnimationView background;
     private LottieAnimationView swipeView;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_circle_page);
+
 
         circleID = getIntent().getExtras().getString("circleID");
         circleName = getIntent().getExtras().getString("name");
@@ -52,7 +60,21 @@ public class UICirclePage extends AppCompatActivity {
             @Override
             public void onSwipeRight() {
                 super.onSwipeRight();
-                Utils.sendSuccessNotification(UICirclePage.this, "YAAAY!");
+
+                AWS aws = new AWS();
+                ServiceUIMain serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
+                user =  serviceUIMain.fetchUser();
+
+                try {
+
+                    if(aws.execute(AWS.Service.JOIN_CIRCLE,user.getUserID(),user.getUsername(),circleID,circleName).get())
+                        Utils.sendSuccessNotification(UICirclePage.this, "YAAAY!");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
