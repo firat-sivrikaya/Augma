@@ -1,15 +1,19 @@
 package world.augma.ui.AR;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +25,7 @@ import java.util.List;
 import world.augma.R;
 import world.augma.asset.Note;
 import world.augma.asset.User;
+import world.augma.ui.note.UINoteDisplay;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
 
@@ -51,8 +56,9 @@ public class CameraViewActivity extends Activity implements
     private List<Note> filteredNotes;
     TextView descriptionTextView;
     RelativeLayout ARRootLayout;
+    private AROnClickListener listener;
 
-    private ImageView[] imageArray;
+    private RelativeLayout[] imageArray;
     private boolean[] imageDrawn;
 
     @Override
@@ -62,7 +68,7 @@ public class CameraViewActivity extends Activity implements
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         ARRootLayout = findViewById(R.id.ARroot);
-
+        listener = new AROnClickListener();
         serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
         user = serviceUIMain.fetchUser();
 
@@ -72,7 +78,8 @@ public class CameraViewActivity extends Activity implements
 
         degreesOfNotes = new double[filteredNotes.size()];
 
-        imageArray = new ImageView[filteredNotes.size()];
+        imageArray = new RelativeLayout[filteredNotes.size()];
+
 
         imageDrawn = new boolean[filteredNotes.size()];
 
@@ -186,6 +193,8 @@ public class CameraViewActivity extends Activity implements
         float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
+        LayoutInflater inflater = LayoutInflater.from(this);
+
         mRotationReal = newRot;
         for(int i = 0; i < filteredNotes.size(); i++) {
             degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
@@ -202,24 +211,27 @@ public class CameraViewActivity extends Activity implements
                 params.topMargin = (int)screenHeight/2 ;
 
                 if(!imageDrawn[i]) {
-                    imageArray[i] = new ImageView(this);
-                    imageArray[i].setImageResource(R.drawable.note_icon);
-                    Log.e("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", "NFANSDFANFNAFNANF");
+                    imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
+
+                    ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
                     imageArray[i].setLayoutParams(params);
                     ARRootLayout.addView(imageArray[i]);
+
                     imageDrawn[i] = true;
                 }
                 else {
                     ARRootLayout.removeView(imageArray[i]);
                     imageDrawn[i] = false;
 
-                    imageArray[i] = new ImageView(this);
-                    imageArray[i].setImageResource(R.drawable.note_icon);
-                    Log.e("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", "NFANSDFANFNAFNANF");
+                    imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
+                    ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
                     imageArray[i].setLayoutParams(params);
                     ARRootLayout.addView(imageArray[i]);
                     imageDrawn[i] = true;
                 }
+                imageArray[i].setTag(filteredNotes.get(i));
+                imageArray[i].setOnClickListener(listener);
+                imageArray[i].bringToFront();
             } else {
                 if(imageDrawn[i]){
                     ARRootLayout.removeView(imageArray[i]);
@@ -229,7 +241,6 @@ public class CameraViewActivity extends Activity implements
             }
         }
         updateDescription();
-
     }
 
     @Override
@@ -261,6 +272,7 @@ public class CameraViewActivity extends Activity implements
 
         getWindow().setFormat(PixelFormat.UNKNOWN);
         SurfaceView surfaceView = (SurfaceView) findViewById(R.id.cameraview);
+        surfaceView.setZOrderOnTop(false);
         mSurfaceHolder = surfaceView.getHolder();
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -299,8 +311,23 @@ public class CameraViewActivity extends Activity implements
         isCameraviewOn = false;
     }
 
-    public void addImageToLayout(ImageView image, RelativeLayout.LayoutParams params){
+    private class AROnClickListener implements View.OnClickListener {
 
+        @Override
+        public void onClick(View v) {
+            RelativeLayout image = (RelativeLayout) v;
+
+            Log.e("JFJASFJSJDFASJDFAJD", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
+            if(image.getTag() != null)
+            {
+                Note nt = (Note)image.getTag();
+                Intent intent = new Intent(CameraViewActivity.this, UINoteDisplay.class);
+                intent.putExtra("obj", nt);
+                startActivity(intent,
+                        ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
+            }
+        }
     }
 
 }
