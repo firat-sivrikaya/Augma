@@ -146,8 +146,12 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_refresh_black_24dp" />
-                            <entry key="sourceFile" value="C:\Users\cagdas" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="height" value="75" />
+                            <entry key="outputName" value="ar_note_icon" />
+                            <entry key="overrideSize" value="true" />
+                            <entry key="sourceFile" value="D:\Downloads\noun_1593254_cc.svg" />
+                            <entry key="width" value="60" />
                           </map>
                         </option>
                       </PersistentState>
