@@ -386,7 +386,7 @@ public class AWS extends AsyncTask<String, Void, Boolean> {
             case Service.UPDATE_RATING:
                 if(data.length == 3) {
                     jsonObject.put(NOTE_ID, data[0]);
-                    jsonObject.put("val", data[1]);
+                    jsonObject.put("val", Integer.parseInt(data[1]));
                     jsonObject.put(OWNED_BY, data[2]);
                 } else {
                     Log.e(TAG, "ERROR: You must fill in all three fields.");

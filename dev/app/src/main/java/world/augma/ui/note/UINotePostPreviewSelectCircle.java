@@ -136,11 +136,13 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
                 if(aws1.execute(AWS.Service.POST_NOTE,noteText, ""+location.getLatitude(), ""+location.getLongitude(),
                         jsonUser.toString(), jsnCircleLst.toString()).get()){
                     noteID = aws1.getNewNoteID();
+                    //TODO we need to wait MOST IMPORTANT SHIT RIGHT HERE
                     S3.uploadNoteImage(image,user.getUserID(),noteID);
                 }
             } catch (InterruptedException | ExecutionException e) {
                 Log.e("AWS Error", "ERROR: Cannot post note");
             }
+            proceedBackToMainPage(v);
         }
     }
 

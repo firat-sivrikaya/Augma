@@ -112,9 +112,26 @@ public class UINoteDisplay extends AppCompatActivity {
 
             if(v == upvoteButton && upvoteButton.getProgress() == 0) {
                 upvoteButton.playAnimation();
+                AWS aws = new AWS();
+                try {
+                    aws.execute(AWS.Service.UPDATE_RATING,note.getNoteID(),""+1,note.getOwner().getUserID()).get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
             } else if(v == lightTheBeaconButton) {
                 if(!lightTheBeaconButton.isAnimating()) {
                     lightTheBeaconButton.playAnimation();
+                    AWS aws1 = new AWS();
+                    try {
+                        aws1.execute(AWS.Service.LIGHT_THE_BEACON,note.getNoteID()).get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     lightTheBeaconButton.cancelAnimation();
                 }
