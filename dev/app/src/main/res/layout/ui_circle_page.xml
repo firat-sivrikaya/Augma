@@ -39,29 +39,39 @@
     <TextView
         android:id="@+id/circlePageCircleName"
         android:textSize="30dp"
-        android:text="Public"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     </RelativeLayout>
 
-    <me.thanel.swipeactionview.SwipeActionView
-        android:id="@+id/userList"
+    <TextView
+        android:id="@+id/circleDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?colorPrimary">
+        android:textSize="14sp"
+        android:layout_margin="20dp"
+        android:text="Welcome to the our circle. Please feel free to share your daily experiences!"
+        />
 
+    <me.thanel.swipeactionview.SwipeActionView
+        android:id="@+id/joinCircle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src=""/>
+            android:src="@drawable/ic_ui_main_pop_out_note_post"/>
 
+-->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Swipe me"/>
+            android:padding="20dp"
+            android:textStyle="bold"
+            android:text="Swipe right to join"/>
     </me.thanel.swipeactionview.SwipeActionView>
 
 

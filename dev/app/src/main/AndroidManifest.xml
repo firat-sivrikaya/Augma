@@ -41,6 +41,12 @@
             android:noHistory="true"
             android:screenOrientation="portrait">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
         </activity>
         <activity
             android:name=".ui.login.UILogin"
@@ -60,7 +66,6 @@
             android:name=".ui.main.UIDrawerHeader"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.camera.UICamera" />
-        <activity android:name=".ui.AR.augmaGLActivity" />
 
         <service android:name=".work.FirebaseMessaging">
             <intent-filter>
@@ -81,11 +86,7 @@
         <activity android:name=".ui.note.UINotePostPreviewSelectCircle" />
         <activity android:name=".ui.circle.UICirclePage">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
 
         </activity>
