@@ -7,20 +7,16 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.GridLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
-
 import java.util.List;
 
 import world.augma.R;
 import world.augma.asset.Circle;
-import world.augma.ui.circle.UICircle;
 import world.augma.ui.circle.UICirclePage;
 
 public class CircleCanvas extends GridLayout {
@@ -43,6 +39,7 @@ public class CircleCanvas extends GridLayout {
         circleGrow = AnimationUtils.loadAnimation(getContext(), R.anim.circle_page_grow);
 
         circleGrow.setAnimationListener(new CircleAnimationListener());
+        circleGrow.setFillAfter(false);
 
         if(circleList != null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -70,7 +67,7 @@ public class CircleCanvas extends GridLayout {
         public void onClick(View v) {
             RelativeLayout obj = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.circle_representation, null, false);
             obj.setLayoutParams(v.getLayoutParams());
-            ((ViewGroup) getParent()).addView(obj);
+            addView(obj);
             obj.startAnimation(circleGrow);
         }
     }
@@ -85,6 +82,13 @@ public class CircleCanvas extends GridLayout {
         @Override
         public void onAnimationStart(Animation animation) {
 
+            Intent intent = new Intent(getContext(), UICirclePage.class);
+            intent.putExtra("name", clickedCircle.getName());
+            intent.putExtra("circleID", clickedCircle.getCircleID());
+            intent.putExtra("desc", clickedCircle.getDescription());
+
+            getContext().startActivity(intent,
+                    ActivityOptionsCompat.makeCustomAnimation(getContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
         }
 
         /**
@@ -95,15 +99,7 @@ public class CircleCanvas extends GridLayout {
          */
         @Override
         public void onAnimationEnd(Animation animation) {
-
-            Intent intent = new Intent(getContext(), UICirclePage.class);
-            intent.putExtra("name", clickedCircle.getName());
-            intent.putExtra("circleID", clickedCircle.getCircleID());
-            intent.putExtra("desc", clickedCircle.getDescription());
-
-            getContext().startActivity(intent,
-                    ActivityOptionsCompat.makeCustomAnimation(getContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
-
+            CircleCanvas.this.removeAllViews();
         }
 
         /**

@@ -66,6 +66,7 @@ dependencies {
     implementation 'com.devlomi.hidely:hidely:1.0.0'
     implementation 'com.github.glomadrian:Grav:1.1'
     implementation 'com.github.Tunous:SwipeActionView:1.1.0'
+    implementation 'com.airbnb.android:lottie:2.5.4'
 
 }
 

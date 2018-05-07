@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
 import com.mingle.sweetpick.CustomDelegate;
 import com.mingle.sweetpick.SweetSheet;
 
@@ -26,6 +28,8 @@ public class UINoteDisplay extends AppCompatActivity {
 
     private RelativeLayout root;
     private TextView userNameText;
+    private LottieAnimationView upvoteButton;
+    private LottieAnimationView lightTheBeaconButton;
     private TextView noteText;
     private ImageView profilePic;
     private ImageView noteImage;
@@ -45,12 +49,17 @@ public class UINoteDisplay extends AppCompatActivity {
                 CustomDelegate.AnimationType.DuangLayoutAnimation);
         delegate.setCustomView(noteLayout);
 
+        NoteDisplayClickListener listener = new NoteDisplayClickListener();
+
+
         note = (Note) getIntent().getExtras().getSerializable("obj");
 
         root                = (RelativeLayout) findViewById(R.id.noteDisplayRoot);
         topBar              = (RelativeLayout) findViewById(R.id.noteDisplayTopBar);
         noteImage           = (ImageView) findViewById(R.id.noteDisplayImage);
         noteText            = (TextView) noteLayout.findViewById(R.id.noteDisplayNoteText);
+        upvoteButton        = noteLayout.findViewById(R.id.noteDisplayUpvoteButton);
+        lightTheBeaconButton= noteLayout.findViewById(R.id.noteDisplayLightTheBeaconButton);
         userNameText        = (TextView) topBar.findViewById(R.id.noteDisplayUserNameText);
         profilePic          = (ImageView) ((RelativeLayout) topBar.findViewById(R.id.noteDisplayProfilePicLayout))
                 .findViewById(R.id.noteDisplayProfilePic);
@@ -58,6 +67,15 @@ public class UINoteDisplay extends AppCompatActivity {
         sheet = new SweetSheet(root);
         sheet.setDelegate(delegate);
 
+        upvoteButton.setAnimation(R.raw.thumbs_up);
+        upvoteButton.setRepeatCount(0);
+        upvoteButton.setScale(0.12f);
+        upvoteButton.setOnClickListener(listener);
+        upvoteButton.setMinAndMaxProgress(0, 0.8f);
+        lightTheBeaconButton.setAnimation(R.raw.pulsing_beacon);
+        lightTheBeaconButton.setOnClickListener(listener);
+        lightTheBeaconButton.setRepeatCount(LottieDrawable.INFINITE);
+        lightTheBeaconButton.setScale(0.3f);
 
         AWS aws = new AWS();
 
@@ -87,8 +105,21 @@ public class UINoteDisplay extends AppCompatActivity {
         return true;
     }
 
-    public void noteDisplayUpvote(View view) {
+    private class NoteDisplayClickListener implements View.OnClickListener {
 
+        @Override
+        public void onClick(View v) {
+
+            if(v == upvoteButton && upvoteButton.getProgress() == 0) {
+                upvoteButton.playAnimation();
+            } else if(v == lightTheBeaconButton) {
+                if(!lightTheBeaconButton.isAnimating()) {
+                    lightTheBeaconButton.playAnimation();
+                } else {
+                    lightTheBeaconButton.cancelAnimation();
+                }
+            }
+        }
     }
 
 }
