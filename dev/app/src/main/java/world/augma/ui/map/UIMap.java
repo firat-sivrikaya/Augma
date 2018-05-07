@@ -5,6 +5,9 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,10 +16,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -28,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -251,12 +258,17 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                     {
                         if(c1.getName().equals(c2.getName()))
                         {
+
+                            Drawable icon = ResourcesCompat.getDrawable(getResources(), R.drawable.map_marker, null);
+                            Bitmap b = ((BitmapDrawable) icon).getBitmap();
+                            Bitmap resized = b.createScaledBitmap(b, 60, 94, false);
+
                             //Log.e("AAAAAAAAAAAAAAAAAAAA", c1.getCircleID());
                             //We deduce that user can see this note.
                             mPerth = mMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(n.getLatitude(), n.getLongitude()))
                                     .title(c1.getName())
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
+                                    .icon(BitmapDescriptorFactory.fromBitmap(resized))
                             );
                             //mMap.setOnMarkerClickListener(this);
                             mPerth.setTag(n);

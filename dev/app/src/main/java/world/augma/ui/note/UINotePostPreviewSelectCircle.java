@@ -1,9 +1,11 @@
 package world.augma.ui.note;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +32,7 @@ import java.util.concurrent.ExecutionException;
 import world.augma.R;
 import world.augma.asset.Circle;
 import world.augma.asset.User;
+import world.augma.ui.main.UIMain;
 import world.augma.ui.map.UIMap;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
@@ -193,6 +196,12 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
         public void setCircle(Circle c) {
             this.c = c;
         }
+    }
+
+    public void proceedBackToMainPage(View v) {
+        startActivity(new Intent(this, UIMain.class),
+                ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
+        finish();
     }
 
     interface OnItemClick {

@@ -24,6 +24,7 @@
         <com.devlomi.hidely.hidelyviews.HidelyImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_margin="10dp"
             android:visibility="gone"
             android:id="@+id/notePostPreviewSelectCircleItemCheckMark"
             android:background="@drawable/circle"
@@ -32,9 +33,12 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_gravity="center|right"
+            android:layout_margin="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:onClick="proceedBackToMainPage">
 
             <TextView
                 android:id="@+id/notePostPreviewSelectCircleItemName"
