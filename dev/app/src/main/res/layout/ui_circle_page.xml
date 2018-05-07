@@ -58,30 +58,28 @@
         android:textSize="14sp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="370dp"
+        android:layout_marginTop="300dp"
         android:text="Welcome to the our circle. Please feel free to share your daily experiences!"
         />
 
-    <me.thanel.swipeactionview.SwipeActionView
-        android:id="@+id/joinCircle"
+    <TextView
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="48dp"
+        android:gravity="center"
+        android:layout_marginBottom="150dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:textStyle="bold"
+        android:text="Swipe right to join!"/>
 
-        <!--
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_ui_main_pop_out_note_post"/>
+    <com.airbnb.lottie.LottieAnimationView
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:id="@+id/circlePageSwipeView"/>
 
--->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:textStyle="bold"
-            android:text="Swipe right to join!"/>
-    </me.thanel.swipeactionview.SwipeActionView>
 
 </RelativeLayout>

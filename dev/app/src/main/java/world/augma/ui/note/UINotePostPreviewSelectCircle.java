@@ -37,6 +37,7 @@ import world.augma.ui.map.UIMap;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
 import world.augma.work.AWS;
+import world.augma.work.Utils;
 import world.augma.work.visual.S3;
 
 public class UINotePostPreviewSelectCircle extends AppCompatActivity {
@@ -137,11 +138,13 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
                     noteID = aws1.getNewNoteID();
                     //TODO we need to wait MOST IMPORTANT SHIT RIGHT HERE
                     S3.uploadNoteImage(image,user.getUserID(),noteID);
+                    Utils.sendSuccessNotification(UINotePostPreviewSelectCircle.this, "You have successfully posted a note!");
                 }
             } catch (InterruptedException | ExecutionException e) {
                 Log.e("AWS Error", "ERROR: Cannot post note");
             } catch (IOException e) {
                 e.printStackTrace();
+                Utils.sendErrorNotification(UINotePostPreviewSelectCircle.this,"Error occurred while posting your note :(");
             }
             proceedBackToMainPage(v);
         }

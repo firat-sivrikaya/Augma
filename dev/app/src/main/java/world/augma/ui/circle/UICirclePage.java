@@ -8,6 +8,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
 
 import world.augma.R;
+import world.augma.work.Utils;
+import world.augma.work.visual.OnSwipeTouchListener;
 
 public class UICirclePage extends AppCompatActivity {
 
@@ -18,6 +20,7 @@ public class UICirclePage extends AppCompatActivity {
     private TextView circlePageCircleName;
     private TextView circleDescriptionField;
     private LottieAnimationView background;
+    private LottieAnimationView swipeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,7 @@ public class UICirclePage extends AppCompatActivity {
         circleName = getIntent().getExtras().getString("name");
         circleDescription = getIntent().getExtras().getString("desc");
 
+        swipeView = findViewById(R.id.circlePageSwipeView);
         background = findViewById(R.id.circlePageBackground);
         circlePageCircleName = (TextView) findViewById(R.id.circlePageCircleName);
         circleDescriptionField = (TextView) findViewById(R.id.circleDescription);
@@ -38,6 +42,19 @@ public class UICirclePage extends AppCompatActivity {
         background.setAnimation(R.raw.gradient_animated_background);
         background.setRepeatCount(LottieDrawable.INFINITE);
         background.playAnimation();
+
+        swipeView.setAnimation(R.raw.swipe_left_to_right);
+        swipeView.setRepeatCount(LottieDrawable.INFINITE);
+        swipeView.setScale(0.7f);
+        swipeView.playAnimation();
+
+        swipeView.setOnTouchListener(new OnSwipeTouchListener(getApplicationContext()) {
+            @Override
+            public void onSwipeRight() {
+                super.onSwipeRight();
+                Utils.sendSuccessNotification(UICirclePage.this, "YAAAY!");
+            }
+        });
 
         //TODO aws
 

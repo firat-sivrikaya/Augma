@@ -1,8 +1,10 @@
 package world.augma.ui.circle;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -12,6 +14,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +32,7 @@ public class UICircle extends Fragment {
     private EditText circleSearchField;
     private List<Circle> circleList;
     private CircleCanvas canvas;
+    private LottieAnimationView addCircleButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,6 +40,7 @@ public class UICircle extends Fragment {
         View root = inflater.inflate(R.layout.ui_circle, container, false);
         canvas = (CircleCanvas) root.findViewById(R.id.circleFrame);
         circleSearchField = (EditText) root.findViewById(R.id.circleSearchField);
+        addCircleButton = root.findViewById(R.id.circleAddCircleButton);
         circleList = new ArrayList<>();
 
         circleSearchField.setOnEditorActionListener(new CircleSearchListener());
@@ -43,6 +49,32 @@ public class UICircle extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 Utils.hideKeyboard(UICircle.this.getActivity());
                 return false;
+            }
+        });
+
+        addCircleButton.setAnimation(R.raw.add_circle);
+        addCircleButton.setScale(0.3f);
+        addCircleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //TODO add circle here
+                View layout = LayoutInflater.from(UICircle.this.getContext()).inflate(R.layout.circle_creation_info, null, false);
+                final EditText circleName = layout.findViewById(R.id.circleCreationCircleNameField);
+                final EditText circleDesc = layout.findViewById(R.id.circleCreationCircleDescField);
+
+                new AlertDialog.Builder(UICircle.this.getContext())
+                        .setView(layout)
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //TODO AWS burada eklesin
+                                Utils.sendSuccessNotification(UICircle.this.getActivity(), "CIRCLE: " + circleName.getText().toString());
+                                addCircleButton.playAnimation();
+                            }
+                        })
+                        .setNeutralButton("Cancel", null).show();
             }
         });
 

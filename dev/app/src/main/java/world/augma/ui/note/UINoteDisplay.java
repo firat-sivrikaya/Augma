@@ -120,7 +120,6 @@ public class UINoteDisplay extends AppCompatActivity {
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-
             } else if(v == lightTheBeaconButton) {
                 if(!lightTheBeaconButton.isAnimating()) {
                     lightTheBeaconButton.playAnimation();
