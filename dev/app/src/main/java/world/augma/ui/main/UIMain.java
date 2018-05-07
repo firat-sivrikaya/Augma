@@ -256,6 +256,8 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
         navigationView.getMenu().getItem(navIndex).setChecked(true);
     }
 
+
+
     @Override
     public void onBackPressed() {
         if(drawer.isDrawerOpen(GravityCompat.START)) {
@@ -272,6 +274,22 @@ public class UIMain extends AppCompatActivity implements ServiceUIMain {
         super.onBackPressed();
     }
 
+    @Override
+    public  void refreshUser(){
+
+            AWS aws = new AWS();
+
+            try {
+                if(aws.execute(AWS.Service.GET_USER, AugmaSharedPreferences.getUserId(UIMain.this)).get()) {
+                    user = aws.fetchUser();
+                    updateHeader();
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
+
+    }
     @Override
     public User fetchUser() {
         return user;

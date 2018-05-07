@@ -9,6 +9,8 @@ public interface ServiceUIMain {
 
     User fetchUser();
 
+    void refreshUser();
+
     ImageView getProfileView();
 
     ImageView getBackgroundView();

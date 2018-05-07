@@ -67,8 +67,11 @@ public class UICirclePage extends AppCompatActivity {
 
                 try {
 
-                    if(aws.execute(AWS.Service.JOIN_CIRCLE,user.getUserID(),user.getUsername(),circleID,circleName).get())
+                    if(aws.execute(AWS.Service.JOIN_CIRCLE,user.getUserID(),user.getUsername(),circleID,circleName).get()){
                         Utils.sendSuccessNotification(UICirclePage.this, "YAAAY!");
+                        serviceUIMain.refreshUser();
+                    }
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {

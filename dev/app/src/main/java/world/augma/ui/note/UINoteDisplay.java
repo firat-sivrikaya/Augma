@@ -114,7 +114,12 @@ public class UINoteDisplay extends AppCompatActivity {
                 upvoteButton.playAnimation();
                 AWS aws = new AWS();
                 try {
-                    aws.execute(AWS.Service.UPDATE_RATING,note.getNoteID(),""+1,note.getOwner().getUserID()).get();
+                    if(aws.execute(AWS.Service.UPDATE_RATING,note.getNoteID(),""+1,note.getOwner().getUserID()).get()){
+                        ServiceUIMain uiMain =(ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
+                        uiMain.refreshUser();
+
+                    }
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
