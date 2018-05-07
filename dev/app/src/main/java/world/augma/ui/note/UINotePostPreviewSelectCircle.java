@@ -52,9 +52,6 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
         proceedButton = findViewById(R.id.notePostPreviewSelectCircleConfirmButton);
         circleList = InterActivityShareModel.getInstance().getUiMain().fetchUser().getMemberships();
 
-        Log.e("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", circleList.toString());
-
-
         selectedCirclelist = new ArrayList<>();
         proceedButton.setOnClickListener(new NotePostPreviewSelecCircleProceedButtonListener());
 

@@ -1,21 +1,14 @@
 package world.augma.work.visual;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.module.AppGlideModule;
-import com.bumptech.glide.signature.ObjectKey;
-
-import java.nio.ByteBuffer;
-import java.security.MessageDigest;
-import java.security.Signature;
 
 import world.augma.R;
 import world.augma.asset.AugmaVisualType;
@@ -58,6 +51,7 @@ public class AugmaImager extends AppGlideModule {
                 break;
 
             case NOTE:
+                requestBuilder.centerCrop();
                 break;
         }
 

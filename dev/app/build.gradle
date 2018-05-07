@@ -64,6 +64,9 @@ dependencies {
     implementation 'com.github.doctoror.particlesdrawable:library:1.0.9'
     implementation 'com.github.zzz40500:AndroidSweetSheet:1.1.0'
     implementation 'com.devlomi.hidely:hidely:1.0.0'
+    implementation 'com.github.glomadrian:Grav:1.1'
+    implementation 'com.github.Tunous:SwipeActionView:1.1.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
@@ -77,4 +80,8 @@ configurations.all {
             }
         }
     }
+}
+
+dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:+'
 }

@@ -5,9 +5,31 @@
 
     <TextView
         android:id="@+id/noteDisplayNoteText"
+        android:layout_marginTop="65dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="50dp"
         />
+
+    <ImageView
+        android:id="@+id/noteDisplayLightTheBeaconButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/profile_pic"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentRight="true"
+        android:onClick="noteDisplayLightTheBeacon"/>
+
+    <ImageView
+        android:id="@+id/noteDisplayReportButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/profile_pic"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:onClick="noteDisplayReport"/>
 
 </RelativeLayout>

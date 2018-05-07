@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -85,6 +86,11 @@ public class UINoteDisplay extends AppCompatActivity {
         sheet.toggle();
         return true;
     }
+
+    public void noteDisplayUpvote(View view) {
+
+    }
+
 }
 
 

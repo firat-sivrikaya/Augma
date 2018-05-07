@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package="world.augma"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="world.augma">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -33,30 +32,20 @@
         <!-- Google Maps API KEY -->
 
         <meta-data
-            tools:replace="android:value"
             android:name="android.support.VERSION"
-            android:value="27.1.1" />
+            android:value="27.1.1"
+            tools:replace="android:value" />
 
         <activity
             android:name=".ui.intro.UIIntro"
             android:noHistory="true"
             android:screenOrientation="portrait">
-            <intent-filter>
-
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-
-            </intent-filter>
-
 
         </activity>
         <activity
             android:name=".ui.login.UILogin"
             android:noHistory="true"
-            android:screenOrientation="portrait">
-
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ui.signUp.UISignUp"
             android:noHistory="true"
@@ -71,6 +60,7 @@
             android:name=".ui.main.UIDrawerHeader"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.camera.UICamera" />
+        <activity android:name=".ui.AR.augmaGLActivity" />
 
         <service android:name=".work.FirebaseMessaging">
             <intent-filter>
@@ -84,19 +74,21 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ui.note.UINotePost"/>
-
-        <activity android:name=".ui.note.UINoteDisplay">
-
-        </activity>
+        <activity android:name=".ui.note.UINotePost" />
+        <activity android:name=".ui.note.UINoteDisplay"></activity>
         <activity android:name=".ui.AR.CameraViewActivity" />
+        <activity android:name=".ui.note.UINotePostPreview"></activity>
+        <activity android:name=".ui.note.UINotePostPreviewSelectCircle" />
+        <activity android:name=".ui.circle.UICirclePage">
 
-        <activity
-            android:name=".ui.note.UINotePostPreview">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
 
         </activity>
-        <activity android:name=".ui.note.UINotePostPreviewSelectCircle"></activity>
-
     </application>
 
 </manifest>
