@@ -71,7 +71,6 @@
             android:name=".ui.main.UIDrawerHeader"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.camera.UICamera" />
-        <activity android:name=".ui.AR.augmaGLActivity" />
 
         <service android:name=".work.FirebaseMessaging">
             <intent-filter>
