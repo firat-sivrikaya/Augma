@@ -2,33 +2,41 @@ package world.augma.ui.AR;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import world.augma.R;
 import world.augma.asset.Note;
+import world.augma.asset.User;
+import world.augma.ui.services.InterActivityShareModel;
+import world.augma.ui.services.ServiceUIMain;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class CameraViewActivity extends Activity implements
-        SurfaceHolder.Callback, OnLocationChangedListener, OnAzimuthChangedListener {
+        SurfaceHolder.Callback, OnLocationChangedListener, OnRotationChangedListener{
 
     private Camera mCamera;
     private SurfaceHolder mSurfaceHolder;
     private boolean isCameraviewOn = false;
 
     private double mAzimuthReal = 0;
+    private double mRotationReal = 0;
     private double[] mAzimuthTheoretical;
+    private double[] degreesOfNotes;
     private static double AZIMUTH_ACCURACY = 5;
     private double mMyLatitude = 0;
     private double mMyLongitude = 0;
@@ -36,9 +44,16 @@ public class CameraViewActivity extends Activity implements
     private MyCurrentAzimuth myCurrentAzimuth;
     private MyCurrentLocation myCurrentLocation;
 
-    private List<Note> nearbyNotes;
+    private User user;
+    private ServiceUIMain serviceUIMain;
+
+
+    private List<Note> filteredNotes;
     TextView descriptionTextView;
-    ImageView pointerIcon;
+    RelativeLayout ARRootLayout;
+
+    private ImageView[] imageArray;
+    private boolean[] imageDrawn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,14 +61,30 @@ public class CameraViewActivity extends Activity implements
         setContentView(R.layout.activity_camera_view);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        ARRootLayout = findViewById(R.id.ARroot);
+
+        serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
+        user = serviceUIMain.fetchUser();
+
         setupListeners();
         setupLayout();
-        nearbyNotes = (List<Note>) getIntent().getExtras().getSerializable("nearbyNotes");
-        mAzimuthTheoretical = new double[nearbyNotes.size()];
+        filteredNotes = (List<Note>) getIntent().getExtras().getSerializable("filteredNotes");
+
+        degreesOfNotes = new double[filteredNotes.size()];
+
+        imageArray = new ImageView[filteredNotes.size()];
+
+        imageDrawn = new boolean[filteredNotes.size()];
+
+        for(int i = 0; i < imageDrawn.length; i++)
+            imageDrawn[i] = false;
+
+
+//        mAzimuthTheoretical = new double[filteredNotes.size()];
     }
 
 
-    public double calculateTheoreticalAzimuth(Note note) {
+    /*public double calculateTheoreticalAzimuth(Note note) {
 
             double dX = note.getLatitude() - mMyLatitude;
             double dY = note.getLongitude() - mMyLongitude;
@@ -95,6 +126,30 @@ public class CameraViewActivity extends Activity implements
         minMax.add(maxAngle);
 
         return minMax;
+    }*/
+
+    public double calculateDegreeOfTheNote(Note note) {
+
+        double noteLat = note.getLatitude();
+        double noteLon = note.getLongitude();
+
+        double usersLat = mMyLatitude;
+        double usersLon = mMyLongitude;
+
+        double deltaLon = noteLon - usersLon;
+
+        /*
+            θ = atan2( sin Δλ ⋅ cos φ2 , cos φ1 ⋅ sin φ2 − sin φ1 ⋅ cos φ2 ⋅ cos Δλ );
+
+            where φ1,λ1 is the start point, φ2,λ2 the end point (Δλ is the difference in longitude);*/
+
+        double degree = Math.toDegrees(Math.atan2(Math.sin(deltaLon) * Math.cos(noteLat),
+                Math.cos(usersLat) * Math.sin(noteLat) - Math.sin(usersLat) * Math.cos(noteLat) * Math.cos(deltaLon)));
+
+        Log.e(TAG, "degree of the note" + note.getNoteID() + "is: " + degree);
+
+        return degree;
+
     }
 
     private boolean isBetween(double minAngle, double maxAngle, double azimuth) {
@@ -109,61 +164,71 @@ public class CameraViewActivity extends Activity implements
     }
 
     private void updateDescription() {
-        /*
-        descriptionTextView.setText(" azimuthTheoretical "
-                + mAzimuthTheoretical + " azimuthReal " + mAzimuthReal + " latitude "
-                + mMyLatitude + " longitude " + mMyLongitude);*/
+        descriptionTextView.setText( " rotation " + mRotationReal + " latitude "
+                + mMyLatitude + " longitude " + mMyLongitude);
     }
 
     @Override
     public void onLocationChanged(Location location) {
         mMyLatitude = location.getLatitude();
         mMyLongitude = location.getLongitude();
-        for(int i = 0; i < nearbyNotes.size(); i++) {
-            mAzimuthTheoretical[i] = calculateTheoreticalAzimuth(nearbyNotes.get(i));
+        for(int i = 0; i < filteredNotes.size(); i++) {
+            degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
         }
         Toast.makeText(this,"latitude: "+location.getLatitude()+" longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
         updateDescription();
     }
 
     @Override
-    public void onAzimuthChanged(float azimuthChangedFrom, float azimuthChangedTo) {
-        mAzimuthReal = azimuthChangedTo;
-        for(int i = 0; i < nearbyNotes.size(); i++){
-            mAzimuthTheoretical[i] = calculateTheoreticalAzimuth(nearbyNotes.get(i));
+    public void onRotationChanged(float newRot) {
 
-            pointerIcon = (ImageView) findViewById(R.id.icon);
 
-            pointerIcon.setX(0 + i * 100);
-            pointerIcon.setY(0 + i * 100);
+        float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
-            double minAngle = calculateAzimuthAccuracy(mAzimuthTheoretical[i]).get(0);
-            double maxAngle = calculateAzimuthAccuracy(mAzimuthTheoretical[i]).get(1);
+        mRotationReal = newRot;
+        for(int i = 0; i < filteredNotes.size(); i++) {
+            degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
 
-            /*
-            θ = atan2( sin Δλ ⋅ cos φ2 , cos φ1 ⋅ sin φ2 − sin φ1 ⋅ cos φ2 ⋅ cos Δλ );
+            double minRot = degreesOfNotes[i] - 10.0;
+            double maxRot = degreesOfNotes[i] + 10.0;
 
-            where φ1,λ1 is the start point, φ2,λ2 the end point (Δλ is the difference in longitude);*/
+            if (isBetween(minRot, maxRot, mRotationReal)) {
 
-            double noteLat = nearbyNotes.get(i).getLatitude();
-            double noteLon = nearbyNotes.get(i).getLongitude();
+                double difference = mRotationReal - degreesOfNotes[i];
 
-            double usersLat = mMyLatitude;
-            double usersLon = mMyLongitude;
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200);
+                params.leftMargin =  50 * (int)difference + 500;
+                params.topMargin = (int)screenHeight/2 ;
 
-            double deltaLon = Math.abs(usersLon-noteLon);
+                if(!imageDrawn[i]) {
+                    imageArray[i] = new ImageView(this);
+                    imageArray[i].setImageResource(R.drawable.note_icon);
+                    Log.e("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", "NFANSDFANFNAFNANF");
+                    imageArray[i].setLayoutParams(params);
+                    ARRootLayout.addView(imageArray[i]);
+                    imageDrawn[i] = true;
+                }
+                else {
+                    ARRootLayout.removeView(imageArray[i]);
+                    imageDrawn[i] = false;
 
-            double degree = Math.toDegrees(Math.atan2(Math.sin(deltaLon) * Math.cos(noteLat),
-                    Math.cos(usersLat) * Math.sin(noteLat) - Math.sin(usersLat) * Math.cos(noteLat) * Math.cos(deltaLon)));
-
-            if (isBetween(minAngle, maxAngle, mAzimuthReal) ) {
-                pointerIcon.setVisibility(View.VISIBLE);
+                    imageArray[i] = new ImageView(this);
+                    imageArray[i].setImageResource(R.drawable.note_icon);
+                    Log.e("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", "NFANSDFANFNAFNANF");
+                    imageArray[i].setLayoutParams(params);
+                    ARRootLayout.addView(imageArray[i]);
+                    imageDrawn[i] = true;
+                }
             } else {
-                pointerIcon.setVisibility(View.INVISIBLE);
-            }
+                if(imageDrawn[i]){
+                    ARRootLayout.removeView(imageArray[i]);
+                    imageDrawn[i] = false;
+                }
 
-            updateDescription();
+            }
         }
+        updateDescription();
 
     }
 
@@ -191,6 +256,8 @@ public class CameraViewActivity extends Activity implements
     }
 
     private void setupLayout() {
+
+        descriptionTextView = (TextView) findViewById(R.id.cameraTextView);
 
         getWindow().setFormat(PixelFormat.UNKNOWN);
         SurfaceView surfaceView = (SurfaceView) findViewById(R.id.cameraview);
@@ -231,4 +298,9 @@ public class CameraViewActivity extends Activity implements
         mCamera = null;
         isCameraviewOn = false;
     }
+
+    public void addImageToLayout(ImageView image, RelativeLayout.LayoutParams params){
+
+    }
+
 }

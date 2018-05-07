@@ -39,6 +39,7 @@ import com.google.android.gms.tasks.Task;
 import com.ramotion.circlemenu.CircleMenuView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -87,6 +88,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
     public static LocationRequest mLocationRequest;
 
     private List<Note> nearbyNotes;
+    private List<Note> filteredNotes;
     private User user;
     private ServiceUIMain serviceUIMain;
     // The entry points to the Places API.
@@ -121,9 +123,9 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("mLastKnownLocation", mLastKnownLocation);
                         intent.putExtras(bundle);
-                        intent.putExtra("nearbyNotes", (Serializable) nearbyNotes);
+                        intent.putExtra("filteredNotes", (Serializable) filteredNotes);
                         //Log.e("ASLKDJAKSDAD", "My Lat: " + mLastKnownLocation.getLatitude() +
-                                //" My Lon: " + mLastKnownLocation.getLongitude());
+                        //" My Lon: " + mLastKnownLocation.getLongitude());
                         startActivity(intent, ActivityOptions.makeCustomAnimation(getContext(),
                                 R.anim.fade_in, R.anim.fade_out).toBundle());
                         return;
@@ -137,7 +139,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                             e.printStackTrace();
                         }
                         nearbyNotes = aws.getMatchedNotes();
-                        putMarker(mMap, nearbyNotes);
+                        filteredNotes = putMarker(mMap, nearbyNotes);
                 }
             }
         });
@@ -229,8 +231,10 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
 
 
 
-    public void putMarker(GoogleMap mMap, List<Note> nearbyNotes)
+    public List<Note> putMarker(GoogleMap mMap, List<Note> nearbyNotes)
     {
+        List<Note> filtered = new ArrayList<>();
+
         float[] result = new float[1];
         mMap.clear();
         Marker mPerth;
@@ -250,13 +254,13 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                             //Log.e("AAAAAAAAAAAAAAAAAAAA", c1.getCircleID());
                             //We deduce that user can see this note.
                             mPerth = mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(n.getLatitude(), n.getLongitude()))
-                            .title(c1.getName())
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2))
+                                    .position(new LatLng(n.getLatitude(), n.getLongitude()))
+                                    .title(c1.getName())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
                             );
                             //mMap.setOnMarkerClickListener(this);
                             mPerth.setTag(n);
-
+                            filtered.add(n);
                             added = true;
 
                             break;
@@ -267,6 +271,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                 }
             }
         }
+        return filtered;
     }
 
     @Override
@@ -404,7 +409,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                                 e.printStackTrace();
                             }
                             nearbyNotes = aws.getMatchedNotes();
-                            putMarker(mMap, nearbyNotes);
+                            filteredNotes = putMarker(mMap, nearbyNotes);
                         }
                         else
                         {
