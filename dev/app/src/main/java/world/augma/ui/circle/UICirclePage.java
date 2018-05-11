@@ -24,6 +24,7 @@ public class UICirclePage extends AppCompatActivity {
     private String circleName;
     private String circleDescription;
     private TextView circlePageCircleName;
+    private TextView swipeRightText;
     private TextView circleDescriptionField;
     private LottieAnimationView background;
     private LottieAnimationView swipeView;
@@ -44,6 +45,7 @@ public class UICirclePage extends AppCompatActivity {
 
 
         background = findViewById(R.id.circlePageBackground);
+        swipeRightText = findViewById(R.id.swipeRightText);
         circlePageCircleName = (TextView) findViewById(R.id.circlePageCircleName);
         circleDescriptionField = (TextView) findViewById(R.id.circleDescription);
 
@@ -84,6 +86,9 @@ public class UICirclePage extends AppCompatActivity {
 
                 }
             });
+        }
+        else{
+            swipeRightText.setText("You are already a member of this circle.");
         }
 
 

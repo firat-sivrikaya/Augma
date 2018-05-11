@@ -3,8 +3,10 @@ package world.augma.ui.note;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +28,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -122,7 +125,8 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
             Location location = UIMap.mLastKnownLocation;
             String noteID = "";
 
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+           ByteArrayOutputStream bos = new ByteArrayOutputStream();
             InterActivityShareModel.getInstance().getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, bos);
             byte[] image = bos.toByteArray();
             try {
@@ -133,6 +137,17 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
             }
 
            String base64image = Base64.encodeToString(image,Base64.DEFAULT);
+
+           /*Worker worker = new Worker();
+            String base64image = "";
+            try {
+                if(worker.execute(InterActivityShareModel.getInstance().getBitmap()).get())
+                    base64image = worker.getBase64image();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }*/
 
 
             AWS aws1 = new AWS();
@@ -216,4 +231,36 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
         void onClick(View view, Circle c);
     }
+
+
+    private class Worker extends AsyncTask<Bitmap, Void, Boolean>{
+
+        private String base64image;
+
+
+        @Override
+        protected Boolean doInBackground(Bitmap... bitmaps) {
+            Bitmap image = bitmaps[0];
+
+
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            byte[] imageByte = bos.toByteArray();
+            try {
+                bos.flush();
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            base64image = Base64.encodeToString(imageByte,Base64.DEFAULT);
+            return true;
+        }
+
+        public String getBase64image() {
+            return base64image;
+        }
+    }
 }
+

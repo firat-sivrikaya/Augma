@@ -63,6 +63,7 @@
         />
 
     <TextView
+        android:id="@+id/swipeRightText"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:layout_marginBottom="150dp"
