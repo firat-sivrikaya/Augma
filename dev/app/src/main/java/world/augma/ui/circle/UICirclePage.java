@@ -33,13 +33,16 @@ public class UICirclePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui_circle_page);
-
+        ServiceUIMain serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
+        user =  serviceUIMain.fetchUser();
 
         circleID = getIntent().getExtras().getString("circleID");
         circleName = getIntent().getExtras().getString("name");
         circleDescription = getIntent().getExtras().getString("desc");
 
-        swipeView = findViewById(R.id.circlePageSwipeView);
+
+
+
         background = findViewById(R.id.circlePageBackground);
         circlePageCircleName = (TextView) findViewById(R.id.circlePageCircleName);
         circleDescriptionField = (TextView) findViewById(R.id.circleDescription);
@@ -51,37 +54,38 @@ public class UICirclePage extends AppCompatActivity {
         background.setRepeatCount(LottieDrawable.INFINITE);
         background.playAnimation();
 
-        swipeView.setAnimation(R.raw.swipe_left_to_right);
-        swipeView.setRepeatCount(LottieDrawable.INFINITE);
-        swipeView.setScale(0.7f);
-        swipeView.playAnimation();
+        if(!user.checkCircleMembership(circleID)){
+            swipeView = findViewById(R.id.circlePageSwipeView);
+            swipeView.setAnimation(R.raw.swipe_left_to_right);
+            swipeView.setRepeatCount(LottieDrawable.INFINITE);
+            swipeView.setScale(0.7f);
+            swipeView.playAnimation();
 
-        swipeView.setOnTouchListener(new OnSwipeTouchListener(getApplicationContext()) {
-            @Override
-            public void onSwipeRight() {
-                super.onSwipeRight();
+            swipeView.setOnTouchListener(new OnSwipeTouchListener(getApplicationContext()) {
+                @Override
+                public void onSwipeRight() {
+                    super.onSwipeRight();
 
-                AWS aws = new AWS();
-                ServiceUIMain serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
-                user =  serviceUIMain.fetchUser();
+                    AWS aws = new AWS();
+                    ServiceUIMain serviceUIMain1 = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
 
-                try {
+                    try {
 
-                    if(aws.execute(AWS.Service.JOIN_CIRCLE,user.getUserID(),user.getUsername(),circleID,circleName).get()){
-                        Utils.sendSuccessNotification(UICirclePage.this, "YAAAY!");
-                        serviceUIMain.refreshUser();
+                        if(aws.execute(AWS.Service.JOIN_CIRCLE,user.getUserID(),user.getUsername(),circleID,circleName).get()){
+                            Utils.sendSuccessNotification(UICirclePage.this, "YAAAY!");
+                            serviceUIMain1.refreshUser();
+                        }
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
                     }
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
                 }
+            });
+        }
 
-            }
-        });
-
-        //TODO aws
 
     }
 }

@@ -42,6 +42,17 @@ public class User implements Serializable {
         this.rating = rating;
     }
 
+
+    public boolean checkCircleMembership(String circleID){
+        for (Circle circle:memberships) {
+            if(circle.getCircleID().equals(circleID)){
+                return true;
+            }
+
+        }
+        return false;
+    }
+
     public String getUserID() {
         return userID;
     }
