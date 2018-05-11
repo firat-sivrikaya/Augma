@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -122,28 +123,29 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
             String noteID = "";
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            InterActivityShareModel.getInstance().getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            byte[] image = bos.toByteArray();
+            try {
+                bos.flush();
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+           String base64image = Base64.encodeToString(image,Base64.DEFAULT);
 
 
             AWS aws1 = new AWS();
             try {
                 if(aws1.execute(AWS.Service.POST_NOTE,noteText, ""+location.getLatitude(), ""+location.getLongitude(),
-                        jsonUser.toString(), jsnCircleLst.toString()).get()){
+                        jsonUser.toString(), jsnCircleLst.toString(),base64image).get()){
                     //slow it down
-                    InterActivityShareModel.getInstance().getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                    byte[] image = bos.toByteArray();
-                    bos.flush();
-                    bos.close();
 
-                    noteID = aws1.getNewNoteID();
-                    //TODO we need to wait MOST IMPORTANT SHIT RIGHT HERE
-                    S3.uploadNoteImage(image,user.getUserID(),noteID);
+
                     Utils.sendSuccessNotification(UINotePostPreviewSelectCircle.this, "You have successfully posted a note!");
                 }
             } catch (InterruptedException | ExecutionException e) {
                 Log.e("AWS Error", "ERROR: Cannot post note");
-            } catch (IOException e) {
-                e.printStackTrace();
                 Utils.sendErrorNotification(UINotePostPreviewSelectCircle.this,"Error occurred while posting your note :(");
             }
             proceedBackToMainPage(v);
