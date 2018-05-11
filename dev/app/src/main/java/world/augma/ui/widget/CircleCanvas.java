@@ -46,14 +46,17 @@ public class CircleCanvas extends GridLayout {
             CircleSelectionListener listener = new CircleSelectionListener();
 
             for(Circle circle : circleList) {
-                clickedCircle = circle;
+
 
                 RelativeLayout obj = (RelativeLayout) inflater.inflate(R.layout.circle_representation, null, false);
                 ((TextView) obj.findViewById(R.id.circleCenter)).setText(circle.getName());
+                ((TextView) obj.findViewById(R.id.circleCenter)).setTag(circle);
+
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) circle.getRadius(), (int) circle.getRadius());
 
                 params.setMargins(10,10,10,10);
                 obj.setLayoutParams(params);
+                obj.setTag(circle);
                 obj.setOnClickListener(listener);
                 addView(obj);
                 obj.startAnimation(circleCreation);
@@ -68,6 +71,7 @@ public class CircleCanvas extends GridLayout {
             RelativeLayout obj = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.circle_representation, null, false);
             obj.setLayoutParams(v.getLayoutParams());
             addView(obj);
+            clickedCircle = (Circle) v.getTag();
             obj.startAnimation(circleGrow);
         }
     }
