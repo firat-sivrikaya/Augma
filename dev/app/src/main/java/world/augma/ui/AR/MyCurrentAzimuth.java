@@ -24,6 +24,9 @@ public class MyCurrentAzimuth implements SensorEventListener {
     float[] mGeomagnetic;
     float azimut;
     float inclination;
+    float pitch;
+    float roll;
+    float[] inclineGravity = new float[3];
     int con =0;
 
     public MyCurrentAzimuth(OnRotationChangedListener rotationListener, Context context) {
@@ -71,18 +74,18 @@ android:visibility="gone" />
 
                 mGravity = event.values;
                 //Understand up or down tilt
-                float x = event.values[0];
+                /*float x = event.values[0];
                 float y = event.values[1];
 
                 if (Math.abs(x) > Math.abs(y)) {
-            /*if (x < 0) {
+            *//*if (x < 0) {
                 image.setImageResource(R.drawable.right);
                 textView.setText("You tilt the device right");
             }
             if (x > 0) {
                 image.setImageResource(R.drawable.left);
                 textView.setText("You tilt the device left");
-            }*/
+            }*//*
                 } else {
                     if (y < 0) {
                         up = 1;
@@ -100,12 +103,25 @@ android:visibility="gone" />
                     Log.e(TAG, "Tilt of the device is up :" + up );
                     //textView.setText("Not tilt device");
                 }
-                // End
+                // End*/
             }
 
 
             if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+            {
                 mGeomagnetic = event.values;
+                if (isTiltDownward())
+                {
+                    up = 1;
+                    Log.e(TAG, "Tilt of the device is up :" + up );
+                }
+                else if (isTiltUpward())
+                {
+                    up = -1;
+                    Log.e(TAG, "Tilt of the device is up :" + up );
+                }
+            }
+
 
             if (mGravity != null && mGeomagnetic != null) {
                 float R[] = new float[9];
@@ -166,4 +182,143 @@ android:visibility="gone" />
         }*/
 
     }
+
+    public boolean isTiltUpward()
+    {
+        if (mGravity != null && mGeomagnetic != null)
+        {
+            float R[] = new float[9];
+            float I[] = new float[9];
+
+            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
+
+            if (success)
+            {
+                float orientation[] = new float[3];
+                SensorManager.getOrientation(R, orientation);
+
+                /*
+                 * If the roll is positive, you're in reverse landscape (landscape right), and if the roll is negative you're in landscape (landscape left)
+                 *
+                 * Similarly, you can use the pitch to differentiate between portrait and reverse portrait.
+                 * If the pitch is positive, you're in reverse portrait, and if the pitch is negative you're in portrait.
+                 *
+                 * orientation -> azimut, pitch and roll
+                 *
+                 *
+                 */
+
+                pitch = orientation[1];
+                roll = orientation[2];
+
+                inclineGravity = mGravity.clone();
+
+                double norm_Of_g = Math.sqrt(inclineGravity[0] * inclineGravity[0] + inclineGravity[1] * inclineGravity[1] + inclineGravity[2] * inclineGravity[2]);
+
+                // Normalize the accelerometer vector
+                inclineGravity[0] = (float) (inclineGravity[0] / norm_Of_g);
+                inclineGravity[1] = (float) (inclineGravity[1] / norm_Of_g);
+                inclineGravity[2] = (float) (inclineGravity[2] / norm_Of_g);
+
+                //Checks if device is flat on ground or not
+                int inclination = (int) Math.round(Math.toDegrees(Math.acos(inclineGravity[2])));
+                //Log.e("------------------Tilt inclination:",""+ inclination);
+
+                /*
+                 * Float obj1 = new Float("10.2");
+                 * Float obj2 = new Float("10.20");
+                 * int retval = obj1.compareTo(obj2);
+                 *
+                 * if(retval > 0) {
+                 * System.out.println("obj1 is greater than obj2");
+                 * }
+                 * else if(retval < 0) {
+                 * System.out.println("obj1 is less than obj2");
+                 * }
+                 * else {
+                 * System.out.println("obj1 is equal to obj2");
+                 * }
+                 */
+                Float objPitch = new Float(roll);
+                Float objZero = new Float(0.0);
+                Float objZeroPointTwo = new Float(0.2);
+                Float objZeroPointTwoNegative = new Float(-0.2);
+
+                int objPitchZeroResult = objPitch.compareTo(objZero);
+                int objPitchZeroPointTwoResult = objZeroPointTwo.compareTo(objPitch);
+                int objPitchZeroPointTwoNegativeResult = objPitch.compareTo(objZeroPointTwoNegative);
+
+
+                Log.e("------------------- TILT UPWARD if---------------", "inc: " + inclination + " objPitchZeroResult: " + objPitchZeroResult + " objPitchZeroPointTwoResult: " + objPitchZeroPointTwoResult + " objPitchZeroPointTwoNegativeResult: " + objPitchZeroPointTwoNegativeResult );
+
+
+                if (pitch < 0 && ((objPitchZeroResult > 0 && objPitchZeroPointTwoResult < 0) || (objPitchZeroResult < 0 && objPitchZeroPointTwoNegativeResult < 0)) && (inclination > 100 && inclination < 140))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isTiltDownward()
+    {
+        if (mGravity != null && mGeomagnetic != null)
+        {
+            float R[] = new float[9];
+            float I[] = new float[9];
+
+            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
+
+            if (success)
+            {
+                float orientation[] = new float[3];
+                SensorManager.getOrientation(R, orientation);
+
+                pitch = orientation[1];
+                roll = orientation[2];
+
+                inclineGravity = mGravity.clone();
+
+                double norm_Of_g = Math.sqrt(inclineGravity[0] * inclineGravity[0] + inclineGravity[1] * inclineGravity[1] + inclineGravity[2] * inclineGravity[2]);
+
+                // Normalize the accelerometer vector
+                inclineGravity[0] = (float) (inclineGravity[0] / norm_Of_g);
+                inclineGravity[1] = (float) (inclineGravity[1] / norm_Of_g);
+                inclineGravity[2] = (float) (inclineGravity[2] / norm_Of_g);
+
+                //Checks if device is flat on groud or not
+                int inclination = (int) Math.round(Math.toDegrees(Math.acos(inclineGravity[2])));
+                //Log.e("------------------Tilt inclination:",""+ inclination);
+
+                Float objPitch = new Float(roll);
+                Float objZero = new Float(0.0);
+                Float objZeroPointTwo = new Float(0.2);
+                Float objZeroPointTwoNegative = new Float(-0.2);
+
+                int objPitchZeroResult = objPitch.compareTo(objZero);
+                int objPitchZeroPointTwoResult = objZeroPointTwo.compareTo(objPitch);
+                int objPitchZeroPointTwoNegativeResult = objPitch.compareTo(objZeroPointTwoNegative);
+
+                Log.e("------------------- TILT DOWNWARD if---------------", "inc: " + inclination + " objPitchZeroResult: " + objPitchZeroResult + " objPitchZeroPointTwoResult: " + objPitchZeroPointTwoResult + " objPitchZeroPointTwoNegativeResult: " + objPitchZeroPointTwoNegativeResult );
+
+                if (pitch < 0 && ((objPitchZeroResult > 0 && objPitchZeroPointTwoResult > 0) || (objPitchZeroResult < 0 && objPitchZeroPointTwoNegativeResult > 0)) && (inclination > 20 && inclination < 50))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
 }

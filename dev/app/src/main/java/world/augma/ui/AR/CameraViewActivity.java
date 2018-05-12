@@ -210,7 +210,7 @@ public class CameraViewActivity extends Activity implements
         int intOldRotation = (int) mRotationReal;
         Log.e("-------------INCLINATION-------------------", ""+inclination);
 
-        if(Math.abs(intNewRotation - intOldRotation) > 15 || Math.abs((int)mInclination - (int)inclination) > 15) {
+        if(Math.abs(intNewRotation - intOldRotation) > 15 || Math.abs((int)mInclination - (int)inclination) > 5) {
 
             //TODO burda ne kadar degistigini cek edip thresholddan yuksekse assign edicez gibi?
 
@@ -226,41 +226,45 @@ public class CameraViewActivity extends Activity implements
                 if (isBetween(minRot, maxRot, mRotationReal)) {
 
                     double difference = mRotationReal - degreesOfNotes[i];
-                    double differenceTop = Math.abs( mInclination - 35);
+                    double differenceTop = Math.abs( mInclination );
                     Log.e("-------------differenceTop-------------------", ""+differenceTop);
 
                     //TODO her seferinde ortaya cizmicez
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200);
                     params.leftMargin = 50 * (int) difference + 500;
-                    if(up == 1)
-                        params.topMargin = (int) (screenHeight / 2) + (50*(int) differenceTop);
-                    else if(up == 2)
-                        params.topMargin = (int) (screenHeight / 2) - (50*(int) differenceTop);
-                    else
-                        params.topMargin = (int) (screenHeight / 2);
+                    if(up == -1)
+                        params.topMargin = -190 * (int)differenceTop / 9 + 2850;
+                    else if(up == 1)
+                        params.topMargin = 190 * (int)differenceTop /9 - 950;
 
+                    if(mInclination >= 45){
+                        if (!imageDrawn[i]) {
+                            imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
 
-                    if (!imageDrawn[i]) {
-                        imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
+                            ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
+                            imageArray[i].setLayoutParams(params);
+                            ARRootLayout.addView(imageArray[i]);
 
-                        ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
-                        imageArray[i].setLayoutParams(params);
-                        ARRootLayout.addView(imageArray[i]);
+                            imageDrawn[i] = true;
+                        } else {
+                            ARRootLayout.removeView(imageArray[i]);
+                            imageDrawn[i] = false;
 
-                        imageDrawn[i] = true;
-                    } else {
+                            imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
+                            ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
+                            imageArray[i].setLayoutParams(params);
+                            ARRootLayout.addView(imageArray[i]);
+                            imageDrawn[i] = true;
+                        }
+                        imageArray[i].setTag(filteredNotes.get(i));
+                        imageArray[i].setOnClickListener(listener);
+                        imageArray[i].bringToFront();
+                    }
+                    else{
                         ARRootLayout.removeView(imageArray[i]);
                         imageDrawn[i] = false;
-
-                        imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
-                        ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
-                        imageArray[i].setLayoutParams(params);
-                        ARRootLayout.addView(imageArray[i]);
-                        imageDrawn[i] = true;
                     }
-                    imageArray[i].setTag(filteredNotes.get(i));
-                    imageArray[i].setOnClickListener(listener);
-                    imageArray[i].bringToFront();
+
                 } else {
                     if (imageDrawn[i]) {
                         ARRootLayout.removeView(imageArray[i]);
