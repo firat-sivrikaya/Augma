@@ -45,6 +45,7 @@ public class CameraViewActivity extends Activity implements
     private static double AZIMUTH_ACCURACY = 5;
     private double mMyLatitude = 0;
     private double mMyLongitude = 0;
+    private Location lastLocation;
 
     private MyCurrentAzimuth myCurrentAzimuth;
     private MyCurrentLocation myCurrentLocation;
@@ -177,13 +178,23 @@ public class CameraViewActivity extends Activity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        mMyLatitude = location.getLatitude();
-        mMyLongitude = location.getLongitude();
-        for(int i = 0; i < filteredNotes.size(); i++) {
-            degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
+        lastLocation = new Location(location);
+        lastLocation.setLatitude(mMyLatitude);
+        lastLocation.setLongitude(mMyLongitude);
+        //Last locationimdan 20 metre hareket ettiysem location degisicek
+        if(location.distanceTo(lastLocation) >=20){
+            mMyLatitude = location.getLatitude();
+            mMyLongitude = location.getLongitude();
+            lastLocation.setLatitude(mMyLatitude);
+            lastLocation.setLongitude(mMyLongitude);
+            for(int i = 0; i < filteredNotes.size(); i++) {
+                degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
+            }
+            Toast.makeText(this,"latitude: "+location.getLatitude()+" longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+            updateDescription();
         }
-        Toast.makeText(this,"latitude: "+location.getLatitude()+" longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
-        updateDescription();
+
+
     }
 
     @Override
