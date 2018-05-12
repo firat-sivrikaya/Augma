@@ -67,7 +67,7 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
         proceedButton.setOnClickListener(new NotePostPreviewSelecCircleProceedButtonListener());
 
         proceedButton.setAnimation(R.raw.success_button);
-        proceedButton.setOnClickListener(new View.OnClickListener() {
+        /*proceedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!selectedCirclelist.isEmpty()) {
@@ -79,7 +79,7 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
                             "You must select at least one circle!");
                 }
             }
-        });
+        });*/
 
         proceedButton.addAnimatorListener(new Animator.AnimatorListener() {
             @Override
@@ -90,6 +90,7 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 //todo go to the page you want
+                proceedBackToMainPage();
             }
 
             @Override
@@ -128,50 +129,54 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            JSONArray jsnCircleLst = new JSONArray();
-            Log.e("selected circle list:",selectedCirclelist.toString());
-            Log.e("Json selected circle list:",jsnCircleLst.toString());
+            if(!selectedCirclelist.isEmpty()) {
+                confirmButtonBackground.setBackgroundResource(0);
+                confirmButtonText.setText("");
+                //----------------------------------------------------------
+                JSONArray jsnCircleLst = new JSONArray();
+                Log.e("selected circle list:",selectedCirclelist.toString());
+                Log.e("Json selected circle list:",jsnCircleLst.toString());
 
-            for (int i = 0; i< selectedCirclelist.size();i++){
-                JSONObject iObj = new JSONObject();
+                for (int i = 0; i< selectedCirclelist.size();i++){
+                    JSONObject iObj = new JSONObject();
+                    try {
+                        iObj.put("circleID",selectedCirclelist.get(i).getCircleID());
+                        iObj.put("circleName",selectedCirclelist.get(i).getName());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    jsnCircleLst.put(iObj);
+                }
+                Log.e("Json selected circle list 2:",jsnCircleLst.toString());
+
+                String noteText = getIntent().getExtras().getString("noteText");
+                ServiceUIMain serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
+                User user =  serviceUIMain.fetchUser();
+                JSONObject jsonUser = new JSONObject();
+
                 try {
-                    iObj.put("circleID",selectedCirclelist.get(i).getCircleID());
-                    iObj.put("circleName",selectedCirclelist.get(i).getName());
+                    jsonUser.put("userID",user.getUserID());
+                    jsonUser.put("username",user.getUsername());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                jsnCircleLst.put(iObj);
-            }
-            Log.e("Json selected circle list 2:",jsnCircleLst.toString());
-
-            String noteText = getIntent().getExtras().getString("noteText");
-            ServiceUIMain serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
-            User user =  serviceUIMain.fetchUser();
-            JSONObject jsonUser = new JSONObject();
-
-            try {
-                jsonUser.put("userID",user.getUserID());
-                jsonUser.put("username",user.getUsername());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
 
-            Location location = UIMap.mLastKnownLocation;
-            String noteID = "";
+                Location location = UIMap.mLastKnownLocation;
+                String noteID = "";
 
 
-           ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            InterActivityShareModel.getInstance().getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, bos);
-            byte[] image = bos.toByteArray();
-            try {
-                bos.flush();
-                bos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                InterActivityShareModel.getInstance().getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                byte[] image = bos.toByteArray();
+                try {
+                    bos.flush();
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-           String base64image = Base64.encodeToString(image,Base64.DEFAULT);
+                String base64image = Base64.encodeToString(image,Base64.DEFAULT);
 
            /*Worker worker = new Worker();
             String base64image = "";
@@ -185,20 +190,32 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
             }*/
 
 
-            AWS aws1 = new AWS();
-            try {
-                if(aws1.execute(AWS.Service.POST_NOTE,noteText, ""+location.getLatitude(), ""+location.getLongitude(),
-                        jsonUser.toString(), jsnCircleLst.toString(),base64image).get()){
-                    //slow it down
+                AWS aws1 = new AWS();
+                try {
+                    if(aws1.execute(AWS.Service.POST_NOTE,noteText, ""+location.getLatitude(), ""+location.getLongitude(),
+                            jsonUser.toString(), jsnCircleLst.toString(),base64image).get()){
+                        //slow it down
 
 
-                    Utils.sendSuccessNotification(UINotePostPreviewSelectCircle.this, "You have successfully posted a note!");
+                        Utils.sendSuccessNotification(UINotePostPreviewSelectCircle.this, "You have successfully posted a note!");
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    Log.e("AWS Error", "ERROR: Cannot post note");
+                    Utils.sendErrorNotification(UINotePostPreviewSelectCircle.this,"Error occurred while posting your note :(");
                 }
-            } catch (InterruptedException | ExecutionException e) {
-                Log.e("AWS Error", "ERROR: Cannot post note");
-                Utils.sendErrorNotification(UINotePostPreviewSelectCircle.this,"Error occurred while posting your note :(");
+
+
+                //--------------------------------------------------------------
+
+
+
+                proceedButton.playAnimation();
+            } else {
+                Utils.sendWarningNotification(UINotePostPreviewSelectCircle.this,
+                        "You must select at least one circle!");
             }
-            proceedBackToMainPage(v);
+
+
         }
     }
 
@@ -256,7 +273,7 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
         }
     }
 
-    public void proceedBackToMainPage(View v) {
+    public void proceedBackToMainPage() {
         startActivity(new Intent(this, UIMain.class),
                 ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.fade_out).toBundle());
         finish();
