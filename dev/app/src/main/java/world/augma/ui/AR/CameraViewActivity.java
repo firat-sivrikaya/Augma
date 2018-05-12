@@ -40,6 +40,7 @@ public class CameraViewActivity extends Activity implements
 
     private double mAzimuthReal = 0;
     private double mRotationReal = 0;
+    private double mInclination = 0;
     private double[] mAzimuthTheoretical;
     private double[] degreesOfNotes;
     private static double AZIMUTH_ACCURACY = 5;
@@ -198,7 +199,7 @@ public class CameraViewActivity extends Activity implements
     }
 
     @Override
-    public void onRotationChanged(float newRot) {
+    public void onRotationChanged(float newRot,float inclination,int up) {
 
         float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -207,12 +208,14 @@ public class CameraViewActivity extends Activity implements
 
         int intNewRotation = (int) newRot;
         int intOldRotation = (int) mRotationReal;
+        Log.e("-------------INCLINATION-------------------", ""+inclination);
 
-        if(Math.abs(intNewRotation - intOldRotation) > 15) {
+        if(Math.abs(intNewRotation - intOldRotation) > 15 || Math.abs((int)mInclination - (int)inclination) > 15) {
 
             //TODO burda ne kadar degistigini cek edip thresholddan yuksekse assign edicez gibi?
 
             mRotationReal = newRot;
+            mInclination = inclination;
 
             for (int i = 0; i < filteredNotes.size(); i++) {
                 degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
@@ -223,19 +226,18 @@ public class CameraViewActivity extends Activity implements
                 if (isBetween(minRot, maxRot, mRotationReal)) {
 
                     double difference = mRotationReal - degreesOfNotes[i];
+                    double differenceTop = Math.abs( mInclination - 35);
+                    Log.e("-------------differenceTop-------------------", ""+differenceTop);
+
                     //TODO her seferinde ortaya cizmicez
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200);
                     params.leftMargin = 50 * (int) difference + 500;
-                    if(i>1){
-                        if(Math.abs(degreesOfNotes[i] - degreesOfNotes[i-1]) < 5){
-                            params.topMargin = (int) (screenHeight / 2) + 500;
-                        }
-                        else
-                            params.topMargin = (int) screenHeight / 2;
-                    }
+                    if(up == 1)
+                        params.topMargin = (int) (screenHeight / 2) + (50*(int) differenceTop);
+                    else if(up == 2)
+                        params.topMargin = (int) (screenHeight / 2) - (50*(int) differenceTop);
                     else
-                        params.topMargin = (int) screenHeight / 2;
-
+                        params.topMargin = (int) (screenHeight / 2);
 
 
                     if (!imageDrawn[i]) {

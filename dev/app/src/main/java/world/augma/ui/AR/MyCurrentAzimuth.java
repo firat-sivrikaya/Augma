@@ -23,6 +23,8 @@ public class MyCurrentAzimuth implements SensorEventListener {
     float[] mGravity;
     float[] mGeomagnetic;
     float azimut;
+    float inclination;
+    int con =0;
 
     public MyCurrentAzimuth(OnRotationChangedListener rotationListener, Context context) {
         mRotationListener = rotationListener;
@@ -61,33 +63,73 @@ android:visibility="gone" />
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        //if(con == 1){
 
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
-            mGravity = event.values;
 
-        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
-            mGeomagnetic = event.values;
+            int up =0;
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
 
-        if (mGravity != null && mGeomagnetic != null) {
-            float R[] = new float[9];
-            float I[] = new float[9];
+                mGravity = event.values;
+                //Understand up or down tilt
+                float x = event.values[0];
+                float y = event.values[1];
 
-            if (SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic)) {
-
-                // orientation contains azimut, pitch and roll
-                float orientation[] = new float[3];
-                SensorManager.getOrientation(R, orientation);
-
-                azimut = orientation[0];
+                if (Math.abs(x) > Math.abs(y)) {
+            /*if (x < 0) {
+                image.setImageResource(R.drawable.right);
+                textView.setText("You tilt the device right");
             }
-        }
+            if (x > 0) {
+                image.setImageResource(R.drawable.left);
+                textView.setText("You tilt the device left");
+            }*/
+                } else {
+                    if (y < 0) {
+                        up = 1;
+                        Log.e(TAG, "Tilt of the device is up :" + up );
+                        //textView.setText("You tilt the device up");
+                    }
+                    if (y > 0) {
+                        up = 2;
+                        Log.e(TAG, "Tilt of the device is up :" + up );
+                        //textView.setText("You tilt the device down");
+                    }
+                }
+                if (x > (-2) && x < (2) && y > (-2) && y < (2)) {
+                    up = 0;
+                    Log.e(TAG, "Tilt of the device is up :" + up );
+                    //textView.setText("Not tilt device");
+                }
+                // End
+            }
 
 
-        float rotation = (-1.0f) * azimut * 360 / (2 * 3.14159f);
+            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+                mGeomagnetic = event.values;
 
-        Log.e(TAG, "rotation of the device is :" + rotation );
+            if (mGravity != null && mGeomagnetic != null) {
+                float R[] = new float[9];
+                float I[] = new float[9];
 
-        mRotationListener.onRotationChanged(rotation);
+                if (SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic)) {
+
+                    // orientation contains azimut, pitch and roll
+                    float orientation[] = new float[3];
+                    SensorManager.getOrientation(R, orientation);
+                    inclination = orientation[1];
+                    //SensorManager.getInclination(I);
+                    azimut = orientation[0];
+                }
+            }
+
+
+            float rotation = (-1.0f) * azimut * 360 / (2 * 3.14159f);
+            float incl = (-1.0f) * inclination * 360 / (2 * 3.14159f);
+
+            Log.e(TAG, "Rotation of the device is :" + rotation );
+            //Log.e(TAG, "Tilt of the device is up :" + up );
+
+            mRotationListener.onRotationChanged(rotation,incl,up);
 
 //        azimuthFrom = azimuthTo;
 //
@@ -97,10 +139,31 @@ android:visibility="gone" />
 //        azimuthTo = (int) ( Math.toDegrees( SensorManager.getOrientation( rMat, orientation )[0] ) + 360 ) % 360;
 //
 //        mAzimuthListener.onAzimuthChanged(azimuthFrom, azimuthTo);
+        //}
+
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        /*switch (accuracy) {
+            case 0:
+                System.out.println("Unreliable");
+                con=0;
+                break;
+            case 1:
+                System.out.println("Low Accuracy");
+                con=0;
+                break;
+            case 2:
+                System.out.println("Medium Accuracy");
+                con=0;
+
+                break;
+            case 3:
+                System.out.println("High Accuracy");
+                con=1;
+                break;
+        }*/
 
     }
 }
