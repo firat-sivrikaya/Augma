@@ -200,58 +200,76 @@ public class CameraViewActivity extends Activity implements
     @Override
     public void onRotationChanged(float newRot) {
 
-
         float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        mRotationReal = newRot;
-        for(int i = 0; i < filteredNotes.size(); i++) {
-            degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
+        int intNewRotation = (int) newRot;
+        int intOldRotation = (int) mRotationReal;
 
-            double minRot = degreesOfNotes[i] - 10.0;
-            double maxRot = degreesOfNotes[i] + 10.0;
+        if(Math.abs(intNewRotation - intOldRotation) > 15) {
 
-            if (isBetween(minRot, maxRot, mRotationReal)) {
+            //TODO burda ne kadar degistigini cek edip thresholddan yuksekse assign edicez gibi?
 
-                double difference = mRotationReal - degreesOfNotes[i];
+            mRotationReal = newRot;
 
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200);
-                params.leftMargin =  50 * (int)difference + 500;
-                params.topMargin = (int)screenHeight/2 ;
+            for (int i = 0; i < filteredNotes.size(); i++) {
+                degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
 
-                if(!imageDrawn[i]) {
-                    imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
+                double minRot = degreesOfNotes[i] - 10.0;
+                double maxRot = degreesOfNotes[i] + 10.0;
 
-                    ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
-                    imageArray[i].setLayoutParams(params);
-                    ARRootLayout.addView(imageArray[i]);
+                if (isBetween(minRot, maxRot, mRotationReal)) {
 
-                    imageDrawn[i] = true;
+                    double difference = mRotationReal - degreesOfNotes[i];
+                    //TODO her seferinde ortaya cizmicez
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200);
+                    params.leftMargin = 50 * (int) difference + 500;
+                    if(i>1){
+                        if(Math.abs(degreesOfNotes[i] - degreesOfNotes[i-1]) < 5){
+                            params.topMargin = (int) (screenHeight / 2) + 500;
+                        }
+                        else
+                            params.topMargin = (int) screenHeight / 2;
+                    }
+                    else
+                        params.topMargin = (int) screenHeight / 2;
+
+
+
+                    if (!imageDrawn[i]) {
+                        imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
+
+                        ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
+                        imageArray[i].setLayoutParams(params);
+                        ARRootLayout.addView(imageArray[i]);
+
+                        imageDrawn[i] = true;
+                    } else {
+                        ARRootLayout.removeView(imageArray[i]);
+                        imageDrawn[i] = false;
+
+                        imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
+                        ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
+                        imageArray[i].setLayoutParams(params);
+                        ARRootLayout.addView(imageArray[i]);
+                        imageDrawn[i] = true;
+                    }
+                    imageArray[i].setTag(filteredNotes.get(i));
+                    imageArray[i].setOnClickListener(listener);
+                    imageArray[i].bringToFront();
+                } else {
+                    if (imageDrawn[i]) {
+                        ARRootLayout.removeView(imageArray[i]);
+                        imageDrawn[i] = false;
+                    }
+
                 }
-                else {
-                    ARRootLayout.removeView(imageArray[i]);
-                    imageDrawn[i] = false;
-
-                    imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
-                    ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
-                    imageArray[i].setLayoutParams(params);
-                    ARRootLayout.addView(imageArray[i]);
-                    imageDrawn[i] = true;
-                }
-                imageArray[i].setTag(filteredNotes.get(i));
-                imageArray[i].setOnClickListener(listener);
-                imageArray[i].bringToFront();
-            } else {
-                if(imageDrawn[i]){
-                    ARRootLayout.removeView(imageArray[i]);
-                    imageDrawn[i] = false;
-                }
-
             }
         }
         updateDescription();
+
     }
 
     @Override
