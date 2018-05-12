@@ -67,7 +67,6 @@ public class UICircle extends Fragment {
             @Override
             public void onClick(View v) {
 
-                //TODO add circle here
                 View layout = LayoutInflater.from(UICircle.this.getContext()).inflate(R.layout.circle_creation_info, null, false);
                 final EditText circleName = layout.findViewById(R.id.circleCreationCircleNameField);
                 final EditText circleDesc = layout.findViewById(R.id.circleCreationCircleDescField);
@@ -78,7 +77,7 @@ public class UICircle extends Fragment {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //TODO AWS burada eklesin
+
                                 JSONObject jsonUser = new JSONObject();
 
                                 try {
@@ -93,12 +92,9 @@ public class UICircle extends Fragment {
                                 try {
                                     if(aws.execute(AWS.Service.CREATE_CIRCLE,jsonUser.toString(),circleName.getText().toString(),circleName.getText().toString().toLowerCase(),circleDesc.getText().toString()).get())
                                         Utils.sendSuccessNotification(UICircle.this.getActivity(), "CIRCLE: " + circleName.getText().toString());
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } catch (ExecutionException e) {
+                                } catch (InterruptedException | ExecutionException e) {
                                     e.printStackTrace();
                                 }
-
                                 addCircleButton.playAnimation();
                             }
                         })

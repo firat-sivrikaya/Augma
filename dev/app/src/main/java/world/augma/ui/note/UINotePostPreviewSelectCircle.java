@@ -1,12 +1,12 @@
 package world.augma.ui.note;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,9 +17,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.devlomi.hidely.hidelyviews.HidelyImageButton;
+import com.airbnb.lottie.LottieAnimationView;
 import com.devlomi.hidely.hidelyviews.HidelyImageView;
 
 import org.json.JSONArray;
@@ -28,7 +29,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -42,14 +42,15 @@ import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
 import world.augma.work.AWS;
 import world.augma.work.Utils;
-import world.augma.work.visual.S3;
 
 public class UINotePostPreviewSelectCircle extends AppCompatActivity {
 
     private List<Circle> circleList;
     private List<Circle> selectedCirclelist;
-    private HidelyImageButton proceedButton;
+    private LottieAnimationView proceedButton;
     private RecyclerView recyclerView;
+    private TextView confirmButtonText;
+    private RelativeLayout confirmButtonBackground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +60,49 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
         recyclerView = findViewById(R.id.notePostPreviewSelectCircleList);
         proceedButton = findViewById(R.id.notePostPreviewSelectCircleConfirmButton);
         circleList = InterActivityShareModel.getInstance().getUiMain().fetchUser().getMemberships();
+        confirmButtonBackground = findViewById(R.id.notePostPreviewSelectCircleConfirmButtonBackground);
+        confirmButtonText = findViewById(R.id.notePostPreviewSelectCircleConfirmButtonText);
 
         selectedCirclelist = new ArrayList<>();
         proceedButton.setOnClickListener(new NotePostPreviewSelecCircleProceedButtonListener());
+
+        proceedButton.setAnimation(R.raw.success_button);
+        proceedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!selectedCirclelist.isEmpty()) {
+                    confirmButtonBackground.setBackgroundResource(0);
+                    confirmButtonText.setText("");
+                    proceedButton.playAnimation();
+                } else {
+                    Utils.sendWarningNotification(UINotePostPreviewSelectCircle.this,
+                            "You must select at least one circle!");
+                }
+            }
+        });
+
+        proceedButton.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                //todo go to the page you want
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
 
         CircleSelectionAdapter adapter = new CircleSelectionAdapter(new OnItemClick() {
             @Override
@@ -74,12 +115,6 @@ public class UINotePostPreviewSelectCircle extends AppCompatActivity {
                 } else {
                     hidelyImageView.hide();
                     selectedCirclelist.remove(c);
-                }
-
-                if(!selectedCirclelist.isEmpty()) {
-                    proceedButton.show();
-                } else {
-                    proceedButton.hide();
                 }
             }
         });
