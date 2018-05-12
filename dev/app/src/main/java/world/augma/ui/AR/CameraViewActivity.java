@@ -199,7 +199,7 @@ public class CameraViewActivity extends Activity implements
     }
 
     @Override
-    public void onRotationChanged(float newRot,float inclination,int up) {
+    public void onRotationChanged(float newRot,int inclination, int up) {
 
         float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -231,11 +231,13 @@ public class CameraViewActivity extends Activity implements
 
                     //TODO her seferinde ortaya cizmicez
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200);
-                    params.leftMargin = 50 * (int) difference + 500;
+                    params.leftMargin = 54 * (int) difference + (int) (screenWidth / 2);
                     if(up == -1)
-                        params.topMargin = -190 * (int)differenceTop / 9 + 2850;
+                        params.topMargin = -64 * (int)differenceTop / 3 + (int)(screenHeight + (screenHeight)/2);
                     else if(up == 1)
-                        params.topMargin = 190 * (int)differenceTop /9 - 950;
+                        params.topMargin = 64 * (int)differenceTop / 3 - (int)(screenHeight/2);
+                    else
+                        params.topMargin = 64 * (int)differenceTop / 3 - (int)(screenHeight/2);
 
                     if(mInclination >= 45){
                         if (!imageDrawn[i]) {
