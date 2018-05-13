@@ -52,8 +52,8 @@ android:visibility="gone" />
         mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         //sensorManager.registerListener(this, rSensor,
         //SensorManager.SENSOR_DELAY_UI);
-        sensorManager.registerListener(this, aSensor, 3000000);
-        sensorManager.registerListener(this, mSensor, 3000000);
+        sensorManager.registerListener(this, aSensor, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, mSensor,  SensorManager.SENSOR_DELAY_UI);
     }
 
     public void stop(){
@@ -75,8 +75,6 @@ android:visibility="gone" />
                 mGravity = event.values;
 
             }
-
-
             if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
             {
                 mGeomagnetic = event.values;
@@ -120,8 +118,6 @@ android:visibility="gone" />
 
 
             float rotation = (-1.0f) * azimut * 360 / (2 * 3.14159f);
-
-
             Log.e(TAG, "Rotation of the device is :" + rotation );
             //Log.e(TAG, "Tilt of the device is up :" + up );
 

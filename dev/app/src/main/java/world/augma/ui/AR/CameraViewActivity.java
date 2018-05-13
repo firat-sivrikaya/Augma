@@ -1,12 +1,16 @@
 package world.augma.ui.AR;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
@@ -18,6 +22,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,6 +55,8 @@ public class CameraViewActivity extends Activity implements
     private double mMyLatitude = 0;
     private double mMyLongitude = 0;
     private Location lastLocation;
+    private double difference[];
+    private double differenceTop[];
 
     private MyCurrentAzimuth myCurrentAzimuth;
     private MyCurrentLocation myCurrentLocation;
@@ -82,9 +91,65 @@ public class CameraViewActivity extends Activity implements
         degreesOfNotes = new double[filteredNotes.size()];
 
         imageArray = new RelativeLayout[filteredNotes.size()];
-
-
         imageDrawn = new boolean[filteredNotes.size()];
+        LayoutInflater inflater = LayoutInflater.from(this);
+
+        differenceTop = new double[filteredNotes.size()];
+        difference = new double[filteredNotes.size()];
+
+        for(int i=0; i<filteredNotes.size();i++){
+            imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
+
+
+
+            /*
+
+             animationView.setVisibility(View.VISIBLE);
+
+            animationView.setMinAndMaxProgress(0, 0.5f);
+
+
+            animationView.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+
+            animationView.setScale(0.1f);
+
+             */
+
+
+
+
+            S3.fetchNotePreviewImage(this, ((ImageView) imageArray[i].findViewById(R.id.notePreviewImage)),filteredNotes.get(i).getOwner().getUserID(),filteredNotes.get(i).getNoteID());
+            ARRootLayout.addView(imageArray[i]);
+
+            imageArray[i].setTag(filteredNotes.get(i));
+            imageArray[i].setOnClickListener(listener);
+            imageArray[i].bringToFront();
+            imageArray[i].setVisibility(View.INVISIBLE);
+            differenceTop[i] = 0;
+            difference[i] = 0;
+
+        }
 
         for(int i = 0; i < imageDrawn.length; i++)
             imageDrawn[i] = false;
@@ -196,7 +261,6 @@ public class CameraViewActivity extends Activity implements
             updateDescription();
         }
 
-
     }
 
     @Override
@@ -204,14 +268,11 @@ public class CameraViewActivity extends Activity implements
 
         float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-
-        LayoutInflater inflater = LayoutInflater.from(this);
-
         int intNewRotation = (int) newRot;
         int intOldRotation = (int) mRotationReal;
         Log.e("-------------INCLINATION-------------------", ""+inclination);
 
-        if(Math.abs(intNewRotation - intOldRotation) > 3 || Math.abs((int)mInclination - inclination) > 3) {
+        if(Math.abs(intNewRotation - intOldRotation) > 3 || Math.abs(mInclination - inclination) > 3) {
 
             //TODO burda ne kadar degistigini cek edip thresholddan yuksekse assign edicez gibi?
 
@@ -226,59 +287,52 @@ public class CameraViewActivity extends Activity implements
 
                 if (isBetween(minRot, maxRot, mRotationReal)) {
 
-                    double difference = mRotationReal - degreesOfNotes[i];
-                    double differenceTop = Math.abs( mInclination );
+                    double differenceNew = mRotationReal - degreesOfNotes[i];
+                    double differenceTopNew = mInclination;
                     Log.e("-------------differenceTop-------------------", ""+differenceTop);
+                    if(Math.abs(differenceNew - difference[i]) > 6 ||Math.abs(differenceTopNew - differenceTop[i]) > 6){
+                        difference[i] = differenceNew;
+                        differenceTop[i] = differenceTopNew;
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200);
+                        params.leftMargin = 54 * (int) difference[i] + (int) (screenWidth / 2);
+                        if(up == -1)
+                            params.topMargin = -64 * (int)differenceTop[i] / 3 + (int)(screenHeight + (screenHeight)/2);
+                        else if(up == 1)
+                            params.topMargin = 64 * (int)differenceTop[i] / 3 - (int)(screenHeight/2);
+                        else
+                            params.topMargin = 64 * (int)differenceTop[i] / 3 - (int)(screenHeight/2);
 
-                    //TODO her seferinde ortaya cizmicez
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200);
-                    params.leftMargin = 54 * (int) difference + (int) (screenWidth / 2);
-                    if(up == -1)
-                        params.topMargin = -64 * (int)differenceTop / 3 + (int)(screenHeight + (screenHeight)/2);
-                    else if(up == 1)
-                        params.topMargin = 64 * (int)differenceTop / 3 - (int)(screenHeight/2);
-                    else
-                        params.topMargin = 64 * (int)differenceTop / 3 - (int)(screenHeight/2);
-
-                    if(mInclination >= 45){
-                        if (!imageDrawn[i]) {
-                            imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
-
-                            S3.fetchNotePreviewImage(this, ((ImageView) imageArray[i].findViewById(R.id.notePreviewImage)),filteredNotes.get(i).getOwner().getUserID(),filteredNotes.get(i).getNoteID());
+                        if(mInclination >= 45){
                             imageArray[i].setLayoutParams(params);
-                            ARRootLayout.addView(imageArray[i]);
-
                             imageDrawn[i] = true;
-                        } else {
-                            ARRootLayout.removeView(imageArray[i]);
-                            imageDrawn[i] = false;
+                            imageArray[i].setVisibility(View.VISIBLE);
 
-                            imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
-
-                            S3.fetchNotePreviewImage(this, ((ImageView) imageArray[i].findViewById(R.id.notePreviewImage)),filteredNotes.get(i).getOwner().getUserID(),filteredNotes.get(i).getNoteID());
-
-                            //((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
-                            imageArray[i].setLayoutParams(params);
-                            ARRootLayout.addView(imageArray[i]);
-                            imageDrawn[i] = true;
+                            LottieAnimationView animationView = imageArray[i].findViewById(R.id.ArPulseView);
+                            animationView.setAnimation(R.raw.pulse);
+                            animationView.setRepeatMode(LottieDrawable.INFINITE);
+                            animationView.playAnimation();
                         }
-                        imageArray[i].setTag(filteredNotes.get(i));
-                        imageArray[i].setOnClickListener(listener);
-                        imageArray[i].bringToFront();
+                        else{
+                            imageArray[i].setVisibility(View.INVISIBLE);
+                            imageDrawn[i] = false;
+                            //LottieAnimationView animationView = imageArray[i].findViewById(R.id.ArPulseView);
+                            //animationView.pauseAnimation();
+                        }
                     }
-                    else{
-                        ARRootLayout.removeView(imageArray[i]);
-                        imageDrawn[i] = false;
-                    }
+
 
                 } else {
                     if (imageDrawn[i]) {
-                        ARRootLayout.removeView(imageArray[i]);
+                        imageArray[i].setVisibility(View.INVISIBLE);
                         imageDrawn[i] = false;
+                        LottieAnimationView animationView = imageArray[i].findViewById(R.id.ArPulseView);
+                        animationView.setVisibility(View.INVISIBLE);
+                        animationView.pauseAnimation();
                     }
 
                 }
             }
+            ARRootLayout.invalidate();
         }
         updateDescription();
 
