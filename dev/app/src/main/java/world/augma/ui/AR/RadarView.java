@@ -12,7 +12,7 @@ public class RadarView{
 	/** The radar's range */
 	float range;
 	/** Radius in pixel on screen */
-	public static float RADIUS = 40;
+	public static float RADIUS = 200;
 	/** Position on screen */
 	static float originX = 0 , originY = 0;
 	
@@ -53,6 +53,7 @@ public class RadarView{
 	ARView arView = new ARView();
 	
 	public RadarView(DataView dataView, double[] bearings){
+		//this.view = dataView;
 		this.bearings = bearings;
 		calculateMetrics();
 	}

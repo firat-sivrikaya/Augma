@@ -80,7 +80,7 @@
         </service>
 
         <activity android:name=".ui.note.UINotePost" />
-        <activity android:name=".ui.note.UINoteDisplay"></activity>
+        <activity android:name=".ui.note.UINoteDisplay" android:screenOrientation="portrait"></activity>
         <activity android:name=".ui.AR.CameraViewActivity" />
         <activity android:name=".ui.note.UINotePostPreview"></activity>
         <activity android:name=".ui.note.UINotePostPreviewSelectCircle" />

@@ -10,6 +10,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -74,7 +75,8 @@ public class ARView extends Activity implements SensorEventListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "");
 
 		filteredNotes = (List<Note>) getIntent().getExtras().getSerializable("filteredNotes");
 
@@ -88,7 +90,7 @@ public class ARView extends Activity implements SensorEventListener{
 		screenWidth = displayMetrics.widthPixels;
 
 		upperLayerLayout = new RelativeLayout(this);
-		RelativeLayout.LayoutParams upperLayerLayoutParams = new RelativeLayout.LayoutParams(android.widget.RelativeLayout.LayoutParams.FILL_PARENT, android.widget.RelativeLayout.LayoutParams.FILL_PARENT);
+		RelativeLayout.LayoutParams upperLayerLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 		upperLayerLayout.setLayoutParams(upperLayerLayoutParams);
 		upperLayerLayout.setBackgroundColor(Color.TRANSPARENT);
 
@@ -101,12 +103,9 @@ public class ARView extends Activity implements SensorEventListener{
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-
-
-
 		FrameLayout headerFrameLayout = new FrameLayout(this);
 		RelativeLayout headerRelativeLayout = new RelativeLayout(this);
-		RelativeLayout.LayoutParams relaLayoutParams  = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
+		RelativeLayout.LayoutParams relaLayoutParams  = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 		headerRelativeLayout.setBackgroundColor(Color.BLACK);
 		headerRelativeLayout.setLayoutParams(relaLayoutParams);
 		Button button = new Button(this);
@@ -394,6 +393,7 @@ class RadarMarkerView extends View{
 
 
 		if (!ARView.dataView.isInited()) {
+
 			ARView.dataView.init(ARView.paintScreen.getWidth(), ARView.paintScreen.getHeight(),arView.camera, displayMetrics,upperLayoutView);
 		}
 

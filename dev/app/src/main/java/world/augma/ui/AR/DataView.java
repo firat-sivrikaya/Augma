@@ -1,11 +1,11 @@
 package world.augma.ui.AR;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.location.Location;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,16 +13,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import world.augma.R;
 import world.augma.asset.Note;
+import world.augma.ui.note.UINoteDisplay;
 import world.augma.work.Camera;
 import world.augma.work.PaintUtils;
 import world.augma.work.RadarLines;
+import world.augma.work.visual.S3;
 
 
 /**
@@ -36,26 +37,8 @@ import world.augma.work.RadarLines;
 public class DataView implements OnLocationChangedListener{
 
 	RelativeLayout[] locationMarkerView;
-	ImageView[] subjectImageView;
 	RelativeLayout.LayoutParams[] layoutParams;
-	RelativeLayout.LayoutParams[] subjectImageViewParams;
-	RelativeLayout.LayoutParams[] subjectTextViewParams;
-	TextView[] locationTextView;
 
-	
-	
-	/*
-	 *  Array or Array lists of latitude and longitude to plot
-	 *  In your case you can populate with an ArrayList
-	 * */
-	// SF Art Commission, SF Dept. of Public Health, SF Ethics Comm, SF Conservatory of Music, All Star Cafe, Magic Curry Cart, SF SEO Marketing, SF Honda, 
-	// SF Mun Transport Agency, SF Parking Citation, Mayors Office of Housing, SF Redev Agency, Catario Patrice, Bank of America , SF Retirement System, Bank of America Mortage,
-	// Writers Corp., Van Nes Keno Mkt.
-	double[] latitudes = new double[] {37.775672, 37.775729, 37.775578, 37.77546, 37.775199, 37.774887, 37.774637, 
-			37.774614, 37.774406, 37.774754, 37.774813, 37.774961, 37.774957, 37.775171, 37.775996, 37.775818, 37.775691, 37.775909};
-	double[] longitudes = new double[] {-122.419992, -122.419601, -122.419719, -122.42026, -122.419646, -122.419405, -122.42037, 
-			-122.41934, -122.41886, -122.418785, -122.418581, -122.418868, -122.418064, -122.418884, -122.418898, -122.418305, -122.418895, -122.419161};
-	
 	int[] nextXofText ;
 	ArrayList<Integer> 	nextYofText = new ArrayList<Integer>();
 
@@ -101,6 +84,7 @@ public class DataView implements OnLocationChangedListener{
 	public float deltaX;
 	public float deltaY;
 	Bitmap bmp;
+	private ARView arView;
 
 	private List<Note> filteredNotes;
 
@@ -112,6 +96,7 @@ public class DataView implements OnLocationChangedListener{
 	public DataView(Context ctx, List<Note> filteredNotes) {
 		this._context = ctx;
 		this.filteredNotes = filteredNotes;
+		//this.arView = arView;
 	}
 
 	public MyCurrentLocation getMyCurrentLocation()
@@ -122,172 +107,65 @@ public class DataView implements OnLocationChangedListener{
 		return isInit;
 	}
 
-	public void init(int widthInit, int heightInit, android.hardware.Camera camera, DisplayMetrics displayMetrics, RelativeLayout rel) {
+	public void init(int widthInit, int heightInit, android.hardware.Camera camera, DisplayMetrics displayMetrics, RelativeLayout background) {
 		try {
 
 			myCurrentLocation = new MyCurrentLocation(this);
 			myCurrentLocation.buildGoogleApiClient(this._context);
 			myCurrentLocation.start();
 
-			locationMarkerView = new RelativeLayout[latitudes.length];
-			layoutParams = new RelativeLayout.LayoutParams[latitudes.length];
-			subjectImageViewParams = new RelativeLayout.LayoutParams[latitudes.length];
-			subjectTextViewParams = new RelativeLayout.LayoutParams[latitudes.length];
-			subjectImageView = new ImageView[latitudes.length];
-			locationTextView = new TextView[latitudes.length];
-			nextXofText = new int[latitudes.length];
+			locationMarkerView = new RelativeLayout[filteredNotes.size()];
+			layoutParams = new RelativeLayout.LayoutParams[filteredNotes.size()];
+
+
+			nextXofText = new int[filteredNotes.size()];
 			
-			for(int i=0;i<latitudes.length;i++){
-				layoutParams[i] = new RelativeLayout.LayoutParams(10, 10);
-				subjectTextViewParams[i] = new RelativeLayout.LayoutParams(50, 30);
+			for(int i=0;i<filteredNotes.size();i++){
+				layoutParams[i] = new RelativeLayout.LayoutParams(200, 200);
 
-				subjectImageView[i] = new ImageView(_context);
+				ImageView img = new ImageView(_context);
 				locationMarkerView[i] = new RelativeLayout(_context);
-				locationTextView[i] = new TextView(_context);
-				locationTextView[i].setText(checkTextToDisplay(places[i]));
-				locationTextView[i].setTextColor(Color.WHITE);
-				subjectImageView[i].setBackgroundResource(R.drawable.map_marker);
+				S3.fetchNotePreviewImage(this._context,  img, filteredNotes.get(i).getOwner().getUserID(), filteredNotes.get(i).getNoteID());
 				locationMarkerView[i].setId(i);
-				subjectImageView[i].setId(i);
-				locationTextView[i].setId(i);
-				subjectImageViewParams[i] = new  RelativeLayout.LayoutParams(40, 40);
-				subjectImageViewParams[i].topMargin = 15;
-				subjectImageViewParams[i].addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-				layoutParams[i].setMargins(displayMetrics.widthPixels/2, displayMetrics.heightPixels/2, 0, 0);
-				locationMarkerView[i] = new RelativeLayout(_context);
-				locationMarkerView[i].setBackgroundResource(R.drawable.note_icon);
-				subjectTextViewParams[i].addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-				subjectTextViewParams[i].topMargin = 15;
+				//layoutParams[i].setMargins(displayMetrics.widthPixels/2, displayMetrics.heightPixels/2, 0, 0);
 				locationMarkerView[i].setLayoutParams(layoutParams[i]);
-				subjectImageView[i].setLayoutParams(subjectImageViewParams[i]);
-				locationTextView[i].setLayoutParams(subjectTextViewParams[i]);
+				//img.setLayoutParams(new  RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 
-				locationMarkerView[i].addView(subjectImageView[i]);
-				locationMarkerView[i].addView(locationTextView[i]);
-				rel.addView(locationMarkerView[i]);
-
-				subjectImageView[i].setClickable(false);
-				locationTextView[i].setClickable(false);
-
-				subjectImageView[i].setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						if (v.getId() != -1) {
-							
-							RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) locationMarkerView[v.getId()].getLayoutParams();
-							Rect rect = new Rect(params.leftMargin, params.topMargin, params.leftMargin + params.width, params.topMargin + params.height);
-							ArrayList<Integer> matchIDs = new ArrayList<Integer>();
-							Rect compRect = new Rect();
-							int index = 0;
-							for (RelativeLayout.LayoutParams layoutparams : layoutParams) {
-								compRect.set(layoutparams.leftMargin, layoutparams.topMargin, 
-										layoutparams.leftMargin + layoutparams.width, layoutparams.topMargin + layoutparams.height);
-								if (compRect.intersect(rect)) {
-									matchIDs.add(index);
-								}
-								index++;
-							}
-							
-							if (matchIDs.size() > 1) {
-								
-							}
-							
-							locationMarkerView[v.getId()].bringToFront();
-							
-//							locationMarkerView[v.getId()].bringToFront();
-//							Toast.makeText(_context, " LOCATION NO : "+v.getId(), Toast.LENGTH_SHORT).show();
-						}
-						
-					}
-				});
-
-
-				locationTextView[i].setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						if ((v.getId() != -1)) {
-							
-							RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) locationMarkerView[v.getId()].getLayoutParams();
-							Rect rect = new Rect(params.leftMargin, params.topMargin, params.leftMargin + params.width, params.topMargin + params.height);
-							ArrayList<Integer> matchIDs = new ArrayList<Integer>();
-							Rect compRect = new Rect();
-							int index = 0;
-							for (RelativeLayout.LayoutParams layoutparams : layoutParams) {
-								compRect.set(layoutparams.leftMargin, layoutparams.topMargin, 
-										layoutparams.leftMargin + layoutparams.width, layoutparams.topMargin + layoutparams.height);
-								if (compRect.intersect(rect)) {
-									matchIDs.add(index);
-								}
-								index++;
-							}
-							
-							if (matchIDs.size() > 1) {
-								
-							}
-
-							
-							locationMarkerView[v.getId()].bringToFront();
-							
-//							locationMarkerView[v.getId()].bringToFront();
-//							Toast.makeText(_context, " LOCATION NO : "+v.getId(), Toast.LENGTH_SHORT).show();
-						}
-						
-					}
-				});
+				locationMarkerView[i].addView(img);
+				background.addView(locationMarkerView[i]);
+				locationMarkerView[i].setTag(filteredNotes.get(i));
 
 				locationMarkerView[i].setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
-						if (v.getId() != -1) {
-							RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) locationMarkerView[v.getId()].getLayoutParams();
-							Rect rect = new Rect(params.leftMargin, params.topMargin, params.leftMargin + params.width, params.topMargin + params.height);
-							ArrayList<Integer> matchIDs = new ArrayList<Integer>();
-							Rect compRect = new Rect();
-							int count = 0;
-							int index = 0;
-							for (RelativeLayout.LayoutParams layoutparams : layoutParams) {
-								compRect.set(layoutparams.leftMargin, layoutparams.topMargin, 
-										layoutparams.leftMargin + layoutparams.width, layoutparams.topMargin + layoutparams.height);
-								if (compRect.intersect(rect)) {
-									matchIDs.add(index);
-									count+=1;
-								}
-								index++;
-							}
-							
-							if (count > 1) {
-								
-							}
-
-							locationMarkerView[v.getId()].bringToFront();
-//							Toast.makeText(_context, " LOCATION NO : "+v.getId(), Toast.LENGTH_SHORT).show();
+						RelativeLayout image = (RelativeLayout) v;
+						if(image.getTag() != null)
+						{
+							Note nt = (Note)image.getTag();
+							Intent intent = new Intent(_context, UINoteDisplay.class);
+							intent.putExtra("obj", nt);
+							_context.startActivity(intent,
+									ActivityOptionsCompat.makeCustomAnimation(_context, R.anim.fade_in, R.anim.fade_out).toBundle());
 						}
-						
 					}
 				});
 			}
-
-
-
-			bmp = BitmapFactory.decodeResource(_context.getResources(), R.drawable.note_icon);
 
 			this.displayMetrics = displayMetrics;
 			this.degreetopixelWidth = this.displayMetrics.widthPixels / camera.getParameters().getHorizontalViewAngle();
 			this.degreetopixelHeight = this.displayMetrics.heightPixels / camera.getParameters().getVerticalViewAngle();
 			System.out.println("camera.getParameters().getHorizontalViewAngle()=="+camera.getParameters().getHorizontalViewAngle());
 
-			bearings = new double[latitudes.length];
+			bearings = new double[filteredNotes.size()];
 
 
 			if(bearing < 0)
 				bearing  = 360 + bearing;
 
-			for(int i = 0; i <latitudes.length;i++){
-				destinedLocation.setLatitude(latitudes[i]);
-				destinedLocation.setLongitude(longitudes[i]);
+			for(int i = 0; i <filteredNotes.size();i++){
+				destinedLocation.setLatitude(filteredNotes.get(i).getLatitude());
+				destinedLocation.setLongitude(filteredNotes.get(i).getLongitude());
 				bearing = currentLocation.bearingTo(destinedLocation);
 
 				if(bearing < 0){
@@ -374,8 +252,6 @@ public class DataView implements OnLocationChangedListener{
 
 			if(isLocationBlock){
 				layoutParams[count].setMargins((int)(x - w / 2 - 10), (int)(y - h / 2 - 10), 0, 0);
-				layoutParams[count].height = 90;
-				layoutParams[count].width = 90;
 				locationMarkerView[count].setLayoutParams(layoutParams[count]);
 
 			}else{

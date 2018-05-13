@@ -98,8 +98,6 @@ public class CameraViewActivity extends Activity implements
         for (int i = 0; i < filteredNotes.size(); i++) {
             imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
 
-
-
             S3.fetchNotePreviewImage(this, ((ImageView) imageArray[i].findViewById(R.id.notePreviewImage)), filteredNotes.get(i).getOwner().getUserID(), filteredNotes.get(i).getNoteID());
             ARRootLayout.addView(imageArray[i]);
 

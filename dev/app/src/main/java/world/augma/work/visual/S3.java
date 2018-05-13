@@ -1,6 +1,7 @@
 package world.augma.work.visual;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
@@ -33,7 +34,7 @@ public class S3 {
         AugmaImager.set(AugmaVisualType.NOTE, activity, img, BASE_URL.concat(userID).concat("/").concat(noteID).concat(".jpg"));
     }
 
-    public static void fetchNotePreviewImage(Activity activity, ImageView img, String userID, String noteID){
+    public static void fetchNotePreviewImage(Context activity, ImageView img, String userID, String noteID){
         //AugmaImager.set(AugmaVisualType.NOTE, activity, img, new S3UrlBuilder(BASE_URL, userID, noteID));
         AugmaImager.set(AugmaVisualType.NOTE_PREVIEW, activity, img, BASE_URL.concat(userID).concat("/").concat(noteID).concat(".jpg"));
     }
