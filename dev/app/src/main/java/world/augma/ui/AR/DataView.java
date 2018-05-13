@@ -228,12 +228,6 @@ public class DataView implements OnLocationChangedListener{
 		drawTextBlock(dw);
 	}
 
-	void drawPOI(PaintUtils dw, float yaw){
-		if(isDrawing){
-			dw.paintObj(radarPoints, rx+PaintUtils.XPADDING, ry+PaintUtils.YPADDING, -this.yaw, 1, this.yaw);
-			isDrawing = false;
-		}
-	}
 
 	void radarText(PaintUtils dw, String txt, float x, float y, boolean bg, boolean isLocationBlock, int count) {
 
@@ -264,14 +258,6 @@ public class DataView implements OnLocationChangedListener{
 
 	}
 
-	String checkTextToDisplay(String str){
-
-		if(str.length()>15){
-			str = str.substring(0, 15)+"...";
-		}
-		return str;
-
-	}
 
 	void drawTextBlock(PaintUtils dw){
 
