@@ -183,7 +183,7 @@ public class CameraViewActivity extends Activity implements
         lastLocation.setLatitude(mMyLatitude);
         lastLocation.setLongitude(mMyLongitude);
         //Last locationimdan 20 metre hareket ettiysem location degisicek
-        if(location.distanceTo(lastLocation) >=20){
+        if(location.distanceTo(lastLocation) >=200){
             mMyLatitude = location.getLatitude();
             mMyLongitude = location.getLongitude();
             lastLocation.setLatitude(mMyLatitude);
@@ -210,7 +210,7 @@ public class CameraViewActivity extends Activity implements
         int intOldRotation = (int) mRotationReal;
         Log.e("-------------INCLINATION-------------------", ""+inclination);
 
-        if(Math.abs(intNewRotation - intOldRotation) > 15 || Math.abs((int)mInclination - (int)inclination) > 5) {
+        if(Math.abs(intNewRotation - intOldRotation) > 3 || Math.abs((int)mInclination - inclination) > 3) {
 
             //TODO burda ne kadar degistigini cek edip thresholddan yuksekse assign edicez gibi?
 
@@ -220,8 +220,8 @@ public class CameraViewActivity extends Activity implements
             for (int i = 0; i < filteredNotes.size(); i++) {
                 degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
 
-                double minRot = degreesOfNotes[i] - 10.0;
-                double maxRot = degreesOfNotes[i] + 10.0;
+                double minRot = degreesOfNotes[i] - 15.0;
+                double maxRot = degreesOfNotes[i] + 15.0;
 
                 if (isBetween(minRot, maxRot, mRotationReal)) {
 
@@ -353,8 +353,6 @@ public class CameraViewActivity extends Activity implements
         @Override
         public void onClick(View v) {
             RelativeLayout image = (RelativeLayout) v;
-
-            Log.e("JFJASFJSJDFASJDFAJD", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
             if(image.getTag() != null)
             {
