@@ -206,7 +206,7 @@ public class CameraViewActivity extends Activity implements
                         difference[i] = differenceNew;
                         differenceTop[i] = differenceTopNew;
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200);
-                        params.leftMargin = 54 * (int) difference[i] + (int) (screenWidth / 2);
+                        params.leftMargin = -54 * (int) difference[i] + (int) (screenWidth / 2);
                         if(up == -1)
                             params.topMargin = -64 * (int)differenceTop[i] / 3 + (int)(screenHeight + (screenHeight)/2);
                         else if(up == 1)
