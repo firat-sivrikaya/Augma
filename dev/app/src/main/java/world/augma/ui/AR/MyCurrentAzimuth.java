@@ -52,8 +52,8 @@ android:visibility="gone" />
         mSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         //sensorManager.registerListener(this, rSensor,
         //SensorManager.SENSOR_DELAY_UI);
-        sensorManager.registerListener(this, aSensor, SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, aSensor, 3000000);
+        sensorManager.registerListener(this, mSensor, 3000000);
     }
 
     public void stop(){

@@ -28,6 +28,7 @@ import world.augma.asset.User;
 import world.augma.ui.note.UINoteDisplay;
 import world.augma.ui.services.InterActivityShareModel;
 import world.augma.ui.services.ServiceUIMain;
+import world.augma.work.visual.S3;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -243,7 +244,7 @@ public class CameraViewActivity extends Activity implements
                         if (!imageDrawn[i]) {
                             imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
 
-                            ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
+                            S3.fetchNotePreviewImage(this, ((ImageView) imageArray[i].findViewById(R.id.notePreviewImage)),filteredNotes.get(i).getOwner().getUserID(),filteredNotes.get(i).getNoteID());
                             imageArray[i].setLayoutParams(params);
                             ARRootLayout.addView(imageArray[i]);
 
@@ -253,7 +254,10 @@ public class CameraViewActivity extends Activity implements
                             imageDrawn[i] = false;
 
                             imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
-                            ((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
+
+                            S3.fetchNotePreviewImage(this, ((ImageView) imageArray[i].findViewById(R.id.notePreviewImage)),filteredNotes.get(i).getOwner().getUserID(),filteredNotes.get(i).getNoteID());
+
+                            //((ImageView) imageArray[i].findViewById(R.id.ArItemImage)).setBackgroundResource(R.drawable.note_icon);
                             imageArray[i].setLayoutParams(params);
                             ARRootLayout.addView(imageArray[i]);
                             imageDrawn[i] = true;

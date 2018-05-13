@@ -4,5 +4,6 @@ public enum AugmaVisualType {
 
     PROFILE,
     BACKGROUND,
-    NOTE;
+    NOTE,
+    NOTE_PREVIEW;
 }

@@ -33,6 +33,11 @@ public class S3 {
         AugmaImager.set(AugmaVisualType.NOTE, activity, img, BASE_URL.concat(userID).concat("/").concat(noteID).concat(".jpg"));
     }
 
+    public static void fetchNotePreviewImage(Activity activity, ImageView img, String userID, String noteID){
+        //AugmaImager.set(AugmaVisualType.NOTE, activity, img, new S3UrlBuilder(BASE_URL, userID, noteID));
+        AugmaImager.set(AugmaVisualType.NOTE_PREVIEW, activity, img, BASE_URL.concat(userID).concat("/").concat(noteID).concat(".jpg"));
+    }
+
     public static boolean uploadProfileImage(byte[] imageByte, String userID){
         try {
             return new AWS().execute(AWS.Service.UPLOAD_IMAGE, userID, userID,Base64.encodeToString(imageByte, 0)).get();
