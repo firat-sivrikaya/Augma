@@ -105,7 +105,7 @@ android:visibility="gone" />
             }
 
 
-            if (mGravity != null && mGeomagnetic != null) {
+            if (gravSensorVals != null && magSensorVals != null) {
                 float R[] = new float[9];
                 float Rot[] = new float[9];
                 float I[] = new float[9];
@@ -123,7 +123,7 @@ android:visibility="gone" />
                 //Checks if device is flat on ground or not
                  inclination = (int) Math.round(Math.toDegrees(Math.acos(inclineGravity[2])));
 
-                if (SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic)) {
+                if (SensorManager.getRotationMatrix(R, I, gravSensorVals, magSensorVals)) {
 
 
                     int rotation = Compatibility.getRotation(cameraViewActivity);
