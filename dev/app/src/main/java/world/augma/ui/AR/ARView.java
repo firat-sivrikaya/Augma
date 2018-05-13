@@ -1,5 +1,6 @@
 package world.augma.ui.AR;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -72,6 +73,7 @@ public class ARView extends Activity implements SensorEventListener{
 
 	private List<Note> filteredNotes;
 
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

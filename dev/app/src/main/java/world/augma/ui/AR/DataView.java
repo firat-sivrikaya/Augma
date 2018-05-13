@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -155,13 +156,10 @@ public class DataView implements OnLocationChangedListener{
 			this.displayMetrics = displayMetrics;
 			this.degreetopixelWidth = this.displayMetrics.widthPixels / camera.getParameters().getHorizontalViewAngle();
 			this.degreetopixelHeight = this.displayMetrics.heightPixels / camera.getParameters().getVerticalViewAngle();
-			System.out.println("camera.getParameters().getHorizontalViewAngle()=="+camera.getParameters().getHorizontalViewAngle());
+			Log.e("camera.getParameters().getHorizontalViewAngle()==" ,""+camera.getParameters().getHorizontalViewAngle());
 
 			bearings = new double[filteredNotes.size()];
 
-
-			if(bearing < 0)
-				bearing  = 360 + bearing;
 
 			for(int i = 0; i <filteredNotes.size();i++){
 				destinedLocation.setLatitude(filteredNotes.get(i).getLatitude());
@@ -221,12 +219,11 @@ public class DataView implements OnLocationChangedListener{
 		dw.paintObj(radarPoints, rx+PaintUtils.XPADDING, ry+PaintUtils.YPADDING, -this.yaw, 1, this.yaw);
 		dw.setFill(false);
 		dw.setColor(Color.argb(100,220,0,0));
-		dw.paintLine( lrl.x, lrl.y, rx+RadarView.RADIUS, ry+RadarView.RADIUS); 
+		dw.paintLine( lrl.x, lrl.y, rx+RadarView.RADIUS, ry+RadarView.RADIUS);
 		dw.paintLine( rrl.x, rrl.y, rx+RadarView.RADIUS, ry+RadarView.RADIUS);
 		dw.setColor(Color.rgb(255,255,255));
 		dw.setFontSize(12);
-		radarText(dw, "" + bearing + ((char) 176) + " " + dirTxt, rx + RadarView.RADIUS, ry - 5, true, false, -1);
-
+		//radarText(dw, "" + bearing + ((char) 176) + " " + dirTxt, rx + RadarView.RADIUS, ry - 5, true, false, -1);
 
 		drawTextBlock(dw);
 	}

@@ -7,7 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
-import static android.support.constraint.Constraints.TAG;
+import world.augma.work.Compatibility;
 
 
 public class MyCurrentAzimuth implements SensorEventListener {
@@ -21,7 +21,10 @@ public class MyCurrentAzimuth implements SensorEventListener {
     private OnRotationChangedListener mRotationListener;
     Context mContext;
     float[] mGravity;
+    float[] gravSensorVals;
     float[] mGeomagnetic;
+    float[] magSensorVals;
+    private CameraViewActivity cameraViewActivity;
     float azimut;
     int inclination;
     float pitch;
@@ -82,12 +85,13 @@ android:visibility="gone" />
             int up = 0;
             int parameterInclination = 0;
             if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-
+                gravSensorVals = lowPass(event.values.clone(), gravSensorVals);
                 mGravity = event.values;
 
             }
             if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
             {
+                 magSensorVals = lowPass(event.values.clone(), magSensorVals);
                 mGeomagnetic = event.values;
 
                 if (isTiltDownward())
@@ -103,7 +107,9 @@ android:visibility="gone" />
 
             if (mGravity != null && mGeomagnetic != null) {
                 float R[] = new float[9];
+                float Rot[] = new float[9];
                 float I[] = new float[9];
+                float orientation[] = new float[3];
 
                 inclineGravity = mGravity.clone();
 
@@ -119,20 +125,35 @@ android:visibility="gone" />
 
                 if (SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic)) {
 
+
+                    int rotation = Compatibility.getRotation(cameraViewActivity);
+
+                    if (rotation == 1) {
+                        SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_MINUS_Z, Rot);
+                    } else {
+                        SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_Z, Rot);
+                    }
+
+                    SensorManager.getOrientation(Rot, orientation);
+
+                    azimut = (float)(((orientation[0]*180)/Math.PI)+180);
+                    float pitch1 = (float)(((orientation[1]*180/Math.PI))+90);
+                    float roll1 = (float)(((orientation[2]*180/Math.PI)));
+
                     // orientation contains azimut, pitch and roll
-                    float orientation[] = new float[3];
-                    SensorManager.getOrientation(R, orientation);
+                   // float orientation[] = new float[3];
+                    //SensorManager.getOrientation(R, orientation);
                     //SensorManager.getInclination(I);
-                    azimut = orientation[0];
+                    //azimut = orientation[0];
                 }
             }
 
 
-            float rotation = (-1.0f) * azimut * 360 / (2 * 3.14159f);
-            Log.e(TAG, "Rotation of the device is :" + rotation );
+            //float rotation = (-1.0f) * azimut * 360 / (2 * 3.14159f);
+            //Log.e(TAG, "Rotation of the device is :" + rotation );
             //Log.e(TAG, "Tilt of the device is up :" + up );
 
-            mRotationListener.onRotationChanged(rotation, inclination, up);
+            mRotationListener.onRotationChanged(azimut, inclination, up);
 
 //        azimuthFrom = azimuthTo;
 //
@@ -145,6 +166,7 @@ android:visibility="gone" />
         //}
 
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -308,4 +330,11 @@ android:visibility="gone" />
         return false;
     }
 
+    public CameraViewActivity getCameraViewActivity() {
+        return cameraViewActivity;
+    }
+
+    public void setCameraViewActivity(CameraViewActivity cameraViewActivity) {
+        this.cameraViewActivity = cameraViewActivity;
+    }
 }

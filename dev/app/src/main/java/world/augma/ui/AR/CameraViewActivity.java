@@ -270,7 +270,9 @@ public class CameraViewActivity extends Activity implements
         myCurrentLocation.start();
 
         myCurrentAzimuth = new MyCurrentAzimuth(this, this);
+        myCurrentAzimuth.setCameraViewActivity(this);
         myCurrentAzimuth.start();
+
     }
 
     private void setupLayout() {
