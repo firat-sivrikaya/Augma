@@ -174,7 +174,7 @@ public class DataView implements OnLocationChangedListener{
 				bearings[i] = bearing;
 
 			}
-			radarPoints = new RadarView(this, bearings);
+			radarPoints = new RadarView(this, bearings, filteredNotes, _context);
 			this.camera = camera;
 			width = widthInit;
 			height = heightInit;

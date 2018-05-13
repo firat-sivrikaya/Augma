@@ -1,41 +1,35 @@
 package world.augma.ui.AR;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 
+import java.util.List;
+
+import world.augma.asset.Note;
 import world.augma.work.PaintUtils;
 
 
-public class RadarView{
-	/** The screen */
+public class RadarView implements OnLocationChangedListener{
+
+	Context _context;
 	public DataView view;
-	/** The radar's range */
 	float range;
-	/** Radius in pixel on screen */
 	public static float RADIUS = 200;
-	/** Position on screen */
 	static float originX = 0 , originY = 0;
-	
-	/**
-	 * You can change the radar color from here.
-	 *   */
-	static int radarColor = Color.argb(100, 220, 0, 0);
-	Location currentLocation = new Location("provider");
+
+	static int radarColor = Color.parseColor("#A0E3D8C4");
 	Location destinedLocation = new Location("provider");
 
-	/*
-	 * pass the same set of coordinates to plot POI's on radar
-	 * */
-	// SF Art Commission, SF Dept. of Public Health, SF Ethics Comm, SF Conservatory of Music, All Star Cafe, Magic Curry Cart, SF SEO Marketing, SF Honda, 
-	// SF Mun Transport Agency, SF Parking Citation, Mayors Office of Housing, SF Redev Agency, Catario Patrice, Bank of America , SF Retirement System, Bank of America Mortage,
-	// Writers Corp., Van Nes Keno Mkt.
-	double[] latitudes = new double[] {37.775672, 37.775729, 37.775578, 37.77546, 37.775199, 37.774887, 37.774637, 
-			37.774614, 37.774406, 37.774754, 37.774813, 37.774961, 37.774957, 37.775171, 37.775996, 37.775818, 37.775691, 37.775909};
-	double[] longitudes = new double[] {-122.419992, -122.419601, -122.419719, -122.42026, -122.419646, -122.419405, -122.42037, 
-			-122.41934, -122.41886, -122.418785, -122.418581, -122.418868, -122.418064, -122.418884, -122.418898, -122.418305, -122.418895, -122.419161};
-	
-	public float[][] coordinateArray = new float[latitudes.length][2];
-	
+	private List<Note> filteredNotes;
+	Location currentLocation = new Location("provider");
+	private double mMyLatitude = 0;
+	private double mMyLongitude = 0;
+	private MyCurrentLocation myCurrentLocation;
+
+
+	public float[][] coordinateArray;
+
 	float angleToShift;
 	public float degreetopixel;
 	public float bearing;
@@ -52,9 +46,17 @@ public class RadarView{
 	double[] bearings;
 	ARView arView = new ARView();
 	
-	public RadarView(DataView dataView, double[] bearings){
+	public RadarView(DataView dataView, double[] bearings, List<Note> filteredNotes, Context _context){
 		//this.view = dataView;
+		this._context = _context;
+		this.filteredNotes = filteredNotes;
 		this.bearings = bearings;
+		coordinateArray = new float[filteredNotes.size()][2];
+
+		myCurrentLocation = new MyCurrentLocation(this);
+		myCurrentLocation.buildGoogleApiClient(this._context);
+		myCurrentLocation.start();
+
 		calculateMetrics();
 	}
 	
@@ -81,58 +83,55 @@ public class RadarView{
 		/**
 		 *  Your current location coordinate here.
 		 * */
-		currentLocation.setLatitude(37.774968);
-		currentLocation.setLongitude(-122.41941);
 
 		
-		for(int i = 0; i <latitudes.length;i++){
-			destinedLocation.setLatitude(latitudes[i]);
-			destinedLocation.setLongitude(longitudes[i]);
+		for(int i = 0; i <filteredNotes.size();i++){
+			destinedLocation.setLatitude(filteredNotes.get(i).getLatitude());
+			destinedLocation.setLongitude(filteredNotes.get(i).getLongitude());
 			convLocToVec(currentLocation, destinedLocation);
-			float x = this.x / mscale;
-			float y = this.z / mscale;
+			float x = this.x / mscale * 5;
+			float y = this.z / mscale * 5;
 
 			
 			if (x * x + y * y < RADIUS * RADIUS) {
 				dw.setFill(true);
 				dw.setColor(Color.rgb(255, 255, 255));
-				dw.paintRect(x + RADIUS, y + RADIUS, 2, 2);
+				dw.paintRect(x + RADIUS, y + RADIUS, 5, 5);
 			}
 		}
 	}
 
-	public void calculateDistances(PaintUtils dw, float yaw){
-		currentLocation.setLatitude(19.474037);
-		currentLocation.setLongitude(72.800388);
-		for(int i = 0; i <latitudes.length;i++){
-			if(bearings[i]<0){
-				bearings[i] = 360 - bearings[i];
-			}
-			if(Math.abs(coordinateArray[i][0] - yaw) > 3){
-				angleToShift = (float)bearings[i] - this.yaw;
-				coordinateArray[i][0] = this.yaw;
-			}else{
-				angleToShift = (float)bearings[i] - coordinateArray[i][0] ;
-				
-			}
-			destinedLocation.setLatitude(latitudes[i]);
-			destinedLocation.setLongitude(longitudes[i]);
-			float[] z = new float[1];
-			z[0] = 0;
-			Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(), destinedLocation.getLatitude(), destinedLocation.getLongitude(), z);
-			bearing = currentLocation.bearingTo(destinedLocation);
-
-			this.x = (float) (circleOriginX + 40 * (Math.cos(angleToShift)));
-			this.y = (float) (circleOriginY + 40 * (Math.sin(angleToShift)));
-
-
-			if (x * x + y * y < RADIUS * RADIUS) {
-				dw.setFill(true);
-				dw.setColor(Color.rgb(255, 255, 255));
-				dw.paintRect(x + RADIUS - 1, y + RADIUS - 1, 2, 2);
-			}
-		}
-	}
+//	public void calculateDistances(PaintUtils dw, float yaw){
+//
+//		for(int i = 0; i <latitudes.length;i++){
+//			if(bearings[i]<0){
+//				bearings[i] = 360 - bearings[i];
+//			}
+//			if(Math.abs(coordinateArray[i][0] - yaw) > 3){
+//				angleToShift = (float)bearings[i] - this.yaw;
+//				coordinateArray[i][0] = this.yaw;
+//			}else{
+//				angleToShift = (float)bearings[i] - coordinateArray[i][0] ;
+//
+//			}
+//			destinedLocation.setLatitude(latitudes[i]);
+//			destinedLocation.setLongitude(longitudes[i]);
+//			float[] z = new float[1];
+//			z[0] = 0;
+//			Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(), destinedLocation.getLatitude(), destinedLocation.getLongitude(), z);
+//			bearing = currentLocation.bearingTo(destinedLocation);
+//
+//			this.x = (float) (circleOriginX + 40 * (Math.cos(angleToShift)));
+//			this.y = (float) (circleOriginY + 40 * (Math.sin(angleToShift)));
+//
+//
+//			if (x * x + y * y < RADIUS * RADIUS) {
+//				dw.setFill(true);
+//				dw.setColor(Color.rgb(255, 255, 255));
+//				dw.paintRect(x + RADIUS - 1, y + RADIUS - 1, 2, 2);
+//			}
+//		}
+//	}
 	
 	/** Width on screen */
 	public float getWidth() {
@@ -165,5 +164,13 @@ public class RadarView{
 			x[0] *= -1;
 
 		set(x[0], (float) 0, z[0]);
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		mMyLatitude = location.getLatitude();
+		mMyLongitude = location.getLongitude();
+		currentLocation.setLatitude(mMyLatitude);
+		currentLocation.setLongitude(mMyLongitude);
 	}
 }
