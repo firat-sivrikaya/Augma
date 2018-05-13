@@ -51,7 +51,7 @@ import world.augma.R;
 import world.augma.asset.Circle;
 import world.augma.asset.Note;
 import world.augma.asset.User;
-import world.augma.ui.AR.ARView;
+import world.augma.ui.AR.CameraViewActivity;
 import world.augma.ui.note.UINoteDisplay;
 import world.augma.ui.note.UINotePost;
 import world.augma.ui.services.InterActivityShareModel;
@@ -123,7 +123,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                         return;
                     case OPEN_CAMERA:
                         //startActivity(new Intent(getActivity(), UICamera.class));
-                        Intent intent = new Intent(getActivity(), ARView.class);
+                        Intent intent = new Intent(getActivity(), CameraViewActivity.class);
 //                        Bundle bundle = new Bundle();
 //                        bundle.putParcelable("mLastKnownLocation", mLastKnownLocation);
 //                        intent.putExtras(bundle);

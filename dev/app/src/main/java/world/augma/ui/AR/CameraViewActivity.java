@@ -135,7 +135,7 @@ public class CameraViewActivity extends Activity implements
 
         Log.e(TAG, "degree of the note" + note.getNoteID() + "is: " + degree);
 
-        return degree;
+        return degree +180;
 
     }
 
@@ -202,7 +202,7 @@ public class CameraViewActivity extends Activity implements
                     double differenceNew = mRotationReal - degreesOfNotes[i];
                     double differenceTopNew = mInclination;
                     Log.e("-------------differenceTop-------------------", ""+differenceTop);
-                    if(Math.abs(differenceNew - difference[i]) > 6 ||Math.abs(differenceTopNew - differenceTop[i]) > 6){
+                    if(Math.abs(differenceNew - difference[i]) > 1 ||Math.abs(differenceTopNew - differenceTop[i]) > 1){
                         difference[i] = differenceNew;
                         differenceTop[i] = differenceTopNew;
                         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200);
