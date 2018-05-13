@@ -90,6 +90,7 @@
 
 
         </activity>
+        <activity android:name=".ui.AR.ARView" />
     </application>
 
 </manifest>

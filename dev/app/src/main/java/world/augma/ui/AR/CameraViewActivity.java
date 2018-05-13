@@ -1,18 +1,14 @@
 package world.augma.ui.AR;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -58,6 +54,10 @@ public class CameraViewActivity extends Activity implements
     private double difference[];
     private double differenceTop[];
 
+    DisplayMetrics displayMetrics;
+    public int screenWidth;
+    public int screenHeight;
+
     private MyCurrentAzimuth myCurrentAzimuth;
     private MyCurrentLocation myCurrentLocation;
 
@@ -77,7 +77,13 @@ public class CameraViewActivity extends Activity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_view);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        screenHeight = displayMetrics.heightPixels;
+        screenWidth = displayMetrics.widthPixels;
 
         ARRootLayout = findViewById(R.id.ARroot);
         listener = new AROnClickListener();
@@ -97,49 +103,12 @@ public class CameraViewActivity extends Activity implements
         differenceTop = new double[filteredNotes.size()];
         difference = new double[filteredNotes.size()];
 
-        for(int i=0; i<filteredNotes.size();i++){
+        for (int i = 0; i < filteredNotes.size(); i++) {
             imageArray[i] = (RelativeLayout) inflater.inflate(R.layout.ar_item_view, null, false);
 
 
 
-            /*
-
-             animationView.setVisibility(View.VISIBLE);
-
-            animationView.setMinAndMaxProgress(0, 0.5f);
-
-
-            animationView.addAnimatorListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-
-            animationView.setScale(0.1f);
-
-             */
-
-
-
-
-            S3.fetchNotePreviewImage(this, ((ImageView) imageArray[i].findViewById(R.id.notePreviewImage)),filteredNotes.get(i).getOwner().getUserID(),filteredNotes.get(i).getNoteID());
+            S3.fetchNotePreviewImage(this, ((ImageView) imageArray[i].findViewById(R.id.notePreviewImage)), filteredNotes.get(i).getOwner().getUserID(), filteredNotes.get(i).getNoteID());
             ARRootLayout.addView(imageArray[i]);
 
             imageArray[i].setTag(filteredNotes.get(i));
@@ -151,57 +120,10 @@ public class CameraViewActivity extends Activity implements
 
         }
 
-        for(int i = 0; i < imageDrawn.length; i++)
+        for (int i = 0; i < imageDrawn.length; i++)
             imageDrawn[i] = false;
 
-
-//        mAzimuthTheoretical = new double[filteredNotes.size()];
     }
-
-
-    /*public double calculateTheoreticalAzimuth(Note note) {
-
-            double dX = note.getLatitude() - mMyLatitude;
-            double dY = note.getLongitude() - mMyLongitude;
-
-            double phiAngle;
-            double tanPhi;
-            double azimuth = 0;
-
-            tanPhi = Math.abs(dY / dX);
-            phiAngle = Math.atan(tanPhi);
-            phiAngle = Math.toDegrees(phiAngle);
-
-            if (dX > 0 && dY > 0) { // I quater
-                return azimuth = phiAngle;
-            } else if (dX < 0 && dY > 0) { // II
-                return azimuth = 180 - phiAngle;
-            } else if (dX < 0 && dY < 0) { // III
-                return azimuth = 180 + phiAngle;
-            } else if (dX > 0 && dY < 0) { // IV
-                return azimuth = 360 - phiAngle;
-            }
-
-        return phiAngle;
-    }
-
-    private List<Double> calculateAzimuthAccuracy(double azimuth) {
-        double minAngle = azimuth - AZIMUTH_ACCURACY;
-        double maxAngle = azimuth + AZIMUTH_ACCURACY;
-        List<Double> minMax = new ArrayList<Double>();
-
-        if (minAngle < 0)
-            minAngle += 360;
-
-        if (maxAngle >= 360)
-            maxAngle -= 360;
-
-        minMax.clear();
-        minMax.add(minAngle);
-        minMax.add(maxAngle);
-
-        return minMax;
-    }*/
 
     public double calculateDegreeOfTheNote(Note note) {
 

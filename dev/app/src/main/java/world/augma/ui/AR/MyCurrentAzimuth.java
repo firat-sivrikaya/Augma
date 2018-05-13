@@ -28,6 +28,7 @@ public class MyCurrentAzimuth implements SensorEventListener {
     float roll;
     float[] inclineGravity = new float[3];
     int con =0;
+    static final float ALPHA = 0.25f;
 
     public MyCurrentAzimuth(OnRotationChangedListener rotationListener, Context context) {
         mRotationListener = rotationListener;
@@ -57,11 +58,21 @@ android:visibility="gone" />
     }
 
     public void stop(){
-        sensorManager.unregisterListener(this);
+        sensorManager.unregisterListener(this , aSensor);
+        sensorManager.unregisterListener(this , mSensor);
     }
 
     public void setOnShakeListener(OnRotationChangedListener listener) {
         mRotationListener = listener;
+    }
+
+    protected float[] lowPass( float[] input, float[] output ) {
+        if ( output == null ) return input;
+
+        for ( int i=0; i<input.length; i++ ) {
+            output[i] = output[i] + ALPHA * (input[i] - output[i]);
+        }
+        return output;
     }
 
     @Override
