@@ -124,9 +124,9 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
                     case OPEN_CAMERA:
                         //startActivity(new Intent(getActivity(), UICamera.class));
                         Intent intent = new Intent(getActivity(), ARView.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("mLastKnownLocation", mLastKnownLocation);
-                        intent.putExtras(bundle);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putParcelable("mLastKnownLocation", mLastKnownLocation);
+//                        intent.putExtras(bundle);
                         intent.putExtra("filteredNotes", (Serializable) filteredNotes);
                         //Log.e("ASLKDJAKSDAD", "My Lat: " + mLastKnownLocation.getLatitude() +
                         //" My Lon: " + mLastKnownLocation.getLongitude());

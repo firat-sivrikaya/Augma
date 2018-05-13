@@ -90,7 +90,7 @@
 
 
         </activity>
-        <activity android:name=".ui.AR.ARView" />
+        <activity android:name=".ui.AR.ARView"  android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

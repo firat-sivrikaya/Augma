@@ -10,7 +10,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -19,7 +18,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -28,12 +26,12 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import world.augma.asset.Note;
 import world.augma.work.Compatibility;
 import world.augma.work.PaintUtils;
 
@@ -52,8 +50,6 @@ public class ARView extends Activity implements SensorEventListener{
 	public static float roll;
 	public double latitudeprevious;
 	public double longitude;
-	String locationContext;
-	String	provider;
 	DisplayMetrics displayMetrics;
 	Camera camera;
 	public int screenWidth;
@@ -73,13 +69,16 @@ public class ARView extends Activity implements SensorEventListener{
 	protected float[] gravSensorVals;
 	protected float[] magSensorVals;
 
+	private List<Note> filteredNotes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "");
+
+		filteredNotes = (List<Note>) getIntent().getExtras().getSerializable("filteredNotes");
+
+
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		displayMetrics = new DisplayMetrics();
@@ -137,18 +136,12 @@ public class ARView extends Activity implements SensorEventListener{
 		addContentView(upperLayerLayout, upperLayerLayoutParams);
 
 		if(!isInitiated){
-			dataView = new DataView(ARView.this);
+			dataView = new DataView(ARView.this, filteredNotes);
 			paintScreen = new PaintUtils();
 			isInitiated = true;
 		}
 
-		upperLayerLayout.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(_context, "RELATIVE LAYOUT CLICKED", Toast.LENGTH_SHORT).show();
-			}
-		});
 
 		cameraView.setOnTouchListener(new OnTouchListener() {
 
@@ -158,7 +151,7 @@ public class ARView extends Activity implements SensorEventListener{
 				for (int i = 0 ; i < dataView.coordinateArray.length; i++) {
 					if((int)event.getX() < dataView.coordinateArray[i][0] &&  ((int)event.getX()+100) > dataView.coordinateArray[i][0]){
 						if((int)event.getY() <= dataView.coordinateArray[i][1] && ((int)event.getY()+100) > dataView.coordinateArray[i][1]){
-							Toast.makeText(_context, "match Found its "+dataView.places[i], Toast.LENGTH_SHORT).show();
+
 							return false;
 						}
 					}
@@ -223,6 +216,13 @@ public class ARView extends Activity implements SensorEventListener{
 	}
 
 	@Override
+	protected void onStop() {
+		super.onStop();
+		if(dataView.getMyCurrentLocation() != null)
+			dataView.getMyCurrentLocation().stop();
+	}
+
+	@Override
 	public void onSensorChanged(SensorEvent evt) {
 
 
@@ -269,6 +269,8 @@ public class ARView extends Activity implements SensorEventListener{
 		}
 		return output;
 	}
+
+
 }
 class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 

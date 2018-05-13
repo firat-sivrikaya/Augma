@@ -27,10 +27,7 @@ import java.util.List;
 
 import world.augma.R;
 import world.augma.asset.Note;
-import world.augma.asset.User;
 import world.augma.ui.note.UINoteDisplay;
-import world.augma.ui.services.InterActivityShareModel;
-import world.augma.ui.services.ServiceUIMain;
 import world.augma.work.visual.S3;
 
 import static android.support.constraint.Constraints.TAG;
@@ -61,9 +58,6 @@ public class CameraViewActivity extends Activity implements
     private MyCurrentAzimuth myCurrentAzimuth;
     private MyCurrentLocation myCurrentLocation;
 
-    private User user;
-    private ServiceUIMain serviceUIMain;
-
 
     private List<Note> filteredNotes;
     TextView descriptionTextView;
@@ -87,8 +81,6 @@ public class CameraViewActivity extends Activity implements
 
         ARRootLayout = findViewById(R.id.ARroot);
         listener = new AROnClickListener();
-        serviceUIMain = (ServiceUIMain) InterActivityShareModel.getInstance().getUiMain();
-        user = serviceUIMain.fetchUser();
 
         setupListeners();
         setupLayout();

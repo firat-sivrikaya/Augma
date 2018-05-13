@@ -14,11 +14,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import world.augma.R;
+import world.augma.asset.Note;
 import world.augma.work.Camera;
 import world.augma.work.PaintUtils;
 import world.augma.work.RadarLines;
@@ -32,7 +33,7 @@ import world.augma.work.RadarLines;
  * */
 
 
-public class DataView {
+public class DataView implements OnLocationChangedListener{
 
 	RelativeLayout[] locationMarkerView;
 	ImageView[] subjectImageView;
@@ -61,7 +62,7 @@ public class DataView {
 	double[] bearings;
 	float angleToShift;
 	float yPosition;
-	Location currentLocation = new Location("provider");
+
 	Location destinedLocation = new Location("provider");
 	
 	String[] places = new String[] {"SF Art Commission", "SF Dept. of Public Health", "SF Ethics Comm", "SF Conservatory of Music", "All Star Cafe", 
@@ -101,18 +102,33 @@ public class DataView {
 	public float deltaY;
 	Bitmap bmp;
 
-	public DataView(Context ctx) {
+	private List<Note> filteredNotes;
+
+	Location currentLocation = new Location("provider");
+	private double mMyLatitude = 0;
+	private double mMyLongitude = 0;
+	private MyCurrentLocation myCurrentLocation;
+
+	public DataView(Context ctx, List<Note> filteredNotes) {
 		this._context = ctx;
+		this.filteredNotes = filteredNotes;
 	}
 
-
+	public MyCurrentLocation getMyCurrentLocation()
+	{
+		return myCurrentLocation;
+	}
 	public boolean isInited() {
 		return isInit;
 	}
 
 	public void init(int widthInit, int heightInit, android.hardware.Camera camera, DisplayMetrics displayMetrics, RelativeLayout rel) {
 		try {
-			
+
+			myCurrentLocation = new MyCurrentLocation(this);
+			myCurrentLocation.buildGoogleApiClient(this._context);
+			myCurrentLocation.start();
+
 			locationMarkerView = new RelativeLayout[latitudes.length];
 			layoutParams = new RelativeLayout.LayoutParams[latitudes.length];
 			subjectImageViewParams = new RelativeLayout.LayoutParams[latitudes.length];
@@ -176,7 +192,6 @@ public class DataView {
 							if (matchIDs.size() > 1) {
 								
 							}
-							Toast.makeText(_context, "Number of places here = "+matchIDs.size(), Toast.LENGTH_SHORT).show();
 							
 							locationMarkerView[v.getId()].bringToFront();
 							
@@ -211,7 +226,7 @@ public class DataView {
 							if (matchIDs.size() > 1) {
 								
 							}
-							Toast.makeText(_context, "Number of places here = "+matchIDs.size(), Toast.LENGTH_SHORT).show();
+
 							
 							locationMarkerView[v.getId()].bringToFront();
 							
@@ -246,8 +261,7 @@ public class DataView {
 							if (count > 1) {
 								
 							}
-							Toast.makeText(_context, "Number of places here = "+count, Toast.LENGTH_SHORT).show();
-							
+
 							locationMarkerView[v.getId()].bringToFront();
 //							Toast.makeText(_context, " LOCATION NO : "+v.getId(), Toast.LENGTH_SHORT).show();
 						}
@@ -266,8 +280,6 @@ public class DataView {
 			System.out.println("camera.getParameters().getHorizontalViewAngle()=="+camera.getParameters().getHorizontalViewAngle());
 
 			bearings = new double[latitudes.length];
-			currentLocation.setLatitude(19.413958);
-			currentLocation.setLongitude(72.82729);
 
 
 			if(bearing < 0)
@@ -432,7 +444,22 @@ public class DataView {
 			}
 		}
 	}
-	
+
+	@Override
+	public void onLocationChanged(Location location) {
+
+		mMyLatitude = location.getLatitude();
+		mMyLongitude = location.getLongitude();
+		currentLocation.setLatitude(mMyLatitude);
+		currentLocation.setLongitude(mMyLongitude);
+//			for(int i = 0; i < filteredNotes.size(); i++) {
+//				degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
+//			}
+
+
+
+	}
+
 	public class NearbyPlacesList extends BaseAdapter{
 
 		ArrayList<Integer> matchIDs = new ArrayList<Integer>();
