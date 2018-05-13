@@ -92,7 +92,7 @@ public class RadarView implements OnLocationChangedListener{
 			float x = this.x / mscale * 5;
 			float y = this.z / mscale * 5;
 
-			
+
 			if (x * x + y * y < RADIUS * RADIUS) {
 				dw.setFill(true);
 				dw.setColor(Color.rgb(255, 255, 255));
@@ -101,37 +101,7 @@ public class RadarView implements OnLocationChangedListener{
 		}
 	}
 
-//	public void calculateDistances(PaintUtils dw, float yaw){
-//
-//		for(int i = 0; i <latitudes.length;i++){
-//			if(bearings[i]<0){
-//				bearings[i] = 360 - bearings[i];
-//			}
-//			if(Math.abs(coordinateArray[i][0] - yaw) > 3){
-//				angleToShift = (float)bearings[i] - this.yaw;
-//				coordinateArray[i][0] = this.yaw;
-//			}else{
-//				angleToShift = (float)bearings[i] - coordinateArray[i][0] ;
-//
-//			}
-//			destinedLocation.setLatitude(latitudes[i]);
-//			destinedLocation.setLongitude(longitudes[i]);
-//			float[] z = new float[1];
-//			z[0] = 0;
-//			Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(), destinedLocation.getLatitude(), destinedLocation.getLongitude(), z);
-//			bearing = currentLocation.bearingTo(destinedLocation);
-//
-//			this.x = (float) (circleOriginX + 40 * (Math.cos(angleToShift)));
-//			this.y = (float) (circleOriginY + 40 * (Math.sin(angleToShift)));
-//
-//
-//			if (x * x + y * y < RADIUS * RADIUS) {
-//				dw.setFill(true);
-//				dw.setColor(Color.rgb(255, 255, 255));
-//				dw.paintRect(x + RADIUS - 1, y + RADIUS - 1, 2, 2);
-//			}
-//		}
-//	}
+
 	
 	/** Width on screen */
 	public float getWidth() {
