@@ -16,8 +16,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
@@ -57,7 +55,7 @@ public class CameraViewActivity extends Activity implements
 
 
     private List<Note> filteredNotes;
-    TextView descriptionTextView;
+    //TextView descriptionTextView;
     RelativeLayout ARRootLayout;
     private AROnClickListener listener;
 
@@ -147,10 +145,10 @@ public class CameraViewActivity extends Activity implements
         return false;
     }
 
-    private void updateDescription() {
-        descriptionTextView.setText( " rotation " + mRotationReal + " latitude "
-                + mMyLatitude + " longitude " + mMyLongitude);
-    }
+//    private void updateDescription() {
+//        descriptionTextView.setText( " rotation " + mRotationReal + " latitude "
+//                + mMyLatitude + " longitude " + mMyLongitude);
+//    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -166,8 +164,8 @@ public class CameraViewActivity extends Activity implements
             for(int i = 0; i < filteredNotes.size(); i++) {
                 degreesOfNotes[i] = calculateDegreeOfTheNote(filteredNotes.get(i));
             }
-            Toast.makeText(this,"latitude: "+location.getLatitude()+" longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
-            updateDescription();
+            //Toast.makeText(this,"latitude: "+location.getLatitude()+" longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+//            updateDescription();
         //}
 
     }
@@ -243,7 +241,7 @@ public class CameraViewActivity extends Activity implements
             }
             ARRootLayout.invalidate();
         }
-        updateDescription();
+//        updateDescription();
 
     }
 
@@ -274,7 +272,7 @@ public class CameraViewActivity extends Activity implements
 
     private void setupLayout() {
 
-        descriptionTextView = (TextView) findViewById(R.id.cameraTextView);
+//        descriptionTextView = (TextView) findViewById(R.id.cameraTextView);
 
         getWindow().setFormat(PixelFormat.UNKNOWN);
         SurfaceView surfaceView = (SurfaceView) findViewById(R.id.cameraview);
