@@ -134,7 +134,7 @@ public class MyCurrentAzimuth implements SensorEventListener {
             }
 
 
-            mRotationListener.onRotationChanged(azimut, inclination, up);
+            mRotationListener.onRotationChanged(azimut,pitch1,roll1, inclination, up);
 
 
     }

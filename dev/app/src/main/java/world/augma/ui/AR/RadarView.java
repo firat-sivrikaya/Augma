@@ -41,7 +41,7 @@ public class RadarView implements OnLocationChangedListener{
 
 	float  yaw = 0;
 	double[] bearings;
-	ARView arView = new ARView();
+
 	
 	public RadarView(DataView dataView, double[] bearings, List<Note> filteredNotes, Context _context){
 		//this.view = dataView;
@@ -61,8 +61,8 @@ public class RadarView implements OnLocationChangedListener{
 		circleOriginX = originX + RADIUS;
 		circleOriginY = originY + RADIUS;
 		
-		range = (float)arView.convertToPix(10) * 50;
-		mscale = range / arView.convertToPix((int)RADIUS);
+		range = (float)CameraViewActivity.convertToPix(10) * 50;
+		mscale = range / CameraViewActivity.convertToPix((int)RADIUS);
 	}
 	
 	public void paint(PaintUtils dw, float yaw) {

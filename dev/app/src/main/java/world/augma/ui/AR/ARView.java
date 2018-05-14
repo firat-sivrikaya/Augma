@@ -204,13 +204,13 @@ public class ARView extends Activity implements SensorEventListener{
 
 class RadarMarkerView extends View{
 
-	ARView arView;
+	CameraViewActivity arView;
 	DisplayMetrics displayMetrics;
 	RelativeLayout upperLayoutView = null;
 	public RadarMarkerView(Context context, DisplayMetrics displayMetrics, RelativeLayout rel) {
 		super(context);
 
-		arView = (ARView) context;
+		arView = (CameraViewActivity) context;
 		this.displayMetrics = displayMetrics;
 		upperLayoutView = rel;
 	}
@@ -218,10 +218,15 @@ class RadarMarkerView extends View{
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		ARView.paintScreen.setWidth(canvas.getWidth());
-		ARView.paintScreen.setHeight(canvas.getHeight());
-		ARView.paintScreen.setCanvas(canvas);
+		CameraViewActivity.paintScreen.setWidth(canvas.getWidth());
+		CameraViewActivity.paintScreen.setHeight(canvas.getHeight());
+		CameraViewActivity.paintScreen.setCanvas(canvas);
 
-		ARView.dataView.draw(ARView.paintScreen, ARView.azimuth, ARView.pitch, ARView.roll);
+		if (!CameraViewActivity.dataView.isInited()) {
+
+			CameraViewActivity.dataView.init(CameraViewActivity.paintScreen.getWidth(), CameraViewActivity.paintScreen.getHeight(),CameraViewActivity.mCamera, displayMetrics,upperLayoutView);
+		}
+
+		CameraViewActivity.dataView.draw(CameraViewActivity.paintScreen, CameraViewActivity.azimuth, CameraViewActivity.pitch, CameraViewActivity.roll);
 	}
 }

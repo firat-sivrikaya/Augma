@@ -1,8 +1,10 @@
 package world.augma.ui.AR;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.location.Location;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -26,6 +29,7 @@ import java.util.List;
 import world.augma.R;
 import world.augma.asset.Note;
 import world.augma.ui.note.UINoteDisplay;
+import world.augma.work.PaintUtils;
 import world.augma.work.visual.S3;
 
 import static android.support.constraint.Constraints.TAG;
@@ -33,9 +37,17 @@ import static android.support.constraint.Constraints.TAG;
 public class CameraViewActivity extends Activity implements
         SurfaceHolder.Callback, OnLocationChangedListener, OnRotationChangedListener{
 
-    private Camera mCamera;
+    public static Camera mCamera;
     private SurfaceHolder mSurfaceHolder;
     private boolean isCameraviewOn = false;
+
+    static Context _context;
+    RadarMarkerView radarMarkerView;
+    public RelativeLayout upperLayerLayout;
+
+    public static float azimuth;
+    public static float pitch;
+    public static float roll;
 
     private double mRotationReal = 0;
     private double mInclination = 0;
@@ -49,6 +61,8 @@ public class CameraViewActivity extends Activity implements
     DisplayMetrics displayMetrics;
     public int screenWidth;
     public int screenHeight;
+    static PaintUtils paintScreen;
+    static DataView dataView;
 
     private MyCurrentAzimuth myCurrentAzimuth;
     private MyCurrentLocation myCurrentLocation;
@@ -61,6 +75,7 @@ public class CameraViewActivity extends Activity implements
 
     private RelativeLayout[] imageArray;
     private boolean[] imageDrawn;
+    boolean isInitiated = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +83,7 @@ public class CameraViewActivity extends Activity implements
         setContentView(R.layout.activity_camera_view);
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        _context = this;
         displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
@@ -76,6 +92,14 @@ public class CameraViewActivity extends Activity implements
 
         ARRootLayout = findViewById(R.id.ARroot);
         listener = new AROnClickListener();
+
+
+        upperLayerLayout = new RelativeLayout(this);
+        RelativeLayout.LayoutParams upperLayerLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        upperLayerLayout.setLayoutParams(upperLayerLayoutParams);
+        upperLayerLayout.setBackgroundColor(Color.TRANSPARENT);
+
+        radarMarkerView = new RadarMarkerView(this, displayMetrics, upperLayerLayout);
 
         setupListeners();
         setupLayout();
@@ -108,7 +132,15 @@ public class CameraViewActivity extends Activity implements
         for (int i = 0; i < imageDrawn.length; i++)
             imageDrawn[i] = false;
 
-    }
+
+        if(!isInitiated) {
+            dataView = new DataView(this, filteredNotes);
+            paintScreen = new PaintUtils();
+            isInitiated = true;
+        }
+        ARRootLayout.addView(radarMarkerView);
+
+        }
 
     public double calculateDegreeOfTheNote(Note note) {
 
@@ -150,6 +182,13 @@ public class CameraViewActivity extends Activity implements
 //                + mMyLatitude + " longitude " + mMyLongitude);
 //    }
 
+
+    public static int convertToPix(int val){
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
+        return (int)px;
+
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = new Location(location);
@@ -171,12 +210,16 @@ public class CameraViewActivity extends Activity implements
     }
 
     @Override
-    public void onRotationChanged(float newRot,int inclination, int up) {
+    public void onRotationChanged(float newRot,float pitch, float roll, int inclination, int up) {
 
         float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
         int intNewRotation = (int) newRot;
         int intOldRotation = (int) mRotationReal;
+
+        azimuth = newRot;
+        this.pitch = pitch;
+        this.roll = roll;
         Log.e("-------------INCLINATION-------------------", ""+inclination);
 
         if(Math.abs(intNewRotation - intOldRotation) > 3 || Math.abs(mInclination - inclination) > 3) {
@@ -239,7 +282,9 @@ public class CameraViewActivity extends Activity implements
 
                 }
             }
+
             ARRootLayout.invalidate();
+            radarMarkerView.postInvalidate();
         }
 //        updateDescription();
 
