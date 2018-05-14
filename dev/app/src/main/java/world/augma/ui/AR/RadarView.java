@@ -130,7 +130,7 @@ public class RadarView implements OnLocationChangedListener{
 		if (source.getLongitude() > destination.getLongitude())
 			x[0] *= -1;
 
-		set(x[0], (float) 0, z[0]);
+		set(z[0],(float) 0 , x[0]);
 	}
 
 	@Override
