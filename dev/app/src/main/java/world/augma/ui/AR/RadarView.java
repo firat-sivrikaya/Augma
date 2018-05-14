@@ -15,7 +15,7 @@ public class RadarView implements OnLocationChangedListener{
 	Context _context;
 	public DataView view;
 	float range;
-	public static float RADIUS = 200;
+	public static float RADIUS = 150;
 	static float originX = 0 , originY = 0;
 
 	static int radarColor = Color.parseColor("#A0E3D8C4");

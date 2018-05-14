@@ -99,10 +99,10 @@ public class DataView implements OnLocationChangedListener{
 
 			
 			lrl.set(0, -RadarView.RADIUS);
-			lrl.rotate(Camera.DEFAULT_VIEW_ANGLE / 2);
+			lrl.rotate((Camera.DEFAULT_VIEW_ANGLE / 2)+90);
 			lrl.add(rx + RadarView.RADIUS, ry + RadarView.RADIUS);
 			rrl.set(0, -RadarView.RADIUS);
-			rrl.rotate(-Camera.DEFAULT_VIEW_ANGLE / 2);
+			rrl.rotate((-Camera.DEFAULT_VIEW_ANGLE / 2)+90);
 			rrl.add(rx + RadarView.RADIUS, ry + RadarView.RADIUS);
 		} catch (Exception ex) {
 			ex.printStackTrace();
