@@ -247,7 +247,7 @@ public class UIMap extends Fragment implements ActivityCompat.OnRequestPermissio
             boolean added = false;
             Location.distanceBetween(mLastKnownLocation.getLatitude(),
                     mLastKnownLocation.getLongitude(), n.getLatitude(), n.getLongitude(), result);
-            if(result[0] <= 1000) // Notes within the 100 meter radius are shown.
+            if(result[0] <= 100) // Notes within the 100 meter radius are shown.
             {
                 for(Circle c1 : n.getCircleList())
                 {

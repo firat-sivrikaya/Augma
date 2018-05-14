@@ -144,30 +144,9 @@ public class DataView implements OnLocationChangedListener{
 		dw.paintLine( rrl.x, rrl.y, rx+RadarView.RADIUS, ry+RadarView.RADIUS);
 		dw.setColor(Color.rgb(255,255,255));
 		dw.setFontSize(12);
-		radarText(dw, "" + bearing + ((char) 176) + " " + dirTxt, rx + RadarView.RADIUS, ry - 5, true, -1);
 
 	}
 
-
-	void radarText(PaintUtils dw, String txt, float x, float y, boolean bg,  int count) {
-
-		float padw = 4, padh = 2;
-		float w = dw.getTextWidth(txt) + padw * 2;
-		float h;
-
-			h = dw.getTextAsc() + dw.getTextDesc() + padh * 2;
-
-				dw.setColor(Color.rgb(0, 0, 0));
-				dw.setFill(true);
-				dw.paintRect((x - w / 2) + PaintUtils.XPADDING , (y - h / 2) + PaintUtils.YPADDING, w, h);
-				//pixelstodp = (padw + x - w / 2)/((displayMetrics.density)/160);
-				dw.setColor(Color.rgb(255, 255, 255));
-				dw.setFill(false);
-				dw.paintText((padw + x -w/2)+PaintUtils.XPADDING, ((padh + dw.getTextAsc() + y - h / 2)) + PaintUtils.YPADDING,txt);
-
-
-
-	}
 
 	@Override
 	public void onLocationChanged(Location location) {

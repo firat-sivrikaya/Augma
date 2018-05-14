@@ -2,7 +2,7 @@ package world.augma.work;
 
 public class Camera {
 	
-	public static float DEFAULT_VIEW_ANGLE = (float) Math.toRadians(45);
+	public static float DEFAULT_VIEW_ANGLE = (float) Math.toRadians(30);
 	public int width, height;
 
 	float viewAngle;
