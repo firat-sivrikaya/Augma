@@ -28,7 +28,9 @@ public class MyCurrentAzimuth implements SensorEventListener {
     float azimut;
     int inclination;
     float pitch;
+    float pitch1;
     float roll;
+    float roll1;
     float[] inclineGravity = new float[3];
     int con =0;
     static final float ALPHA = 0.25f;
@@ -37,17 +39,6 @@ public class MyCurrentAzimuth implements SensorEventListener {
         mRotationListener = rotationListener;
         mContext = context;
     }
-
-    /*
-    <ImageView
-android:id="@+id/icon"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_centerHorizontal="true"
-android:layout_centerVertical="true"
-android:src="@drawable/map_marker2"
-android:visibility="gone" />
-     */
 
     public void start(){
         sensorManager = (SensorManager) mContext.getSystemService(mContext.SENSOR_SERVICE);
@@ -83,7 +74,6 @@ android:visibility="gone" />
         //if(con == 1){
 
             int up = 0;
-            int parameterInclination = 0;
             if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
                 gravSensorVals = lowPass(event.values.clone(), gravSensorVals);
                 mGravity = event.values;
@@ -137,60 +127,21 @@ android:visibility="gone" />
                     SensorManager.getOrientation(Rot, orientation);
 
                     azimut = (float)(((orientation[0]*180)/Math.PI)+180);
-                    float pitch1 = (float)(((orientation[1]*180/Math.PI))+90);
-                    float roll1 = (float)(((orientation[2]*180/Math.PI)));
+                    pitch1 = (float)(((orientation[1]*180/Math.PI))+90);
+                    roll1 = (float)(((orientation[2]*180/Math.PI)));
 
-                    // orientation contains azimut, pitch and roll
-                   // float orientation[] = new float[3];
-                    //SensorManager.getOrientation(R, orientation);
-                    //SensorManager.getInclination(I);
-                    //azimut = orientation[0];
                 }
             }
 
 
-            //float rotation = (-1.0f) * azimut * 360 / (2 * 3.14159f);
-            //Log.e(TAG, "Rotation of the device is :" + rotation );
-            //Log.e(TAG, "Tilt of the device is up :" + up );
-
             mRotationListener.onRotationChanged(azimut, inclination, up);
 
-//        azimuthFrom = azimuthTo;
-//
-//        float[] orientation = new float[3];
-//        float[] rMat = new float[9];
-//        SensorManager.getRotationMatrixFromVector(rMat, event.values);
-//        azimuthTo = (int) ( Math.toDegrees( SensorManager.getOrientation( rMat, orientation )[0] ) + 360 ) % 360;
-//
-//        mAzimuthListener.onAzimuthChanged(azimuthFrom, azimuthTo);
-        //}
 
     }
 
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        /*switch (accuracy) {
-            case 0:
-                System.out.println("Unreliable");
-                con=0;
-                break;
-            case 1:
-                System.out.println("Low Accuracy");
-                con=0;
-                break;
-            case 2:
-                System.out.println("Medium Accuracy");
-                con=0;
-
-                break;
-            case 3:
-                System.out.println("High Accuracy");
-                con=1;
-                break;
-        }*/
-
-    }
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     public boolean isTiltUpward()
     {
@@ -231,23 +182,7 @@ android:visibility="gone" />
 
                 //Checks if device is flat on ground or not
                 int inclination = (int) Math.round(Math.toDegrees(Math.acos(inclineGravity[2])));
-                //Log.e("------------------Tilt inclination:",""+ inclination);
 
-                /*
-                 * Float obj1 = new Float("10.2");
-                 * Float obj2 = new Float("10.20");
-                 * int retval = obj1.compareTo(obj2);
-                 *
-                 * if(retval > 0) {
-                 * System.out.println("obj1 is greater than obj2");
-                 * }
-                 * else if(retval < 0) {
-                 * System.out.println("obj1 is less than obj2");
-                 * }
-                 * else {
-                 * System.out.println("obj1 is equal to obj2");
-                 * }
-                 */
                 Float objPitch = new Float(roll);
                 Float objZero = new Float(0.0);
                 Float objZeroPointTwo = new Float(0.2);

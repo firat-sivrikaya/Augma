@@ -30,9 +30,6 @@ public class RadarView implements OnLocationChangedListener{
 
 	public float[][] coordinateArray;
 
-	float angleToShift;
-	public float degreetopixel;
-	public float bearing;
 	public float circleOriginX;
 	public float circleOriginY;
 	private float mscale;

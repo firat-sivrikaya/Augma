@@ -5,32 +5,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import world.augma.asset.Note;
@@ -40,8 +25,7 @@ import world.augma.work.PaintUtils;
 public class ARView extends Activity implements SensorEventListener{
 
 	private static Context _context;
-	WakeLock mWakeLock;
-	CameraView cameraView;
+
 	RadarMarkerView radarMarkerView;
 	public RelativeLayout upperLayerLayout;
 	static PaintUtils paintScreen;
@@ -50,12 +34,9 @@ public class ARView extends Activity implements SensorEventListener{
 	public static float azimuth;
 	public static float pitch;
 	public static float roll;
-	public double latitudeprevious;
-	public double longitude;
+
 	DisplayMetrics displayMetrics;
-	Camera camera;
-	public int screenWidth;
-	public int screenHeight;
+
 
 	private float RTmp[] = new float[9];
 	private float Rot[] = new float[9];
@@ -77,8 +58,7 @@ public class ARView extends Activity implements SensorEventListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "");
+
 
 		filteredNotes = (List<Note>) getIntent().getExtras().getSerializable("filteredNotes");
 
@@ -88,8 +68,7 @@ public class ARView extends Activity implements SensorEventListener{
 		displayMetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-		screenHeight = displayMetrics.heightPixels;
-		screenWidth = displayMetrics.widthPixels;
+
 
 		upperLayerLayout = new RelativeLayout(this);
 		RelativeLayout.LayoutParams upperLayerLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -97,44 +76,11 @@ public class ARView extends Activity implements SensorEventListener{
 		upperLayerLayout.setBackgroundColor(Color.TRANSPARENT);
 
 		_context = this;
-		cameraView = new CameraView(this);
+
 		radarMarkerView = new RadarMarkerView(this, displayMetrics, upperLayerLayout);
 
 		displayMetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-		FrameLayout headerFrameLayout = new FrameLayout(this);
-		RelativeLayout headerRelativeLayout = new RelativeLayout(this);
-		RelativeLayout.LayoutParams relaLayoutParams  = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-		headerRelativeLayout.setBackgroundColor(Color.BLACK);
-		headerRelativeLayout.setLayoutParams(relaLayoutParams);
-		Button button = new Button(this);
-		RelativeLayout.LayoutParams buttonparams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		buttonparams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-		button.setLayoutParams(buttonparams);
-		button.setText("Cancel");
-		button.setPadding(15, 0, 15, 0);
-
-		TextView titleTextView = new TextView(this);
-		RelativeLayout.LayoutParams textparams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		textparams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-		textparams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-		titleTextView.setLayoutParams(textparams);
-		titleTextView.setText("Augmented Reality View");
-
-
-		headerRelativeLayout.addView(button);
-		headerRelativeLayout.addView(titleTextView);
-		headerFrameLayout.addView(headerRelativeLayout);
-		setContentView(cameraView);
-		addContentView(radarMarkerView,  new LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		addContentView(headerFrameLayout, new FrameLayout.LayoutParams(
-				LayoutParams.FILL_PARENT, 44,
-				Gravity.TOP));
-		addContentView(upperLayerLayout, upperLayerLayoutParams);
 
 		if(!isInitiated){
 			dataView = new DataView(ARView.this, filteredNotes);
@@ -142,24 +88,6 @@ public class ARView extends Activity implements SensorEventListener{
 			isInitiated = true;
 		}
 
-
-
-		cameraView.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View arg0, MotionEvent event) {
-
-				for (int i = 0 ; i < dataView.coordinateArray.length; i++) {
-					if((int)event.getX() < dataView.coordinateArray[i][0] &&  ((int)event.getX()+100) > dataView.coordinateArray[i][0]){
-						if((int)event.getY() <= dataView.coordinateArray[i][1] && ((int)event.getY()+100) > dataView.coordinateArray[i][1]){
-
-							return false;
-						}
-					}
-				}
-				return true;
-			}
-		});
 	}
 
 	public static Context getContext() {
@@ -180,7 +108,7 @@ public class ARView extends Activity implements SensorEventListener{
 	@Override
 	protected void onPause() {
 		super.onPause();
-		this.mWakeLock.release();
+
 
 		sensorMgr.unregisterListener(this, sensorGrav);
 		sensorMgr.unregisterListener(this, sensorMag);
@@ -191,7 +119,7 @@ public class ARView extends Activity implements SensorEventListener{
 	protected void onResume() {
 
 		super.onResume();
-		this.mWakeLock.acquire();
+
 
 
 		sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -273,106 +201,7 @@ public class ARView extends Activity implements SensorEventListener{
 
 
 }
-class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
-	ARView arView;
-	SurfaceHolder holder;
-	Camera camera;
-
-	public CameraView(Context context) {
-		super(context);
-		arView = (ARView) context;
-
-		holder = getHolder();
-		holder.addCallback(this);
-		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-	}
-
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-		try {
-			Camera.Parameters parameters = camera.getParameters();
-			try {
-				List<Camera.Size> supportedSizes = null;
-				supportedSizes = Compatibility.getSupportedPreviewSizes(parameters);
-
-				Iterator<Camera.Size> itr = supportedSizes.iterator(); 
-				while(itr.hasNext()) {
-					Camera.Size element = itr.next(); 
-					element.width -= w;
-					element.height -= h;
-				} 
-				Collections.sort(supportedSizes, new ResolutionsOrder());
-				parameters.setPreviewSize(w + supportedSizes.get(supportedSizes.size()-1).width, h + supportedSizes.get(supportedSizes.size()-1).height);
-			} catch (Exception ex) {
-				parameters.setPreviewSize(arView.screenWidth , arView.screenHeight);
-			}
-
-			camera.setParameters(parameters);
-			camera.startPreview();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		try {
-			if (camera != null) {
-				try {
-					camera.stopPreview();
-				} catch (Exception ignore) {
-				}
-				try {
-					camera.release();
-				} catch (Exception ignore) {
-				}
-				camera = null;
-			}
-
-			camera = Camera.open();
-			arView.camera = camera;
-			camera.setPreviewDisplay(holder);
-		} catch (Exception ex) {
-			try {
-				if (camera != null) {
-					try {
-						camera.stopPreview();
-					} catch (Exception ignore) {
-					}
-					try {
-						camera.release();
-					} catch (Exception ignore) {
-					}
-					camera = null;
-				}
-			} catch (Exception ignore) {
-
-			}
-		}		
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		try {
-			if (camera != null) {
-				try {
-					camera.stopPreview();
-				} catch (Exception ignore) {
-				}
-				try {
-					camera.release();
-				} catch (Exception ignore) {
-				}
-				camera = null;
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}		
-	}
-
-}
 class RadarMarkerView extends View{
 
 	ARView arView;
@@ -393,18 +222,6 @@ class RadarMarkerView extends View{
 		ARView.paintScreen.setHeight(canvas.getHeight());
 		ARView.paintScreen.setCanvas(canvas);
 
-
-		if (!ARView.dataView.isInited()) {
-
-			ARView.dataView.init(ARView.paintScreen.getWidth(), ARView.paintScreen.getHeight(),arView.camera, displayMetrics,upperLayoutView);
-		}
-
 		ARView.dataView.draw(ARView.paintScreen, ARView.azimuth, ARView.pitch, ARView.roll);
-	}
-}
-class ResolutionsOrder implements java.util.Comparator<Camera.Size> {
-	public int compare(Camera.Size left, Camera.Size right) {
-
-		return Float.compare(left.width + left.height, right.width + right.height);
 	}
 }

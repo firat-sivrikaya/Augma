@@ -39,12 +39,9 @@ public class CameraViewActivity extends Activity implements
     private SurfaceHolder mSurfaceHolder;
     private boolean isCameraviewOn = false;
 
-    private double mAzimuthReal = 0;
     private double mRotationReal = 0;
     private double mInclination = 0;
-    private double[] mAzimuthTheoretical;
     private double[] degreesOfNotes;
-    private static double AZIMUTH_ACCURACY = 5;
     private double mMyLatitude = 0;
     private double mMyLongitude = 0;
     private Location lastLocation;
@@ -135,7 +132,7 @@ public class CameraViewActivity extends Activity implements
 
         Log.e(TAG, "degree of the note" + note.getNoteID() + "is: " + degree);
 
-        return degree +180;
+        return (degree + 360 )%360;
 
     }
 
@@ -161,7 +158,7 @@ public class CameraViewActivity extends Activity implements
         lastLocation.setLatitude(mMyLatitude);
         lastLocation.setLongitude(mMyLongitude);
         //Last locationimdan 20 metre hareket ettiysem location degisicek
-        if(location.distanceTo(lastLocation) >=200){
+        //if(location.distanceTo(lastLocation) >=200){
             mMyLatitude = location.getLatitude();
             mMyLongitude = location.getLongitude();
             lastLocation.setLatitude(mMyLatitude);
@@ -171,7 +168,7 @@ public class CameraViewActivity extends Activity implements
             }
             Toast.makeText(this,"latitude: "+location.getLatitude()+" longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
             updateDescription();
-        }
+        //}
 
     }
 
