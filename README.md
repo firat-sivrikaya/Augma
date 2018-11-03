@@ -16,7 +16,19 @@ Augma will also feature a heat map in which you can see where the places with lo
 
 Another one of Augma’s big features will be the Augma ads. Companies will be able to leave very creative ads in the Augma’s world for a much cheaper price than in real life. Think about seeing a giant yellow M on the moon when you look through your camera at night if you are near a Mc`Donalds. This will allow for much more interesting ads and the best part is, now the big companies won’t have to pollute the scenery with their giant ads.
 
+## See Augma Trailer
 
-### For more information
+[YouTube](https://www.youtube.com/watch?v=uAwte0ovCqk)
 
-Please visit [augma.world](http://augma.world) 
+### Our Team
+
+Ahmet Burak Şahin - [github](https://github.com/aburaksahin)
+Can Bayraktar - [github](https://github.com/canbayraktar1)
+Çağdaş Yılmaz - [github](https://github.com/cgdsyilmaz)
+Fırat Sivrikaya - [github](https://github.com/DjCedrics)
+Utku Oymak - [github](https://github.com/TopalSinek)
+
+### We made it!
+
+Augma has won "Marketability Award" from Deloitte at CSFair 2018 event. See more [here](http://www.cs.bilkent.edu.tr/~csfair/csfair2018/doku.php/awards).
+
