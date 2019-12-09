@@ -28,7 +28,7 @@ Can Bayraktar - [github](https://github.com/canbayraktar1)
 
 Çağdaş Yılmaz - [github](https://github.com/cgdsyilmaz)
 
-Fırat Sivrikaya - [github](https://github.com/DjCedrics)
+Fırat Sivrikaya - [github](https://github.com/firat-sivrikaya)
 
 Utku Oymak - [github](https://github.com/TopalSinek)
 
